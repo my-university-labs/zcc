@@ -1,1 +1,1 @@
-zcc for c language
+compiler for c language
