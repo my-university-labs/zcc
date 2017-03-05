@@ -6,11 +6,17 @@
 #include <vector>
 #include <string>
 
+#include "zerror.h"
 #include "LexicalAnalyzer.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-    LexicalAnalyzer a("test.c");
+    if (argc == 1) {
+       print_error(-1, NONE_INPUT); 
+       return 1;
+    }
+    
+    LexicalAnalyzer a(argv[1]);
     a.preprocess();
     return 0;
 }
