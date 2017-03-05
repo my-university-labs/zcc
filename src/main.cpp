@@ -17,6 +17,5 @@ int main(int argc, char* argv[])
     }
     
     LexicalAnalyzer a(argv[1]);
-    a.preprocess();
     return 0;
 }

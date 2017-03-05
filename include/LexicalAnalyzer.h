@@ -15,7 +15,7 @@
 #define WT_SEPARATOR    4
 #define WT_IDENTIFIER    5
 
-typedef int word_type
+typedef int word_type;
 
 // a set save all key words of c language 
 extern const std::unordered_map<std::string, int> keyword_table;
@@ -34,12 +34,12 @@ class LexicalAnalyzer {
         // do lexical analyze
         void analyze();
 
-        void save_to_file(const string& name);
+        void save_to_file(const std::string& name);
 
     private:
         std::string file;
 
-        ifstream& ignore_comment(int &linenu, std::ifstream & in);
+        std::ifstream& ignore_comment(int &linenu, std::ifstream & in);
 
         word_type what_type(const std::string& s);
 
