@@ -16,6 +16,12 @@ int main(int argc, char* argv[])
        return 1;
     }
     
+
+
+
+
+
+    // sadffsada
     LexicalAnalyzer a(argv[1]);
     a.analyze();
     return 0;

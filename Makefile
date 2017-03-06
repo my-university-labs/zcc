@@ -1,6 +1,6 @@
 DIR_INC = ./include
 DIR_SRC = ./src
-DIR_OBJ = ./obj
+DIR_OBJ = ./build
 DIR_BIN = ./bin
 
 SRC = $(wildcard ${DIR_SRC}/*.cpp)

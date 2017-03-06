@@ -38,6 +38,8 @@ class LexicalAnalyzer {
 
     private:
         std::string file;
+ 
+        std::string pattern = "(^[a-zA-Z_]+[a-zA-Z0-9_]*)|(^\\d+)|(^[*+-/=><&|!]+|^[()])|(^[\\[\\]{};])";
 
         std::ifstream& ignore_comment(int &linenu, std::ifstream & in);
 

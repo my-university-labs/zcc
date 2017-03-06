@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <regex>
 #include <map>
 #include <set>
 
@@ -80,6 +81,33 @@ const std::vector<std::string> token_table{
 };
 
 void LexicalAnalyzer::analyze() {
+    int linenu = 0;
+    // regex
+    std::regex re(pattern);
+    std::smatch result;
+    std::string elements;
+    // open file
+    std::ifstream in;
+    in.open(file);
+    // read elements
+    std::string line;
+    // get line
+    while (getline(in, line)) {
+        ++linenu;
+        std::istringstream is(line);
+        while (is >> elements) {
+            while (elements != "") {
+                bool isfind = std::regex_search(elements, result, re);
+                if (isfind)
+                    std::cout << result.str()<< std::endl;
+                else
+                    print_error(-1, 1);
+                elements = result.suffix();
+
+            }
+        }
+    }
+    in.close();
 
 }
 
