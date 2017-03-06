@@ -8,16 +8,20 @@
 
 
 const std::vector<std::string> zerrormsg {
+    "program error: not define symbol",
     "need a input file written by c language",
     "illegal name",
     "divided by zero",
 
 };
 
-void print_error(int linenu, int id) {
+void print_error(int linenu, int id, std::string info) {
     std::cout << "error: ";
     if (linenu == -1)
-        std::cout << zerrormsg[id] << std::endl;
+        std::cout << zerrormsg[id] << " " << info << std::endl;
     else
-        std::cout << "line " << linenu << " : " << zerrormsg[id] << std::endl;
+        std::cout << "line " 
+            << linenu << " : " 
+            << zerrormsg[id] 
+            << " " << info << std::endl;
 }

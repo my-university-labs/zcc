@@ -38,10 +38,17 @@ class LexicalAnalyzer {
 
     private:
         std::string file;
- 
-        std::string pattern = "(^[a-zA-Z_]+[a-zA-Z0-9_]*)|(^\\d+)|(^[*+-/=><&|!]+|^[()])|(^[\\[\\]{};])";
 
-        std::ifstream& ignore_comment(int &linenu, std::ifstream & in);
+        std::vector<std::vector<std::string>> token_result;
+ 
+        std::string pattern = "(^[a-zA-Z_]+[a-zA-Z0-9_]*)|" // key word or id
+            "(^\\d+)|" // number
+            "(^[*+-/=><&|!]+|^[()])|" // operator
+            "(^[\\[\\]{};\"\'])"; // sepatator
+
+        void deal_element(const std::string element);
+
+        std::ifstream& ignore_comment(int &linenu, const std::string &elements, std::ifstream & in);
 
         word_type what_type(const std::string& s);
 

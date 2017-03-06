@@ -98,16 +98,70 @@ void LexicalAnalyzer::analyze() {
         while (is >> elements) {
             while (elements != "") {
                 bool isfind = std::regex_search(elements, result, re);
-                if (isfind)
-                    std::cout << result.str()<< std::endl;
-                else
-                    print_error(-1, 1);
-                elements = result.suffix();
 
+                if (isfind) {
+                    std::string element = result.str();
+                    if (element != "//" && element != "/*")
+                        deal_element(result.str());
+                    else if (element == "//")
+                        break;
+                    else
+                        ignore_comment(linenu, elements, in);
+
+                }
+                else
+                    print_error(-1, NONE_DEFINE_SYMBOL, elements);
+                elements = result.suffix();
             }
         }
     }
     in.close();
+}
 
+void LexicalAnalyzer::deal_element(const std::string element) {
+    std::cout << element << std::endl;
+    if (is_operator(element)) {
+        std::cout << " is operator" << std::endl;
+    }
+    else if (is_keyword(element)) {
+        std::cout << " is key word" << std::endl;
+    }
+    else if (is_separator(element)) {
+        std::cout << " is sepatator" << std::endl;
+    }
+    
+}
+
+std::ifstream&
+LexicalAnalyzer::ignore_comment(int &linenu, const std::string &elements, std::ifstream& in) {
+    char x;
+    std::string line;
+
+    std::istringstream is(elements);
+    while (is.get(x)) {
+        std::cout << x << std::endl;
+    }
+
+
+    return in;
+}
+
+bool LexicalAnalyzer::is_keyword(const std::string& s) {
+    auto r = keyword_table.find(s);
+    if (r != keyword_table.cend()) return true;
+    return false;
+}
+bool LexicalAnalyzer::is_separator(const std::string& s) {
+    auto r = sepatator_table.find(s);
+    if (r != sepatator_table.cend()) return true;
+    return false;
+}
+bool LexicalAnalyzer::is_value(const std::string &s) {
+    return false;
+}
+bool LexicalAnalyzer::is_operator(const std::string& s) {
+    auto r = operator_table.find(s);
+    if (r != operator_table.cend()) return true;
+    return false;
 }
 
