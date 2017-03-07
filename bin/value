@@ -1,0 +1,4 @@
+char jin = 'q';
+char *b = "asdfjl";
+char *c = "afjlj \
+           asdflj";

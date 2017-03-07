@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <string>
+#include <regex>
 #include <unordered_map>
 #include <set>
 
@@ -34,6 +35,8 @@ class LexicalAnalyzer {
         // do lexical analyze
         void analyze();
 
+        void print_token();
+
         void save_to_file(const std::string& name);
 
     private:
@@ -46,9 +49,11 @@ class LexicalAnalyzer {
             "(^[*+-/=><&|!]+|^[()])|" // operator
             "(^[\\[\\]{};\"\'])"; // sepatator
 
+        std::string comment_end = "\\*/";
+
         void deal_element(const std::string element);
 
-        std::ifstream& ignore_comment(int &linenu, const std::string &elements, std::ifstream & in);
+        void ignore_comment(int &linenu, std::string &elements, std::regex &re,std::ifstream & in, std::istringstream &is);
 
         word_type what_type(const std::string& s);
 
@@ -63,6 +68,10 @@ class LexicalAnalyzer {
         bool is_identifier(const std::string& s);
 
         bool check_identifier(const std::string& s);
+
+        void get_value(int &linenu, const std::string &sp, std::string &elements, std::ifstream &in, std::istringstream &is);
+
+        void insert_value(const std::string& s);
 };
 
 #endif

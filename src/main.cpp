@@ -18,5 +18,6 @@ int main(int argc, char* argv[])
     
     LexicalAnalyzer a(argv[1]);
     a.analyze();
+    a.print_token();
     return 0;
 }
