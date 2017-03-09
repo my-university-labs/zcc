@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 
+#include "utils.h"
 #include "zerror.h"
 #include "LexicalAnalyzer.h"
 
@@ -17,7 +18,12 @@ int main(int argc, char* argv[])
     }
     
     LexicalAnalyzer a(argv[1]);
-    a.analyze();
-    a.print_token();
+
+    int i = 0;
+    while (!a.isend()) {
+        ZToken v = a.next();
+        std::cout << "<" <<  v.get_token() << ", " << v.get_attr() << ">" << std::endl;
+        ++i;
+    }
     return 0;
 }

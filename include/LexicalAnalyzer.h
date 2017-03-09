@@ -7,71 +7,64 @@
 #include <fstream>
 #include <string>
 #include <regex>
-#include <unordered_map>
-#include <set>
 
-#define WT_KEYWORD    1
-#define WT_OPERATOR    2
-#define WT_VALUE    3
-#define WT_SEPARATOR    4
-#define WT_IDENTIFIER    5
-
-typedef int word_type;
-
-// a set save all key words of c language 
-extern const std::unordered_map<std::string, int> keyword_table;
-// all operators
-extern const std::unordered_map<std::string, int> operator_table;
-// all sepatators
-extern const std::unordered_map<std::string, int> sepatator_table;
-
-// all type;
-extern const std::vector<std::string> token_table;
+#include "utils.h"
 
 class LexicalAnalyzer {
     public:
-        LexicalAnalyzer(std::string f) : file(f) {  }; 
-        
-        // do lexical analyze
-        void analyze();
+        LexicalAnalyzer() : type(0), re_pattern(pattern), re_comment_end(comment_end), re_number(number) {  };
+        LexicalAnalyzer(std::string f) : type(1), file(f),
+        re_pattern(pattern), re_comment_end(comment_end), re_number(number) { in.open(f); };
 
-        void print_token();
-
-        void save_to_file(const std::string& name);
-
+        ~LexicalAnalyzer() { if(in) in.close(); }
+        // input a file name when init this class
+        ZToken next();
+        // input a string
+        bool isend() {
+            return finished;
+        }
     private:
+        bool finished = false;
+
+        int linenu = 0;
+
+        int type = 0;
+
+        ZToken token;
+
         std::string file;
 
-        std::vector<std::vector<std::string>> token_result;
- 
+        std::string line;
+
+        std::ifstream in;
+
         std::string pattern = "(^[a-zA-Z_]+[a-zA-Z0-9_]*)|" // key word or id
-            "(^\\d+)|" // number
+            "(^0[xX]\\d+)|(^\\d+\\.?\\d*)|" // number
             "(^[*+-/=><&|!]+|^[()])|" // operator
             "(^[\\[\\]{};\"\'])"; // sepatator
 
         std::string comment_end = "\\*/";
 
-        void deal_element(const std::string element);
+        std::string number = "(^0[Xx]\\d+|(^\\d+\\.?\\d*))"; // number
 
-        void ignore_comment(int &linenu, std::string &elements, std::regex &re,std::ifstream & in, std::istringstream &is);
+        std::regex re_pattern;
 
-        word_type what_type(const std::string& s);
+        std::regex re_comment_end;
 
-        bool is_keyword(const std::string& s);
+        std::regex re_number;
 
-        bool is_separator(const std::string& s);
+        void skip_ws();
+        
+        void ignore_comment();
 
-        bool is_operator(const std::string& s);
+        ZToken get_ch();
 
-        bool is_value(const std::string& s);
+        ZToken get_string();
 
-        bool is_identifier(const std::string& s);
+        ZToken deal_element(const std::string &element);
 
-        bool check_identifier(const std::string& s);
+        ZToken do_next();
 
-        void get_value(int &linenu, const std::string &sp, std::string &elements, std::ifstream &in, std::istringstream &is);
-
-        void insert_value(const std::string& s);
 };
 
 #endif

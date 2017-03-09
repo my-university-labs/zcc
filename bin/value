@@ -1,4 +1,5 @@
 char jin = 'q';
+jintian
 char *b = "asdfjl";
 char *c = "afjlj \
            asdflj";
