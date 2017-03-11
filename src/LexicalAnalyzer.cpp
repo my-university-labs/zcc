@@ -4,12 +4,8 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <string>
 #include <regex>
-#include <cctype>
-#include <map>
-#include <set>
 
 #include "LexicalAnalyzer.h"
 #include "SymbolTable.h"
@@ -26,14 +22,16 @@ void LexicalAnalyzer::skip_ws() {
 }
 
 void LexicalAnalyzer::ignore_comment() {
-    std::cout << "# log: skip comment" << std::endl;
     std::smatch outcome;
     do {
+        if (print_log)
+            std::cout << "# log: skip comment, line nu: " << linenu << std::endl;
         bool feedback = std::regex_search(line, outcome, re_comment_end);
         if (feedback) {
             line = outcome.suffix();
             break;
         }
+        ++linenu;
     } while (getline(in, line));
 
 }
@@ -64,15 +62,17 @@ ZToken LexicalAnalyzer::get_string() {
         }
         if (!okay) r += line;
         else break;
+        ++linenu;
     } while(getline(in, line));
 
     ZToken z(VALUE, r);
     return z;
 }
 ZToken LexicalAnalyzer::next() {
+    if (print_log) std::cout << "--------------------" << std::endl;
     if (line == "") {
         if (getline(in, line)) {
-            ;
+            ++linenu;
         }
         else {
             finished = true;
@@ -84,17 +84,21 @@ ZToken LexicalAnalyzer::next() {
 }
 
 ZToken LexicalAnalyzer::deal_element(const std::string& element) {
-    std::cout << element << std::endl;
-    // std::cout << "# log: input element -> " <<  element << std::endl;
+    if (print_log)
+        std::cout << "# log: input element -> " <<  element << " line nu: " << linenu << std::endl;
     if (std::regex_match(element, re_number)) {
-        // std::cout << "# log : element " << element << " is digit" << std::endl;
+        if (print_log) std::cout << "# log : element " << element << " is num, line nu: " << linenu << std::endl;
         ZToken z(VALUE, element);
         return z;
     } 
     else {
         int code = get_code(element);
-        // std::cout << "# log: token is -> " << code << std::endl;
-        // std::cout << "# log: check token -> " << code << " should be " << get_token_info(code) << std::endl;
+        if (print_log) {
+            if (element == get_token_info(code) || code == ID)
+                std::cout << "# log: test pass " << std::endl;
+            else
+                std::cout << "# log: error at line nu: " << linenu << " element is: " << element << " but: " << get_token_info(code) << std::endl; 
+        }
         ZToken z(code);
         if (code == ID) {
             std::string addr = install_id(element);
@@ -115,18 +119,21 @@ ZToken LexicalAnalyzer::do_next() {
     if (isfind) {
         std::string element = outcome.str();
         if (element == "'") {
+            if (print_log) std::cout << "# log: this element is char" << std::endl;
             line = outcome.suffix();
             // find the char or string in this function
             // after find ,return;
             return get_ch(); // should be func
         }
         else if (element == "\"") {
+            if (print_log) std::cout << "# log: this element is string" << std::endl;
             line = outcome.suffix();
             return get_string();
         }
         else if (element == "//") {
             // skip comments and then find again;
             // func of ignore_comment
+            if (print_log) std::cout << "# log: comment skiped at line nu: " << linenu << std::endl;
             line = "";
             return next();
         }

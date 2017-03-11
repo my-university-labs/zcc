@@ -7,4 +7,4 @@
  * afsdoj
  */
 int main;
-
+void

@@ -17,13 +17,20 @@ class LexicalAnalyzer {
         re_pattern(pattern), re_comment_end(comment_end), re_number(number) { in.open(f); };
 
         ~LexicalAnalyzer() { if(in) in.close(); }
-        // input a file name when init this class
+        // get next touple
         ZToken next();
-        // input a string
-        bool isend() {
-            return finished;
-        }
+        // get line number
+        int get_linenu() { return linenu; }
+        // when meet EOF return true
+        bool isend() { return finished; }
+        // print log for debug
+        void log_enable() { print_log = true; }
+        // ignore log
+        void log_disable() { print_log = false; }
     private:
+
+        bool print_log = false;
+
         bool finished = false;
 
         int linenu = 0;

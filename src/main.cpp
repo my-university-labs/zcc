@@ -18,11 +18,13 @@ int main(int argc, char* argv[])
     }
     
     LexicalAnalyzer a(argv[1]);
+    a.log_enable();
 
     int i = 0;
     while (!a.isend()) {
         ZToken v = a.next();
-        std::cout << "<" <<  v.get_token() << ", " << v.get_attr() << ">" << std::endl;
+        if (v.get_token() != -1)
+        std::cout << "touple nu: " << i << " line nu: " << a.get_linenu() << " content:  <" <<  v.get_token() << ", " << v.get_attr() << ">" << std::endl;
         ++i;
     }
     return 0;
