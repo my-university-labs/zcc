@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "zerror.h"
+#include "error.h"
 
 
 const std::vector<std::string> zerrormsg {
@@ -12,6 +12,7 @@ const std::vector<std::string> zerrormsg {
     "need a input file written by c language",
     "illegal name",
     "divided by zero",
+    "need end symbol */ for comment, please check"
 
 };
 

@@ -10,15 +10,15 @@
 
 #include "utils.h"
 
-class LexicalAnalyzer {
+class Tokenizer {
     public:
-        LexicalAnalyzer() : type(0), re_pattern(pattern), re_comment_end(comment_end), re_number(number) {  };
-        LexicalAnalyzer(std::string f) : type(1), file(f),
+        Tokenizer() : type(0), re_pattern(pattern), re_comment_end(comment_end), re_number(number) {  };
+        Tokenizer(std::string f) : type(1), file(f),
         re_pattern(pattern), re_comment_end(comment_end), re_number(number) { in.open(f); };
 
-        ~LexicalAnalyzer() { if(in) in.close(); }
+        ~Tokenizer() { if(in) in.close(); }
         // get next touple
-        ZToken next();
+        Token next();
         // get line number
         int get_linenu() { return linenu; }
         // when meet EOF return true
@@ -37,7 +37,7 @@ class LexicalAnalyzer {
 
         int type = 0;
 
-        ZToken token;
+        Token token;
 
         std::string file;
 
@@ -64,13 +64,13 @@ class LexicalAnalyzer {
         
         void ignore_comment();
 
-        ZToken get_ch();
+        Token get_ch();
 
-        ZToken get_string();
+        Token get_string();
 
-        ZToken deal_element(const std::string &element);
+        Token deal_element(const std::string &element);
 
-        ZToken do_next();
+        Token do_next();
 
 };
 

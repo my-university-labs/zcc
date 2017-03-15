@@ -7,7 +7,7 @@
 #include <cctype>
 
 #include "token.h"
-#include "zerror.h"
+#include "error.h"
 
 const std::array<std::string, TOKEN_SIZE> token_dict {
     "id", // 0

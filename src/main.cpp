@@ -7,8 +7,8 @@
 #include <string>
 
 #include "utils.h"
-#include "zerror.h"
-#include "LexicalAnalyzer.h"
+#include "error.h"
+#include "tokenizer.h"
 
 int main(int argc, char* argv[])
 {
@@ -17,12 +17,12 @@ int main(int argc, char* argv[])
        return 1;
     }
     
-    LexicalAnalyzer a(argv[1]);
+    Tokenizer a(argv[1]);
     a.log_enable();
 
     int i = 0;
     while (!a.isend()) {
-        ZToken v = a.next();
+        Token v = a.next();
         if (v.get_token() != -1)
         std::cout << "touple nu: " << i << " line nu: " << a.get_linenu() << " content:  <" <<  v.get_token() << ", " << v.get_attr() << ">" << std::endl;
         ++i;

@@ -13,6 +13,7 @@
 #define NONE_INPUT    1
 #define ILLEGAL_NAME    2
 #define DIVIDE_ZERO    3
+#define COMMENT_NOT_END 4
 // error message
 extern const std::vector<std::string> zerrormsg;
 // print error log

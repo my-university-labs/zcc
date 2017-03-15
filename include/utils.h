@@ -6,13 +6,13 @@
 
 #include <string>
 
-struct ZToken {
+struct Token {
     int token;
     std::string value;
 
-    ZToken() : token(-1), value("") {}
-    ZToken(int t) : token(t), value("") {}
-    ZToken(int t, std::string v) : token(t), value(v) {}
+    Token() : token(-1), value("") {}
+    Token(int t) : token(t), value("") {}
+    Token(int t, std::string v) : token(t), value(v) {}
     int get_token() { return token; }
     std::string get_attr() { return value; }
     void put_token(int t) { token = t; }

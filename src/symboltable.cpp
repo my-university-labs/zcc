@@ -6,7 +6,7 @@
 #include<vector>
 #include<string>
 
-#include "SymbolTable.h"
+#include "symboltable.h"
 
 std::string install_id(const std::string& id) {
     return id;

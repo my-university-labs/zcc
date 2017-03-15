@@ -6,13 +6,14 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include <cassert>
 
-#include "LexicalAnalyzer.h"
-#include "SymbolTable.h"
+#include "tokenizer.h"
+#include "symboltable.h"
 #include "token.h"
-#include "zerror.h"
+#include "error.h"
 
-void LexicalAnalyzer::skip_ws() {
+void Tokenizer::skip_ws() {
     for (size_t i = 0; i < line.size(); ++i) {
         if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n') {
             line.erase(0, i);
@@ -21,7 +22,7 @@ void LexicalAnalyzer::skip_ws() {
     }
 }
 
-void LexicalAnalyzer::ignore_comment() {
+void Tokenizer::ignore_comment() {
     std::smatch outcome;
     do {
         if (print_log)
@@ -29,25 +30,27 @@ void LexicalAnalyzer::ignore_comment() {
         bool feedback = std::regex_search(line, outcome, re_comment_end);
         if (feedback) {
             line = outcome.suffix();
-            break;
+            return;
         }
         ++linenu;
     } while (getline(in, line));
+    print_error(linenu, COMMENT_NOT_END);
+    exit(2);
 
 }
 
-ZToken LexicalAnalyzer::get_ch() {
+Token Tokenizer::get_ch() {
     std::string r = "'";
     if (line[1] == '\'') {
         r += line[0];
         r + "'";
         line.erase(0, 2);
     }
-    ZToken z(VALUE, r);
+    Token z(VALUE, r);
     return z;
 }
 
-ZToken LexicalAnalyzer::get_string() {
+Token Tokenizer::get_string() {
     std::string r = "";
     bool okay = false;
     do {
@@ -65,10 +68,10 @@ ZToken LexicalAnalyzer::get_string() {
         ++linenu;
     } while(getline(in, line));
 
-    ZToken z(VALUE, r);
+    Token z(VALUE, r);
     return z;
 }
-ZToken LexicalAnalyzer::next() {
+Token Tokenizer::next() {
     if (print_log) std::cout << "--------------------" << std::endl;
     if (line == "") {
         if (getline(in, line)) {
@@ -76,19 +79,19 @@ ZToken LexicalAnalyzer::next() {
         }
         else {
             finished = true;
-            ZToken z;
+            Token z;
             return z;
         }
     }
     return do_next();
 }
 
-ZToken LexicalAnalyzer::deal_element(const std::string& element) {
+Token Tokenizer::deal_element(const std::string& element) {
     if (print_log)
         std::cout << "# log: input element -> " <<  element << " line nu: " << linenu << std::endl;
     if (std::regex_match(element, re_number)) {
         if (print_log) std::cout << "# log : element " << element << " is num, line nu: " << linenu << std::endl;
-        ZToken z(VALUE, element);
+        Token z(VALUE, element);
         return z;
     } 
     else {
@@ -99,7 +102,7 @@ ZToken LexicalAnalyzer::deal_element(const std::string& element) {
             else
                 std::cout << "# log: error at line nu: " << linenu << " element is: " << element << " but: " << get_token_info(code) << std::endl; 
         }
-        ZToken z(code);
+        Token z(code);
         if (code == ID) {
             std::string addr = install_id(element);
             z.put_attr(addr);
@@ -107,9 +110,9 @@ ZToken LexicalAnalyzer::deal_element(const std::string& element) {
         return z;
     }
 }
-ZToken LexicalAnalyzer::do_next() {
+Token Tokenizer::do_next() {
     // result
-    ZToken result;
+    Token result;
     // re match result
     std::smatch outcome;
     // skip white char
@@ -152,6 +155,7 @@ ZToken LexicalAnalyzer::do_next() {
         // not find, there is an error 
         // deal error here
         print_error(-1, NONE_DEFINE_SYMBOL, line);
+        exit(3);
         line.erase(0, 1);
         return result;
     }
