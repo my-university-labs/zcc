@@ -1,162 +1,211 @@
 /* author: dongchangzhang */
 /* time: Fri 03 Mar 2017 12:40:02 PM CST */
 
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <regex>
-#include <cassert>
 
 #include "tokenizer.h"
 #include "symboltable.h"
 #include "token.h"
 #include "error.h"
 
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cctype>
+
 void Tokenizer::skip_ws() {
-    for (size_t i = 0; i < line.size(); ++i) {
-        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n') {
-            line.erase(0, i);
-            break;
-        } 
-    }
+    for (; cursor < buffer_size; ++cursor)
+        if (!isspace(buffer[cursor])) break;
 }
 
-void Tokenizer::ignore_comment() {
-    std::smatch outcome;
-    do {
-        if (print_log)
-            std::cout << "# log: skip comment, line nu: " << linenu << std::endl;
-        bool feedback = std::regex_search(line, outcome, re_comment_end);
-        if (feedback) {
-            line = outcome.suffix();
-            return;
+void Tokenizer::skip_annotation() {
+    while (true){
+        if (cursor == 0) {
+            ++cursor;
+            continue;
         }
-        ++linenu;
-    } while (getline(in, line));
-    print_error(linenu, COMMENT_NOT_END);
-    exit(2);
-
-}
-
-Token Tokenizer::get_ch() {
-    std::string r = "'";
-    if (line[1] == '\'') {
-        r += line[0];
-        r + "'";
-        line.erase(0, 2);
+        if (cursor >= buffer_size) {
+            check_buffer();
+            continue;
+        }
+        if (buffer[cursor - 1] == '*' && buffer[cursor] == '/') {
+            ++cursor;
+            break;
+        }
+        ++cursor;
     }
-    Token z(VALUE, r);
-    return z;
+
 }
 
-Token Tokenizer::get_string() {
-    std::string r = "";
-    bool okay = false;
-    do {
-        okay =false;
-        for (size_t i = 0; i < line.size(); ++i) {
-            if (line[i] == '"') {
-                okay = true;
-                r += line.substr(0, i);
-                line.erase(0, i + 1);
-                break;
+void Tokenizer::check_buffer() {
+    skip_ws();
+    while (buffer_size == 0 || cursor >= buffer_size) {
+        /* read a now line */
+        if (!getline(in, buffer)) {
+            finished = true;
+            // wait for ....
+            exit(1);
+        }
+        cursor = 0;
+        buffer_size = buffer.size();
+        skip_ws();
+    }
+}
+
+void Tokenizer::deal_word(std::vector<char> &vtoken, bool &reidentify) {
+    char ch;
+    while (cursor < buffer_size) {
+        ch = buffer[cursor];
+        if (isalnum(ch) || ch == '_') {
+            vtoken.push_back(ch);
+        }
+        else if (issymbol(ch) || isspace(ch)) {
+            break;
+        }
+        else {
+            deal_error(0, reidentify);
+            break;
+        }
+        ++cursor;
+    }
+}
+
+void Tokenizer::deal_num(std::vector<char> &vtoken, bool &reidentify) {
+    char ch;
+    while (cursor < buffer_size) {
+        ch = buffer[cursor];
+        if (isdigit(ch)) {
+            vtoken.push_back(ch);
+        }
+        else if (issymbol(ch) || isspace(ch)) {
+            break;
+        }
+        else {
+            deal_error(1, reidentify);
+        }
+        ++cursor;
+    }
+}
+void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify) {
+    char nextch;
+    char last = vtoken[0];
+    bool have_two = (cursor + 1 < buffer_size && issymbol(buffer[cursor]));
+    if (have_two) nextch = buffer[cursor];
+    switch (last) {
+    case '=':
+        if (have_two && nextch == '=') {
+            vtoken.push_back(nextch);
+            ++cursor;
+        }
+        break;
+    case '+':
+        if (have_two) {
+            switch (nextch) {
+            case '=': vtoken.push_back(nextch); ++cursor; break;
+            case '+': vtoken.push_back(nextch); ++cursor; break;
             }
         }
-        if (!okay) r += line;
-        else break;
-        ++linenu;
-    } while(getline(in, line));
+        break;
+    case '-':
+        if (have_two)
+            switch (nextch) {
+            case '-': vtoken.push_back(nextch); ++cursor; break;
+            case '=': vtoken.push_back(nextch); ++cursor; break;
 
-    Token z(VALUE, r);
-    return z;
+            }
+        break;
+    case '*':
+        if (have_two) {
+            if (nextch == '=') { vtoken.push_back(nextch); ++cursor; }
+        }
+        break;
+    case '/':
+        if (have_two) {
+            switch (nextch) {
+            case '=': vtoken.push_back(nextch); ++cursor; break;
+            case '*': vtoken.clear(); ++cursor; skip_annotation(); reidentify = true; break;
+            case '/': vtoken.clear(); cursor = buffer_size; reidentify = true; break;
+            }
+        }
+        break;
+    case '%':
+        if (have_two) { 
+            if (nextch == '=') { vtoken.push_back(nextch); ++cursor; }
+        }
+        break;
+    case '&':
+        if (have_two) {
+            if (nextch == '&') { vtoken.push_back(nextch); ++cursor; }
+        }
+        break;
+    case '|':
+        if (have_two) {
+            if (nextch == '|') { vtoken.push_back(nextch); ++cursor; }
+        }
+    }
+}
+
+void Tokenizer::deal_error(int error_type, bool &reidentify) {
+    reidentify = true;
+    switch (error_type) {
+    case 0: case 1: case 2: case 3: next(); break;
+    }
+}
+
+void iswhat(std::string &stoken) {
 }
 Token Tokenizer::next() {
-    if (print_log) std::cout << "--------------------" << std::endl;
-    if (line == "") {
-        if (getline(in, line)) {
-            ++linenu;
-        }
-        else {
-            finished = true;
-            Token z;
-            return z;
-        }
+    char ch;
+    int rtype = 0;
+    Token token;
+    bool reidentify = false;
+    check_buffer();
+    std::vector<char> vtoken;
+    ch = buffer[cursor++];
+    vtoken.push_back(ch);
+    if (isalpha(ch)) {
+        /* a-zA-Z */
+        deal_word(vtoken, reidentify);
+        if (!reidentify) rtype = 1;
     }
-    return do_next();
+    else if (isdigit(ch)) {
+        /* 0-9 */
+        deal_num(vtoken, reidentify);
+        if (!reidentify) rtype = 2;
+    }
+    else if(issymbol(ch)){
+        /* symbol such as: +-*/
+        deal_symbol(vtoken, reidentify);
+        if (!reidentify) rtype = 3;
+    }
+    else {
+        /* error start symbol */
+        deal_error(0, reidentify);
+    }
+    if (finished) {
+        return token;
+    }
+    else if (reidentify) {
+        std::cout << "re identify " << std::endl;
+        return next();
+    }
+    else {
+        /* return */
+        std::string stoken(vtoken.begin(), vtoken.end());
+        std::cout << "# log " << stoken << std::endl;
+        if (rtype == 1 || rtype == 3) { 
+            int code = get_code(stoken);
+            token.put_token(code);
+            if (code == ID) {
+                std::string addr = install_id(stoken);
+                token.put_attr(addr);
+            }
+        }
+        else if (rtype == 2) { token.put_token(VALUE); }
+
+        return token;
+    }
 }
 
-Token Tokenizer::deal_element(const std::string& element) {
-    if (print_log)
-        std::cout << "# log: input element -> " <<  element << " line nu: " << linenu << std::endl;
-    if (std::regex_match(element, re_number)) {
-        if (print_log) std::cout << "# log : element " << element << " is num, line nu: " << linenu << std::endl;
-        Token z(VALUE, element);
-        return z;
-    } 
-    else {
-        int code = get_code(element);
-        if (print_log) {
-            if (element == get_token_info(code) || code == ID)
-                std::cout << "# log: test pass " << std::endl;
-            else
-                std::cout << "# log: error at line nu: " << linenu << " element is: " << element << " but: " << get_token_info(code) << std::endl; 
-        }
-        Token z(code);
-        if (code == ID) {
-            std::string addr = install_id(element);
-            z.put_attr(addr);
-        }
-        return z;
-    }
-}
-Token Tokenizer::do_next() {
-    // result
-    Token result;
-    // re match result
-    std::smatch outcome;
-    // skip white char
-    skip_ws();
-    if (line == "") return next();
-    bool isfind = std::regex_search(line, outcome, re_pattern);
-    if (isfind) {
-        std::string element = outcome.str();
-        if (element == "'") {
-            if (print_log) std::cout << "# log: this element is char" << std::endl;
-            line = outcome.suffix();
-            // find the char or string in this function
-            // after find ,return;
-            return get_ch(); // should be func
-        }
-        else if (element == "\"") {
-            if (print_log) std::cout << "# log: this element is string" << std::endl;
-            line = outcome.suffix();
-            return get_string();
-        }
-        else if (element == "//") {
-            // skip comments and then find again;
-            // func of ignore_comment
-            if (print_log) std::cout << "# log: comment skiped at line nu: " << linenu << std::endl;
-            line = "";
-            return next();
-        }
-        else if (element == "/*"){
-            ignore_comment();
-            // ignore_comment(linenu, elements, re_comment_end, in, is);
-            return do_next();
-        }
-        else {
-            line = outcome.suffix();
-            // may be an element, deal it
-            return deal_element(element);
-        }
-    }
-    else {
-        // not find, there is an error 
-        // deal error here
-        print_error(-1, NONE_DEFINE_SYMBOL, line);
-        exit(3);
-        line.erase(0, 1);
-        return result;
-    }
-}
+
+

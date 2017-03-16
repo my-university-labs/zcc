@@ -4,71 +4,66 @@
 #ifndef __LEXICAL_ANALYZER_H__
 #define __LEXICAL_ANALYZER_H__
 
+/* Token defined in this file */
+#include "utils.h"
+
 #include <fstream>
 #include <string>
-#include <regex>
+#include <vector>
 
-#include "utils.h"
 
 class Tokenizer {
     public:
-        Tokenizer() : type(0), re_pattern(pattern), re_comment_end(comment_end), re_number(number) {  };
-        Tokenizer(std::string f) : type(1), file(f),
-        re_pattern(pattern), re_comment_end(comment_end), re_number(number) { in.open(f); };
-
+        /* construct function */
+        Tokenizer() : type(0), linenu(0) {  };
+        // input a file
+        Tokenizer(std::string f) : type(1), linenu(0), file(f) { in.open(f); };
+        /* destruct function */
         ~Tokenizer() { if(in) in.close(); }
-        // get next touple
+        /* get next token */
         Token next();
-        // get line number
-        int get_linenu() { return linenu; }
-        // when meet EOF return true
+
         bool isend() { return finished; }
-        // print log for debug
-        void log_enable() { print_log = true; }
-        // ignore log
-        void log_disable() { print_log = false; }
+        /* get line number */
+        int get_linenu() { return linenu; }
     private:
+        /* work type : type = 0 -> deal file */
+        int type;
 
-        bool print_log = false;
+        /* line number */
+        int linenu;
 
-        bool finished = false;
-
-        int linenu = 0;
-
-        int type = 0;
-
-        Token token;
-
+        /* save file name */
         std::string file;
 
-        std::string line;
+        bool print_log = true;
+        /* meet EOF when read file */
+        bool finished = false;
 
+        size_t cursor;
+
+        size_t buffer_size;
+
+        /* save token which will be return after scanning */
+        Token token;
+        /* buffer for every line */
+        std::string buffer;
+        /* file stream */
         std::ifstream in;
-
-        std::string pattern = "(^[a-zA-Z_]+[a-zA-Z0-9_]*)|" // key word or id
-            "(^0[xX]\\d+)|(^\\d+\\.?\\d*)|" // number
-            "(^[*+-/=><&|!]+|^[()])|" // operator
-            "(^[\\[\\]{};\"\'])"; // sepatator
-
-        std::string comment_end = "\\*/";
-
-        std::string number = "(^0[Xx]\\d+|(^\\d+\\.?\\d*))"; // number
-
-        std::regex re_pattern;
-
-        std::regex re_comment_end;
-
-        std::regex re_number;
-
+        /* skip blank char */
         void skip_ws();
-        
-        void ignore_comment();
+        /* skip annotation */
+        void skip_annotation();
 
-        Token get_ch();
+        void check_buffer();
 
-        Token get_string();
+        void deal_word(std::vector<char> &vtoken, bool &reidentify);
 
-        Token deal_element(const std::string &element);
+        void deal_num(std::vector<char> &vtoken, bool &reidentify);
+
+        void deal_symbol(std::vector<char> &vtoken, bool &reidentify);
+
+        void deal_error(int error_type, bool &reidentify);
 
         Token do_next();
 

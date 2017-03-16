@@ -3,65 +3,64 @@
 
 #include <iostream>
 #include <string>
-#include <array>
+#include <map>
 #include <cctype>
 
 #include "token.h"
 #include "error.h"
 
-const std::array<std::string, TOKEN_SIZE> token_dict {
-    "id", // 0
-    "int", // 1
-    "float", // 2
-    "double", // 3
-    "long", // 4
-    "short", // 5
-    "switch", // 6
-    "case", // 7
-    "default", // 8
-    "break", // 9
-    "const", // 10
-    "return", // 11
-    "void", // 12
-    "continue", // 13
-    "do", // 14
-    "while", // 15
-    "if", // 16
-    "else", // 17
-    "for", // 18
-    "char", // 19
-    "typedef", // 20
-    "static", // 21
-    "==", // 22
-    "!=", // 23
-    ">", // 24
-    "<", // 25
-    ">=", // 26
-    "<=", // 27
-    "=", // 28
-    "+", // 29
-    "*", // 30
-    "-", // 31
-    "/", // 32
-    "!", // 33
-    "%", // 34
-    "&&", // 35
-    "||", // 36
-    "+=", // 37
-    "-=", // 38
-    "*=", // 39
-    "/=", // 40
-    ",", // 41
-    "(", // 42
-    ")", // 43
-    "[", // 44
-    "]", // 45
-    "{", // 46
-    "}", // 47
-    ";", // 48
-    "\\", // 49
-    "'", // 50
-    "\"", // 51
+const std::map<std::string, int> token_dict {
+    {"int", INT},
+    {"float", FLOAT},
+    {"double", DOUBLE},
+    {"long", LONG},
+    {"short", SHORT},
+    {"switch", SWITCH},
+    {"case", CASE},
+    {"default", DEFAULT},
+    {"break", BREAK},
+    {"const", CONST},
+    {"return", RETURN},
+    {"void", VOID},
+    {"continue", CONTINUE},
+    {"do", DO},
+    {"while", WHILE},
+    {"if", IF},
+    {"else", ELSE},
+    {"for", FOR},
+    {"char", CHAR},
+    {"typedef", TYPEDEF},
+    {"static", STATIC},
+    {"==", EQ},
+    {"!=", NE},
+    {">", GT},
+    {"<", LT},
+    {">=", GE},
+    {"<=", LE},
+    {"=", ASSIGN},
+    {"+", ADD},
+    {"*", MUL},
+    {"-", SUB},
+    {"/", DIV},
+    {"!", NOT},
+    {"%", MOD},
+    {"&&", AND},
+    {"||", OR},
+    {"+=", ADDASSIGN},
+    {"-=", SUBASSIGN},
+    {"*=", MULASSIGN},
+    {"/=", DIVASSIGN},
+    {",", COMMA},
+    {"(", LCURVES},
+    {")", RCURVES},
+    {"[", LBRACKET},
+    {"]", RBRACKET},
+    {"{", LBRACE},
+    {"}", RBRACE},
+    {";", SEM},
+    {"\\", REVERSE},
+    {"'", SQUOTE},
+    {"\"", DQUOTE},
 };
 
 
@@ -76,16 +75,28 @@ bool is_good(const std::string &target) {
 }
 
 std::string get_token_info(const int id) {
-    if (id < 0 || id >= TOKEN_SIZE) 
-        print_error(-1, 1);
-    return token_dict[id];
+    for (auto m : token_dict) {
+        if (m.second == id) {
+            return m.first;
+        }
+    }
+    return "";
 }
 
 int get_code(const std::string &target) {
-    for (int i = 1; i < TOKEN_SIZE; ++i) {
-        if (token_dict[i] == target)
-            return i;
+    auto it = token_dict.find(target);
+    if (it != token_dict.end())
+        return it->second;
+    return ID;
+}
+
+bool issymbol(char X) {
+    switch (X) {
+        case '+': case '-': case '*': case '/':
+        case '=': case '%': case '&': case '|':
+        case '(': case ')': case '[': case ']':
+        case '{': case '}': case ';': case ':':
+        case '\'': case '"': return true;
+        default: return false;
     }
-    if (!is_good(target)) return -1;
-    return 0;
 }

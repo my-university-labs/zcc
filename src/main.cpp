@@ -18,7 +18,6 @@ int main(int argc, char* argv[])
     }
     
     Tokenizer a(argv[1]);
-    a.log_enable();
 
     int i = 0;
     while (!a.isend()) {

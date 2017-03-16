@@ -67,12 +67,12 @@
 #define VALUE 100
 
 #include <string>
-#include <array>
+#include <map>
 
 
-#define TOKEN_SIZE 52
+extern const std::map<std::string, int> token_dict;
 
-extern const std::array<std::string, TOKEN_SIZE> token_dict;
+bool issymbol(char X);
 
 std::string get_token_info(const int id);
 
