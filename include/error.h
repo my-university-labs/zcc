@@ -16,6 +16,8 @@
 #define COMMENT_NOT_END 4
 #define ILLEGAL_NUM    5
 #define BAD_START_CHAR    6
+#define LACK_SQUOTE    7
+#define LACK_DQUOTE    8
 
 // error message
 extern const std::vector<std::string> zerrormsg;

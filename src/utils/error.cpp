@@ -15,6 +15,8 @@ const std::vector<std::string> zerrormsg {
     "need end symbol */ for comment, please check",
     "is a number you want? i can not recognize it",
     "must start with a lilegal char",
+    "need ' but not found",
+    "need \" but not found",
 
 };
 

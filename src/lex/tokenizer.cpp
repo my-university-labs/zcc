@@ -147,15 +147,28 @@ void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify) {
         if (have_two) {
             if (nextch == '|') { vtoken.push_back(nextch); ++cursor; }
         }
+        break;
+    case '\'':
+        ++cursor;
+        vtoken.clear();
+        if (nextch == '\'') return;
+        else {
+            if (buffer[cursor] == '\'') {
+                vtoken.push_back(nextch);
+                ++cursor;
+            }
+            else {
+                deal_error(LACK_SQUOTE, reidentify);
+            }
+        }
+        break;
     }
+
 }
 
 void Tokenizer::deal_error(int error_type, bool &reidentify) {
     reidentify = true;
     print_error(linenu, cursor, error_type, buffer);
-    switch (error_type) {
-    case 0: case 1: case 2: case 3: next(); break;
-    }
 }
 
 void iswhat(std::string &stoken) {
@@ -202,6 +215,11 @@ Token Tokenizer::next() {
         std::cout << "# LOG-> " << stoken << std::endl;
 #endif
         if (rtype == 1 || rtype == 3) { 
+            if (stoken == "") {
+                token.put_token(VALUE);
+                token.put_attr(stoken);
+                return token;
+            }
             int code = get_code(stoken);
             token.put_token(code);
             if (code == ID) {

@@ -15,4 +15,6 @@ _jasdfij12343
 1sadf
 23asdfljdas
 34dsafj
+char a='a';
+char b='', c='a;
 
