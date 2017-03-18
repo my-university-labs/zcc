@@ -14,9 +14,12 @@
 #define ILLEGAL_NAME    2
 #define DIVIDE_ZERO    3
 #define COMMENT_NOT_END 4
+#define ILLEGAL_NUM    5
+#define BAD_START_CHAR    6
+
 // error message
 extern const std::vector<std::string> zerrormsg;
 // print error log
-void print_error(int linenu, int id, std::string info="");
+void print_error(int linenu, int index, int id, std::string info="");
 
 #endif
