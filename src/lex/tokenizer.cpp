@@ -13,41 +13,43 @@
 #include <string>
 #include <cctype>
 
-
+/* skip space char */
 void Tokenizer::skip_ws() {
     for (; cursor < buffer_size; ++cursor)
         if (!isspace(buffer[cursor])) break;
 }
-
+/* skip comments like this one */
 void Tokenizer::skip_annotation() {
 
     while (true){
+        /* end lables must have two chars, one is * another is/ */
         if (cursor == 0) {
             ++cursor;
             continue;
         }
+        /* walk to the end of the line but not find end lable, so read a new line */
         if (cursor >= buffer_size) {
             check_buffer();
             continue;
         }
+        /* judge it */
         if (buffer[cursor - 1] == '*' && buffer[cursor] == '/') {
             ++cursor;
             break;
         }
+        /* get next char */
         ++cursor;
     }
-
 }
-
+/* skip space, if walk to end, read a new line */
 void Tokenizer::check_buffer() {
     skip_ws();
     while (buffer_size == 0 || cursor >= buffer_size) {
-        // std::cout << buffer_size << " " << cursor << std::endl;
         /* read a now line */
         if (!getline(in, buffer)) {
+            buffer_size = 0;
             finished = true;
-            // wait for ....
-            exit(1);
+            return;
         }
         ++linenu;
         cursor = 0;
@@ -55,7 +57,7 @@ void Tokenizer::check_buffer() {
         skip_ws();
     }
 }
-
+/* deal key word or id */
 void Tokenizer::deal_word(std::vector<char> &vtoken, bool &reidentify) {
     char ch;
     while (cursor < buffer_size) {
@@ -63,9 +65,11 @@ void Tokenizer::deal_word(std::vector<char> &vtoken, bool &reidentify) {
         if (isalnum(ch) || ch == '_') {
             vtoken.push_back(ch);
         }
+        /* end */
         else if (issymbol(ch) || isspace(ch)) {
             break;
         }
+        /* meet error */
         else {
             deal_error(ILLEGAL_NAME, reidentify);
             break;
@@ -73,13 +77,18 @@ void Tokenizer::deal_word(std::vector<char> &vtoken, bool &reidentify) {
         ++cursor;
     }
 }
-
+/* deal num */
 void Tokenizer::deal_num(std::vector<char> &vtoken, bool &reidentify) {
     char ch;
+    bool have_dot = false;
     while (cursor < buffer_size) {
         ch = buffer[cursor];
         if (isdigit(ch)) {
             vtoken.push_back(ch);
+        }
+        else if (ch == '.' && !have_dot) {
+            vtoken.push_back(ch);
+            have_dot = true;
         }
         else if (issymbol(ch) || isspace(ch)) {
             break;
@@ -91,6 +100,7 @@ void Tokenizer::deal_num(std::vector<char> &vtoken, bool &reidentify) {
         ++cursor;
     }
 }
+/* deal operator or separaters */
 void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify) {
     char nextch;
     char last = vtoken[0];
@@ -151,8 +161,10 @@ void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify) {
     case '\'':
         ++cursor;
         vtoken.clear();
+        /* char '' */
         if (nextch == '\'') return;
         else {
+            /* char '?' */
             if (buffer[cursor] == '\'') {
                 vtoken.push_back(nextch);
                 ++cursor;
@@ -179,11 +191,12 @@ Token Tokenizer::next() {
     Token token;
     bool reidentify = false;
     check_buffer();
+    if (buffer_size == 0) return token;
     std::vector<char> vtoken;
     ch = buffer[cursor++];
     vtoken.push_back(ch);
-    if (isalpha(ch)) {
-        /* a-zA-Z */
+    if (isalpha(ch) || ch == '_') {
+        /* a-zA-Z_ */
         deal_word(vtoken, reidentify);
         if (!reidentify) rtype = 1;
     }
