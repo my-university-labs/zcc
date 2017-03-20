@@ -1,16 +1,17 @@
 /* author: dongchangzhang */
 /* time: Fri 03 Mar 2017 12:42:23 PM CST */
 
+#include "tokenizer.h"
+#include "utils.h"
+#include "error.h"
+#include "token.h"
+
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <string>
 
-#include "utils.h"
-#include "error.h"
-#include "token.h"
-#include "tokenizer.h"
 
 int main(int argc, char* argv[])
 {

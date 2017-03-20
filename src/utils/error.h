@@ -1,8 +1,8 @@
 /* author: dongchangzhang */
 /* time: Sun 05 Mar 2017 12:00:59 PM CST */
 
-#ifndef __ZERROR_H__
-#define __ZERROR_H__
+#ifndef SRC_UTILS_ZERROR_H
+#define SRC_UTILS_ZERROR_H
 
 #include <string>
 #include <vector>

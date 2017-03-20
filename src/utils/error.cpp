@@ -1,10 +1,11 @@
 /* author: dongchangzhang */
 /* time: Sun 05 Mar 2017 12:25:06 PM CST */
 
+#include "error.h"
+
 #include <iostream>
 #include <string>
 
-#include "error.h"
 
 
 const std::vector<std::string> zerrormsg {

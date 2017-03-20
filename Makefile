@@ -10,7 +10,7 @@ OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
 CC = g++
 
-INCLUDE = -I./include -I./src/lex/ -I./src/parser
+INCLUDE = -Iinclude -Isrc/lex/ -Isrc/parser -Isrc/plugin -Isrc/utils
 
 CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 

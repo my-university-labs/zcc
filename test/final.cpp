@@ -7,7 +7,7 @@
 int main(void) {
     int a[];
     int b;
-    float ccccccccccccccccc;
+    float ccccccccccccccccc = 0.99999;
     if(a==NULL || b=133) {
         b=1;
     }else {
@@ -19,4 +19,7 @@ int main(void) {
         ;
     }
     return 0;
+}
+void pppp() {
+    return;
 }

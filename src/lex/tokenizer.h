@@ -1,8 +1,8 @@
 /* author: dongchangzhang */
 /* time: Fri 03 Mar 2017 12:39:51 PM CST */
 
-#ifndef __LEXICAL_ANALYZER_H__
-#define __LEXICAL_ANALYZER_H__
+#ifndef SRC_TOKENIZER_H
+#define SRC_TOKENIZER_H
 
 /* Token defined in this file */
 #include "utils.h"

@@ -1,12 +1,13 @@
 /* author: dongchangzhang */
 /* time: Wed 08 Mar 2017 04:05:31 PM CST */
 
+#include "token.h"
+
 #include <iostream>
 #include <string>
 #include <map>
 #include <cctype>
 
-#include "token.h"
 #include "error.h"
 
 const std::map<std::string, int> token_dict {

@@ -1,8 +1,8 @@
 /* author: dongchangzhang */
 /* time: Thu 09 Mar 2017 10:42:31 AM CST */
 
-#ifndef __UTILS_H__
-#define __UTILS_H__
+#ifndef INCLUDE_UTILS_H
+#define INCLUDE_UTILS_H
 
 #include <string>
 

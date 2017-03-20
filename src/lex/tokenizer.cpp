@@ -3,15 +3,16 @@
 
 
 #include "tokenizer.h"
-#include "symboltable.h"
-#include "token.h"
-#include "error.h"
 
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cctype>
+
+#include "symboltable.h"
+#include "token.h"
+#include "error.h"
 
 /* skip space char */
 void Tokenizer::skip_ws() {

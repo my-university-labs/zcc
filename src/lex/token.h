@@ -1,8 +1,8 @@
 /* author: dongchangzhang */
 /* time: Wed 08 Mar 2017 03:35:41 PM CST */
 
-#ifndef __TOKEN_H__
-#define __TOKEN_H__
+#ifndef SRC_LEX_TOKEN_H
+#define SRC_LEX_TOKEN_H
 
 // id
 #define ID 0
