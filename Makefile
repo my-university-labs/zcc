@@ -4,7 +4,7 @@ OBJ_DIR = build
 
 TARGET = test/zcc
 
-OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o
+OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammerdealer.o
 
 OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
@@ -23,7 +23,7 @@ prepare:
 	@-mkdir -p test
 	@-mkdir -p build
 
-$(OBJ_DIR)/main.o: src/main.cpp utils.h error.h token.h tokenizer.h
+$(OBJ_DIR)/main.o: src/main.cpp utils.h error.h token.h tokenizer.h grammerdealer.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp tokenizer.h symboltable.h token.h error.h
@@ -39,6 +39,9 @@ $(OBJ_DIR)/symboltable.o:src/plugin/symboltable.cpp symboltable.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/error.o:src/utils/error.cpp error.h
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/grammerdealer.o:src/plugin/grammerdealer.cpp grammerdealer.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: push

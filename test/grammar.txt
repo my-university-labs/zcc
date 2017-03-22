@@ -1,0 +1,25 @@
+>  program  out_declare | out_define
+>  out_declare function_declare
+>  out_define  value_define | function_define | array_define
+>  function_declare  decorate data_type identity ( args_list ) ;
+>  value_define  decorate data_type identity_list ;
+>  function_define  decorate data_type identity ( args_list ) { function_content }
+>  array_define  decorate data_type identity [ unsigned_nu ] Z
+>  Z ; | = { value_list } ;
+>  value_list  value | value, value_list
+>  decorate  static | const 
+>  data_type  int | float | double | char
+>  args_list  decorate data_type identity A
+>  A  null | , args_list
+>  identity_list  decorate data_type identity = expression B
+>  B  ; | , identity = expression B
+>  function_content  statements
+>  expression  expression + expression | ( expression ) | expression * expression | expression / expression | expression || expression | expression && expression
+>  statements  if_statement | while_statement | do_while_statement | for_statement | switch_statement | sentence
+>  if_statement  if ( expression ) block C
+>  C  else if ( expression ) block C | else block
+>  block  sentence | { D }
+>  D  sentence | sentence D
+>  sentence  expression ; | identity operator expression ; 
+>  operator  = | += | *= | /= %=
+

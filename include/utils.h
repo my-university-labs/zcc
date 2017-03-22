@@ -5,6 +5,7 @@
 #define INCLUDE_UTILS_H
 
 #include <string>
+#include <vector>
 
 struct Token {
     int token;
@@ -17,6 +18,15 @@ struct Token {
     std::string get_attr() { return value; }
     void put_token(int t) { token = t; }
     void put_attr(std::string &v) { value = v; }
+};
+
+struct SGrammer {
+    SGrammer();
+
+    int dot_cursor;
+    std::string parent;
+    std::vector<std::string> elements;
+
 };
 
 #endif

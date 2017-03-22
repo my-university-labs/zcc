@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "error.h"
 #include "token.h"
+#include "grammerdealer.h"
 
 #include <algorithm>
 #include <iostream>
@@ -12,15 +13,25 @@
 #include <vector>
 #include <string>
 
+void test_lex(std::string file);
 
 int main(int argc, char* argv[])
 {
-    if (argc == 1) {
-       print_error(-1, -1,  NONE_INPUT); 
-       return 1;
-    }
+    // if (argc == 1) {
+    //    print_error(-1, -1,  NONE_INPUT);
+    //    return 1;
+    // }
+    // test_lex(argv[1]);
+    std::string name = "grammar.txt";
+    std::cout << name << std::endl;
+    GrammerDealer dealer(name);
+    dealer.load_grammer();
     
-    Tokenizer a(argv[1]);
+    return 0;
+}
+
+void test_lex(std::string file) {
+    Tokenizer a(file);
 
     int i = 0;
     while (!a.isend()) {
@@ -34,5 +45,5 @@ int main(int argc, char* argv[])
         ++i;
 
     }}
-    return 0;
+
 }
