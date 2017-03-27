@@ -4,7 +4,7 @@
 #ifndef SRC_PLUGIN_GRAMMERDEALER_H
 #define SRC_PLUGIN_GRAMMERDEALER_H
 
-#include "utils.h"
+#include "grammar.h"
 
 #include <map>
 #include <fstream>
@@ -23,10 +23,11 @@ class GrammerDealer {
         void print_grammer(std::string out_file="grammer_output.txt");
 
     private:
+
         std::string file;
         std::ifstream in;
         // save grammers
-        std::map<std::string, std::vector<SGrammer>> grammers;
+        Grammar grammar;
 
 };
 #endif /* ifndef SSRC_PLUGIN_GRAMMERDEALER_H */

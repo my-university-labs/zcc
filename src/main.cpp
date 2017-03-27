@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "error.h"
 #include "token.h"
-#include "grammerdealer.h"
+#include "grammar_dealer.h"
 
 #include <algorithm>
 #include <iostream>
