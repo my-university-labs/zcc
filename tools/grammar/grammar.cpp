@@ -4,18 +4,29 @@
 #include "grammar.h"
 
 #include <iostream>
+#include <sstream>
 #include <map>
 #include <vector>
 #include <string>
 
 
-void Grammar::insert(std::string &key, Element &element) {
-    if (grammar.find(key) != grammar.end()) grammar[key].push_back(element);
-    else { std::vector<Element> tmp{element}; grammar[key] = tmp;}
+void Grammar::insert(std::string &key, std::string &comment) {
+    std::string element;
+    std::vector<std::string>> tmp;
+    std::istringstream in(comment);
+    while (in >> element) {
+        tmp.push_back(element);
+    }
+    if (grammar.find(key) != grammar.end()) {
+        grammar[key].push_back(tmp);
+    }
+    else { 
+        std::vector<std::vector<std::string>> vtmp{tmp}; grammar[key] = vtmp;
+    }
 }
 
 
-std::vector<Element> Grammar::get_elements(std::string &key) {
+std::vector<Element> Grammar::get_content(std::string &key) {
     if (grammar.find(key) != grammar.end()) return grammar[key];
     return std::vector<Element> ();
 }

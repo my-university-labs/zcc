@@ -68,7 +68,7 @@
 
 #include <string>
 #include <map>
-
+#include <vector>
 
 extern const std::map<std::string, int> token_dict;
 
@@ -77,5 +77,18 @@ bool issymbol(char X);
 std::string get_token_info(const int id);
 
 int get_code(const std::string &target);
+
+struct Token {
+    int token;
+    std::string value;
+
+    Token() : token(-1), value("") {}
+    Token(int t) : token(t), value("") {}
+    Token(int t, std::string v) : token(t), value(v) {}
+    int get_token() { return token; }
+    std::string get_attr() { return value; }
+    void put_token(int t) { token = t; }
+    void put_attr(std::string &v) { value = v; }
+};
 
 #endif

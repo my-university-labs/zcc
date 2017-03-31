@@ -5,7 +5,7 @@
 #define SRC_TOKENIZER_H
 
 /* Token defined in this file */
-#include "utils.h"
+#include "token.h"
 
 #include <fstream>
 #include <string>

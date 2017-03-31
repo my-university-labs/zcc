@@ -2,10 +2,8 @@
 /* time: Fri 03 Mar 2017 12:42:23 PM CST */
 
 #include "tokenizer.h"
-#include "utils.h"
 #include "error.h"
 #include "token.h"
-#include "grammar_dealer.h"
 
 #include <algorithm>
 #include <iostream>
@@ -17,16 +15,12 @@ void test_lex(std::string file);
 
 int main(int argc, char* argv[])
 {
-    // if (argc == 1) {
-    //    print_error(-1, -1,  NONE_INPUT);
-    //    return 1;
-    // }
-    // test_lex(argv[1]);
-    std::string name = "grammar.txt";
-    std::cout << name << std::endl;
-    GrammerDealer dealer(name);
-    dealer.load_grammer();
-    
+    if (argc == 1) {
+       print_error(-1, -1,  NONE_INPUT);
+       return 1;
+    }
+    test_lex(argv[1]);
+
     return 0;
 }
 

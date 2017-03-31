@@ -2,15 +2,15 @@ VPATH = ./include:./src:src/lex:./src/parser:./src/plugin:./src/plugin/grammar:.
 
 OBJ_DIR = build
 
-TARGET = test/zcc
+TARGET = bin/zcc
 
-OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar_dealer.o element.o grammar.o
+OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o
 
 OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
 CC = g++
 
-INCLUDE = -Iinclude -Isrc/lex/ -Isrc/parser -Isrc/plugin -Isrc/plugin/grammar -Isrc/plugin/table -Isrc/utils
+INCLUDE = -Iinclude
 
 CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 
@@ -20,10 +20,10 @@ $(TARGET): prepare $(OBJECTS)
 	$(CC) $(CPPFLAGS) -o $(TARGET) $(OBJECTS)
 
 prepare:
-	@-mkdir -p test
+	@-mkdir -p bin
 	@-mkdir -p build
 
-$(OBJ_DIR)/main.o: src/main.cpp utils.h error.h token.h tokenizer.h
+$(OBJ_DIR)/main.o: src/main.cpp error.h token.h tokenizer.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp tokenizer.h symboltable.h token.h error.h
@@ -41,16 +41,7 @@ $(OBJ_DIR)/symboltable.o:src/plugin/table/symboltable.cpp symboltable.h
 $(OBJ_DIR)/error.o:src/utils/error.cpp error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/grammar_dealer.o:src/plugin/grammar/grammar_dealer.cpp grammar_dealer.h element.h grammar.h
-	$(CC) $(CPPFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/element.o:src/plugin/grammar/element.cpp element.h
-	$(CC) $(CPPFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/grammar.o:src/plugin/grammar/grammar.cpp grammar.h
-	$(CC) $(CPPFLAGS) -c $< -o $@
-
 .PHONY: clean
 clean:
 	-rm -rf build/*.o
-	-rm -rf test/zcc
+	-rm -rf bin/zcc
