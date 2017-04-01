@@ -8,3 +8,14 @@
 #include<vector>
 #include<string>
 
+void Parser::run()
+{
+    Token token = tokenizer.next();
+    std::cout << token.get_token() << std::endl;
+    token = tokenizer.next();
+    std::cout << token.get_token() << std::endl;
+    token = tokenizer.next();
+    std::cout << token.get_token() << std::endl;
+    token = tokenizer.next();
+    std::cout << token.get_token() << std::endl;
+}

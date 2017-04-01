@@ -1,9 +1,8 @@
 /* author: dongchangzhang */
 /* time: Fri 03 Mar 2017 12:42:23 PM CST */
 
-#include "tokenizer.h"
+#include "parser.h"
 #include "error.h"
-#include "token.h"
 
 #include <algorithm>
 #include <iostream>
@@ -19,25 +18,9 @@ int main(int argc, char* argv[])
        print_error(-1, -1,  NONE_INPUT);
        return 1;
     }
-    test_lex(argv[1]);
+    Parser parser(argv[1]);
+    parser.run();
 
     return 0;
 }
 
-void test_lex(std::string file) {
-    Tokenizer a(file);
-
-    int i = 0;
-    while (!a.isend()) {
-        Token v = a.next();
-        if (v.get_token() != -1) {
-            std::string token = "<" + std::to_string(v.get_token()) + ", " + v.get_attr() + ">"; 
-        std::cout << "token   "<< std::setw(5) << i << "  at line  " <<  std::setw(5) 
-            <<  a.get_linenu() << "  is "<< std::setw(30)<< token << "    should be: ";
-        if (v.get_token() != ID && v.get_token() != VALUE) std::cout << get_token_info(v.get_token()) << std::endl;
-        else std::cout << v.get_attr() << std::endl;
-        ++i;
-
-    }}
-
-}

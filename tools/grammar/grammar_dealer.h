@@ -23,6 +23,8 @@ class GrammerDealer {
         void print_grammer(std::string out_file="grammer_output.txt");
 
     private:
+        void closere();
+        void go();
 
         std::string file;
         std::ifstream in;
