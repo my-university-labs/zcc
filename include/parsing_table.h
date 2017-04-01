@@ -8,7 +8,7 @@
 
 class ParsingTable {
     public:
-        ParsingTable(std::string tablef);
+        ParsingTable(std::string tablef) {}
     private:
         // wait
 };

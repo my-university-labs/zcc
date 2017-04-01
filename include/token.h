@@ -78,17 +78,52 @@ std::string get_token_info(const int id);
 
 int get_code(const std::string &target);
 
-struct Token {
-    int token;
-    std::string value;
+class Token {
+    public:
+        // null token
+        Token() : token(-1), value(""), is_state(false), is_null(true) {}
+        // value token && key world && id
+        Token(int t, std::string v) : token(t), value(v), is_state(false), is_null(false) {}
+        // state token
+        Token(std::string state) : token(-1), value(state), is_state(true), is_null(false) {}
 
-    Token() : token(-1), value("") {}
-    Token(int t) : token(t), value("") {}
-    Token(int t, std::string v) : token(t), value(v) {}
-    int get_token() { return token; }
-    std::string get_attr() { return value; }
-    void put_token(int t) { token = t; }
-    void put_attr(std::string &v) { value = v; }
+        Token& operator=(const Token &t) {
+            this->token = t.token;
+            this->value = t.value;
+            this->is_state = t.is_state;
+            this->is_null = t.is_null;
+            return *this;
+        }
+        
+        bool operator<(const Token &t) const {
+            return (value < t.value);
+        }
+
+        bool operator>(const Token &t) const {
+            return (value > t.value);
+        }
+
+        bool operator==(const Token &t) const {
+            return value == t.value;
+        }
+        int get_token() const { return token; }
+
+        std::string get_attr() const { return value; }
+
+        std::string get_state() const { return value; }
+
+        bool is_null_token() const { return is_null; }
+
+        bool is_state_token() const { return is_state; }
+    private:
+        // token id
+        int token;
+        // token attr
+        std::string value;
+        // is state or not
+        bool is_state = false;
+        // a null token ?
+        bool is_null = false;
 };
 
 #endif

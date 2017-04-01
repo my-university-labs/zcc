@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 
 // error id
@@ -18,10 +19,13 @@
 #define BAD_START_CHAR    6
 #define LACK_SQUOTE    7
 #define LACK_DQUOTE    8
+#define NO_GRAMMAR    9
 
 // error message
-extern const std::vector<std::string> zerrormsg;
+extern const std::map<int, std::string> zerrormsg;
 // print error log
 void print_error(int linenu, int index, int id, std::string info="");
+
+void print_error(int id);
 
 #endif

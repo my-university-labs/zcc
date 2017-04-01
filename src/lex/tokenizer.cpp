@@ -102,7 +102,7 @@ void Tokenizer::deal_num(std::vector<char> &vtoken, bool &reidentify) {
     }
 }
 /* deal operator or separaters */
-void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify) {
+void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify, bool &is_value) {
     char nextch;
     char last = vtoken[0];
     bool have_two = (cursor + 1 < buffer_size && issymbol(buffer[cursor]));
@@ -162,6 +162,7 @@ void Tokenizer::deal_symbol(std::vector<char> &vtoken, bool &reidentify) {
     case '\'':
         ++cursor;
         vtoken.clear();
+        is_value = true;
         /* char '' */
         if (nextch == '\'') return;
         else {
@@ -184,12 +185,10 @@ void Tokenizer::deal_error(int error_type, bool &reidentify) {
     print_error(linenu, cursor, error_type, buffer);
 }
 
-void iswhat(std::string &stoken) {
-}
 Token Tokenizer::next() {
     char ch;
     int rtype = 0;
-    Token token;
+    bool is_value = false;
     bool reidentify = false;
     check_buffer();
     if (buffer_size == 0) return token;
@@ -208,7 +207,7 @@ Token Tokenizer::next() {
     }
     else if(issymbol(ch)){
         /* symbol such as: +-*/
-        deal_symbol(vtoken, reidentify);
+        deal_symbol(vtoken, reidentify, is_value);
         if (!reidentify) rtype = 3;
     }
     else {
@@ -216,6 +215,7 @@ Token Tokenizer::next() {
         deal_error(BAD_START_CHAR, reidentify);
     }
     if (finished) {
+        Token token;
         return token;
     }
     else if (reidentify) {
@@ -229,21 +229,26 @@ Token Tokenizer::next() {
         std::cout << "# LOG-> " << stoken << std::endl;
 #endif
         if (rtype == 1 || rtype == 3) { 
-            if (stoken == "") {
-                token.put_token(VALUE);
-                token.put_attr(stoken);
+            // is char
+            if (is_value) {
+                Token(VALUE, stoken);
                 return token;
             }
+            // operator separator or key word
             int code = get_code(stoken);
-            token.put_token(code);
-            if (code == ID) {
-                std::string addr = install_id(stoken);
-                token.put_attr(addr);
-            }
+            Token token(code, stoken);
+            return token;
         }
-        else if (rtype == 2) { token.put_token(VALUE); token.put_attr(stoken);}
-
-        return token;
+        // is value
+        else if (rtype == 2) { 
+            Token token(VALUE, stoken);
+            return token;
+        }
+        else {
+            // no use now
+            Token token;
+            return token;
+        }
     }
 }
 

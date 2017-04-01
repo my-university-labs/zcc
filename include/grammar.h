@@ -6,15 +6,31 @@
 
 #include "token.h"
 #include <string>
+#include <vector>
+#include <map>
 
 class Grammar {
     public:
         // input a grammar file
+        // the grammar file format is:
+        // -> start symbol
+        //  production1
+        //  production2
+        //  ...
+        // -> start symbol2
+        //  production1
+        //  production2
+        //  ...
         Grammar(std::string grammarf);
+
+        std::vector<Token> get_production(std::string &which, size_t id) const;
+
+        void check_grammar();
     private:
-        void load_grammar();
-        // how to save grammar
+        std::string start_state;
 
-
+        // grammar saver
+        // key -> [production1, production2 ...]
+        std::map<Token, std::vector<std::vector<Token>>> grammar;
 };
 #endif

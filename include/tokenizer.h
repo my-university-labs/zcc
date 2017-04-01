@@ -61,7 +61,7 @@ class Tokenizer {
 
         void deal_num(std::vector<char> &vtoken, bool &reidentify);
 
-        void deal_symbol(std::vector<char> &vtoken, bool &reidentify);
+        void deal_symbol(std::vector<char> &vtoken, bool &reidentify, bool &is_value);
 
         void deal_error(int error_type, bool &reidentify);
 
