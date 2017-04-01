@@ -1,4 +1,5 @@
-VPATH = ./include:./src:src/lex:./src/parser:./src/plugin:./src/plugin/grammar:./src/plugin/table:./src/utils
+VPATH = ./include:./include/tools/grammar/:./tools/grammar/:./src:src/lex \ 
+:./src/parser:./src/plugin:./src/plugin/grammar:./src/plugin/table:./src/utils
 
 OBJ_DIR = build
 
@@ -6,9 +7,9 @@ TARGET = bin/zcc
 
 TOOL = bin/grammar_tool
 
-OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar.o parsing_table.o item.o
+OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar.o parsing_table.o
 
-OBJFS_GRAMMAR = grammar_tool.o token.o error.o grammar.o parsing_table.o item.o
+OBJFS_GRAMMAR = grammar_tool.o token.o error.o grammar.o parsing_table.o item.o status.o dfa.o
 
 OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
@@ -16,7 +17,7 @@ OBJECTS_GRAMMAR = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS_GRAMMAR))
 
 CC = g++
 
-INCLUDE = -Iinclude
+INCLUDE = -Iinclude -Iinclude/tools/grammar
 
 CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 
@@ -61,7 +62,13 @@ $(OBJ_DIR)/grammar.o:src/parser/grammar.cpp grammar.h error.h token.h
 $(OBJ_DIR)/parsing_table.o:src/parser/parsing_table.cpp parsing_table.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/item.o: src/parser/item.cpp item.h
+$(OBJ_DIR)/item.o: tools/grammar/item.cpp item.h
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/status.o: tools/grammar/status.cpp status.h item.h
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean
