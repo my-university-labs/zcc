@@ -86,6 +86,7 @@ class Token {
         Token(int t, std::string v) : token(t), value(v), is_state(false), is_null(false) {}
         // state token
         Token(std::string state) : token(-1), value(state), is_state(true), is_null(false) {}
+        Token(int t) : Token(t, "") {}
 
         Token& operator=(const Token &t) {
             this->token = t.token;
@@ -105,6 +106,13 @@ class Token {
 
         bool operator==(const Token &t) const {
             return value == t.value;
+        }
+
+        bool operator==(const int i) const {
+            return token == i;
+        }
+        bool operator==(const std::string &s) const {
+            return value == s;
         }
         int get_token() const { return token; }
 

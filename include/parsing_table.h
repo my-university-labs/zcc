@@ -7,9 +7,9 @@
 #include <string>
 
 class ParsingTable {
-    public:
-        ParsingTable(std::string tablef) {}
-    private:
-        // wait
+public:
+    ParsingTable(std::string tablef) {}
+private:
+    // wait
 };
 #endif

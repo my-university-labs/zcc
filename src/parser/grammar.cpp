@@ -81,7 +81,7 @@ void Grammar::check_grammar()
     }
 }
 
-std::vector<Token> Grammar::get_production(std::string &which, size_t id) const {
+std::vector<Token> Grammar::get_production(const std::string &which, size_t id) const {
     Token parent(which);
     std::cout << grammar.at(parent).size() << std::endl;
     if (grammar.find(parent) != grammar.end() && grammar.at(parent).size() > id) {

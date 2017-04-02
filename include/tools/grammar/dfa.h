@@ -9,11 +9,32 @@
 #include <map>
 #include <vector>
 
-Class DFA {
-    public:
-        DFA();
-    private:
-        std::vector<Status> graph;
-        std::map<size_t, std::map<Token, size_t>> relation;
+#define ERROR 9999999
+
+class DFA {
+public:
+    DFA(Status &status);
+
+    // status1 -token-> status2
+    size_t add_status(Status &status1, Token &token, Status &status2);
+
+    size_t add_status(size_t status1, Token &token, Status &status2);
+
+    Status get_status(size_t id) const;
+
+    template<typename T>
+    size_t go(const size_t id, const T &t) const;
+
+
+private:
+    size_t start_status;
+    // save every status of dfa 
+    std::vector<Status> dstatus;
+    // save every transfer token 
+    std::vector<Token> dtokens;
+    // the relation between status and token
+    // : map<status_id1, map< token_id, status_id2>>
+    // : status1 -token-> status2
+    std::map<size_t, std::map<size_t, size_t>> relation;
 };
 #endif

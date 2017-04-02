@@ -1,6 +1,12 @@
 /* author: dongchangzhang */
 /* time: Sat 01 Apr 2017 10:54:34 PM CST */
-int main()
+
+#include "grammar_tool.h"
+#include <iostream>
+
+Status GrammarDealer::closure(Item &item)
 {
-    return 0;
+
+    Status s;
+    return s;
 }
