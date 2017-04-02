@@ -8,8 +8,11 @@
 #include "item.h"
 #include "status.h"
 #include "grammar.h"
+
 #include <string>
 #include <vector>
+#include <map>
+
 
 class GrammarDealer {
 public:
@@ -21,11 +24,12 @@ public:
 private:
     Status closure(Item &item);
 
-    Status go();
+    Status go(size_t status, Token &token);
     
     std::vector<int> first(const std::vector<Token> &left);
 
     Grammar grammar;
 
+    std::map<std::vector<Token>, std::vector<int>> first_saver;
 };
 #endif

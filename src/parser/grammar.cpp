@@ -37,6 +37,11 @@ Grammar::Grammar(std::string grammarf)
                 else if (start == "value") {
                     // value
                     Token token(VALUE, start);
+                    ptmp.push_back(token);
+                }
+                else if (start == "null") {
+                    Token token();
+                    ptmp.push_back(token);
                 }
                 else if ((code = get_code(start)) != ID) {
                     // key word, separator or operator
@@ -93,3 +98,18 @@ std::vector<Token> Grammar::get_production(const std::string &which, size_t id) 
         return tmp;
     }
 }
+
+
+std::vector<std::vector<Token>> Grammar::get_production(const Token &token) const {
+
+    if (grammar.find(token) != grammar.end) {
+        return grammar.at(token);
+    }
+    else {
+        std::cout << "not find" << std::endl;
+        std::vector<std::vector<Token>> tmp;
+        return tmp;
+    }
+}
+
+

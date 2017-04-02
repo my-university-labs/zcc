@@ -5,6 +5,7 @@
 #define SRC_PARSER_GRAMMAR_H
 
 #include "token.h"
+
 #include <string>
 #include <vector>
 #include <map>
@@ -24,6 +25,8 @@ public:
     Grammar(std::string grammarf);
 
     std::vector<Token> get_production(const std::string &which, size_t id) const;
+
+    std::vector<Token> get_production(const Token &token) const;
 
     void check_grammar();
 

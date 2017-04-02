@@ -60,7 +60,7 @@ $(OBJ_DIR)/error.o:src/utils/error.cpp error.h
 $(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp grammar_tool.h error.h item.h grammar.h token.h status.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp grammar_tool.h item.h status.h
+$(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp grammar_tool.h item.h status.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h token.h

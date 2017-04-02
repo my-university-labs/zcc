@@ -81,7 +81,7 @@ int get_code(const std::string &target);
 class Token {
     public:
         // null token
-        Token() : token(-1), value(""), is_state(false), is_null(true) {}
+        Token() : token(-1), value("null"), is_state(false), is_null(true) {}
         // value token && key world && id
         Token(int t, std::string v) : token(t), value(v), is_state(false), is_null(false) {}
         // state token
