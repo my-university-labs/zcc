@@ -1,0 +1,14 @@
+-> E
+    T E'
+-> E'
+    + T E'
+    null
+-> T
+    F T'
+-> T'
+    * F T'
+    null
+-> F
+    ( E )
+    identity
+

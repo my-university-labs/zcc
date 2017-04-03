@@ -13,6 +13,9 @@ int main(int argc, char* argv[])
     }
 
     GrammarDealer dealer(argv[1]);
+    std::string X;
+    while (std::cin >> X)
+        dealer.test_firstX(X);
 
     return 0;
 }

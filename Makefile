@@ -7,9 +7,11 @@ TARGET = bin/zcc
 # use it to deal grammar
 TOOL = bin/grammar_tool
 
-OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar.o parsing_table.o
+OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o \
+	grammar.o parsing_table.o
 
-OBJFS_GRAMMAR = grammar_main.o grammar_tool.o token.o error.o grammar.o parsing_table.o item.o status.o dfa.o
+OBJFS_GRAMMAR = grammar_main.o grammar_tool.o token.o error.o grammar.o \
+	parsing_table.o item.o status.o dfa.o
 
 OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
@@ -40,7 +42,8 @@ $(OBJ_DIR)/main.o: src/main.cpp error.h token.h tokenizer.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 
-$(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp tokenizer.h symboltable.h token.h error.h
+$(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp tokenizer.h symboltable.h \
+	token.h error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/token.o:src/lex/token.cpp token.h
@@ -57,10 +60,12 @@ $(OBJ_DIR)/error.o:src/utils/error.cpp error.h
 
 
 # grammar tool
-$(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp grammar_tool.h error.h item.h grammar.h token.h status.h
+$(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp grammar_tool.h \
+	error.h item.h grammar.h token.h status.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp grammar_tool.h item.h status.h unstd.h
+$(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp grammar_tool.h \
+	item.h status.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h token.h

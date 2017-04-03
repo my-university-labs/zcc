@@ -10,7 +10,9 @@
 
 #include "grammar.h"
 #include "token.h"
+#include "unstd.h"
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -40,12 +42,15 @@ public:
 
     bool operator==(const Item& item) const
     {
-        return (which == item.which && index == item.index);
+        return (which == item.which && index == item.index
+            && end_symbol == item.end_symbol);
     }
 
     inline bool move_decimal();
 
     inline bool is_end() const { return had_end; }
+
+    int get_end_symbols() const { return end_symbol; }
 
     inline Token after_decimal(Grammar& grammar) const;
 
@@ -66,7 +71,7 @@ private:
     size_t decimal_location;
 
     /* end symbols id */
-    int end_symbol;
+    int end_symbol = END_STATE;
 
     bool had_end = false;
 };

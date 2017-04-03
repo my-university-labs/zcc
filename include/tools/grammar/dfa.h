@@ -6,10 +6,9 @@
 #include "item.h"
 #include "status.h"
 #include "token.h"
+#include "unstd.h"
 #include <map>
 #include <vector>
-
-#define ERROR 9999999
 
 class DFA {
 public:

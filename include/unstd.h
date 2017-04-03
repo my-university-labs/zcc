@@ -4,6 +4,7 @@
 #define INCLUDE_UNSTD_H
 
 #define NULL_STATE -1
+#define END_STATE -3
 #define ERROR 99999999
 
 #endif

@@ -26,7 +26,7 @@ public:
 
     std::vector<Token> get_production(const std::string& which, size_t id) const;
 
-    std::vector<Token> get_production(const Token& token) const;
+    std::vector<std::vector<Token> > get_production(const Token& token) const;
 
     void check_grammar();
 
