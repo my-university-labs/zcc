@@ -6,6 +6,6 @@
 
 #include <string>
 
-std::string install_id(const std::string &id);
+std::string install_id(const std::string& id);
 
 #endif

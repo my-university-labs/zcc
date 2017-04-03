@@ -3,11 +3,12 @@
 
 #include "symboltable.h"
 
-#include<algorithm>
-#include<iostream>
-#include<vector>
-#include<string>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
 
-std::string install_id(const std::string& id) {
+std::string install_id(const std::string& id)
+{
     return id;
 }

@@ -3,7 +3,7 @@
 
 #include "element.h"
 
-Element::Element(const std::string &w, const std::string &c)
+Element::Element(const std::string& w, const std::string& c)
 {
     Token wtoken();
     Token ctoken();

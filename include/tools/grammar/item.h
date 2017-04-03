@@ -1,10 +1,10 @@
 /* author: dongchangzhang */
 /* time: Thu 30 Mar 2017 11:32:53 PM CST */
 
-
-// when deal grammar files (productions) and use grammar to make closure and go function ,
+// when deal grammar files (productions) and use grammar to make closure and go
+// function ,
 // this class used to save the item of every production
- 
+
 #ifndef SRC_PLUGIN_GRAMMAR_H
 #define SRC_PLUGIN_GRAMMAR_H
 
@@ -16,12 +16,21 @@
 
 class Item {
 public:
-    Item(std::string &w, size_t i, size_t p, bool special) :
-        which(w), index(i), production_size(p), is_special(special) {}
+    Item(std::string& w, size_t i, size_t p, bool special)
+        : which(w)
+        , index(i)
+        , production_size(p)
+        , is_special(special)
+    {
+    }
 
-    Item(std::string &w, size_t i, size_t p) : Item(w, i, p, false) {}
+    Item(std::string& w, size_t i, size_t p)
+        : Item(w, i, p, false)
+    {
+    }
 
-    Item& operator=(const Item &item) {
+    Item& operator=(const Item& item)
+    {
         which = item.which;
         index = item.index;
         decimal_location = item.decimal_location;
@@ -29,7 +38,8 @@ public:
         return *this;
     }
 
-    bool operator==(const Item &item) const {
+    bool operator==(const Item& item) const
+    {
         return (which == item.which && index == item.index);
     }
 
@@ -37,11 +47,12 @@ public:
 
     inline bool is_end() const { return had_end; }
 
-    inline Token after_decimal(Grammar &grammar) const;
+    inline Token after_decimal(Grammar& grammar) const;
 
-    inline std::vector<Token> for_first(Grammar &grammar);
+    inline std::vector<Token> for_first(Grammar& grammar);
 
-    inline bool next_is_state(Grammar &grammar);
+    inline bool next_is_state(Grammar& grammar);
+
 private:
     /* which production */
     std::string which;
@@ -60,27 +71,25 @@ private:
     bool had_end = false;
 };
 
-
-
-bool Item::move_decimal() {
-   if (decimal_location < production_size) {
-       ++decimal_location;
-       return true;
-   }
-   else if (decimal_location == production_size) { 
-       ++decimal_location; 
-       had_end = false;
-   }
-   else return false;
+bool Item::move_decimal()
+{
+    if (decimal_location < production_size) {
+        ++decimal_location;
+        return true;
+    } else if (decimal_location == production_size) {
+        ++decimal_location;
+        had_end = false;
+    } else
+        return false;
 }
 
-Token Item::after_decimal(Grammar &grammar) const
-{ 
+Token Item::after_decimal(Grammar& grammar) const
+{
     std::vector<Token> p = grammar.get_production(which, index);
     return p.at(decimal_location);
 }
 
-std::vector<Token> Item::for_first(Grammar &grammar)
+std::vector<Token> Item::for_first(Grammar& grammar)
 {
     std::vector<Token> p = grammar.get_production(which, index);
     std::vector<Token> r;
@@ -92,11 +101,13 @@ std::vector<Token> Item::for_first(Grammar &grammar)
     return r;
 }
 
-bool Item::next_is_state(Grammar &grammar)
+bool Item::next_is_state(Grammar& grammar)
 {
     Token token = after_decimal(grammar);
-    if (token.is_state_token()) return true;
-    else return false;
+    if (token.is_state_token())
+        return true;
+    else
+        return false;
 }
 
 #endif

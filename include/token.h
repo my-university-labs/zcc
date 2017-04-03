@@ -8,12 +8,12 @@
 #define ID 0
 
 // key words
-#define INT 1   // int
+#define INT 1 // int
 #define FLOAT 2 // float
 #define DOUBLE 3 // double
 #define LONG 4 // long
 #define SHORT 5 // short
-#define SWITCH 6 //switch
+#define SWITCH 6 // switch
 #define CASE 7 // case
 #define DEFAULT 8 // default
 #define BREAK 9 // break
@@ -66,8 +66,8 @@
 
 #define VALUE 100
 
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 
 extern const std::map<std::string, int> token_dict;
@@ -76,62 +76,77 @@ bool issymbol(char X);
 
 std::string get_token_info(const int id);
 
-int get_code(const std::string &target);
+int get_code(const std::string& target);
 
 class Token {
-    public:
-        // null token
-        Token() : token(-1), value("null"), is_state(false), is_null(true) {}
-        // value token && key world && id
-        Token(int t, std::string v) : token(t), value(v), is_state(false), is_null(false) {}
-        // state token
-        Token(std::string state) : token(-1), value(state), is_state(true), is_null(false) {}
-        Token(int t) : Token(t, "") {}
+public:
+    // null token
+    Token()
+        : token(-1)
+        , value("null")
+        , is_state(false)
+        , is_null(true)
+    {
+    }
+    // value token && key world && id
+    Token(int t, std::string v)
+        : token(t)
+        , value(v)
+        , is_state(false)
+        , is_null(false)
+    {
+    }
+    // state token
+    Token(std::string state)
+        : token(-1)
+        , value(state)
+        , is_state(true)
+        , is_null(false)
+    {
+    }
+    Token(int t)
+        : Token(t, "")
+    {
+    }
 
-        Token& operator=(const Token &t) {
-            this->token = t.token;
-            this->value = t.value;
-            this->is_state = t.is_state;
-            this->is_null = t.is_null;
-            return *this;
-        }
-        
-        bool operator<(const Token &t) const {
-            return (value < t.value);
-        }
+    Token& operator=(const Token& t)
+    {
+        this->token = t.token;
+        this->value = t.value;
+        this->is_state = t.is_state;
+        this->is_null = t.is_null;
+        return *this;
+    }
 
-        bool operator>(const Token &t) const {
-            return (value > t.value);
-        }
+    bool operator<(const Token& t) const { return (value < t.value); }
 
-        bool operator==(const Token &t) const {
-            return value == t.value;
-        }
+    bool operator>(const Token& t) const { return (value > t.value); }
 
-        bool operator==(const int i) const {
-            return token == i;
-        }
-        bool operator==(const std::string &s) const {
-            return value == s;
-        }
-        int get_token() const { return token; }
+    bool operator==(const Token& t) const { return value == t.value; }
 
-        std::string get_attr() const { return value; }
+    bool operator==(const int i) const { return token == i; }
 
-        std::string get_state() const { return value; }
+    bool operator==(const std::string& s) const { return value == s; }
 
-        bool is_null_token() const { return is_null; }
+    int get_token() const { return token; }
 
-        bool is_state_token() const { return is_state; }
-    private:
-        // token id
-        int token;
-        // token attr
-        std::string value;
-        // is state or not
-        bool is_state = false;
-        // a null token ?
-        bool is_null = false;
+    std::string get_attr() const { return value; }
+
+    std::string get_state() const { return value; }
+
+    bool is_null_token() const { return is_null; }
+
+    bool is_state_token() const { return is_state; }
+
+private:
+    // token id
+    int token;
+    // token attr
+    std::string value;
+    // is state or not
+    bool is_state = false;
+    // a null token ?
+    bool is_null = false;
 };
 
 #endif

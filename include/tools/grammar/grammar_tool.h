@@ -4,32 +4,34 @@
 #ifndef TOOLS_GRAMMAR_TOOL_H
 #define TOOLS_GRAMMAR_TOOL_H
 
-#include "token.h"
+#include "grammar.h"
 #include "item.h"
 #include "status.h"
-#include "grammar.h"
+#include "token.h"
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-
 
 class GrammarDealer {
 public:
-    GrammarDealer(std::string grammarf): grammar(grammarf) { grammar.check_grammar(); }
-
+    GrammarDealer(std::string grammarf)
+        : grammar(grammarf)
+    {
+        grammar.check_grammar();
+    }
 
     void run();
-    
-private:
-    Status closure(Item &item);
 
-    Status go(size_t status, Token &token);
-    
-    std::vector<int> first(const std::vector<Token> &left);
+private:
+    Status closure(Item& item);
+
+    Status go(size_t status, Token& token);
+
+    std::vector<int> first(const std::vector<Token>& left);
 
     Grammar grammar;
 
-    std::map<std::vector<Token>, std::vector<int>> first_saver;
+    std::map<std::vector<Token>, std::vector<int> > first_saver;
 };
 #endif

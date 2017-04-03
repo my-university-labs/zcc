@@ -12,11 +12,11 @@
 #include <vector>
 
 class Element {
-    public:
-        Element(const std::string &w, const std::string &c);
-    private:
-        Token which;
-        std::vector<Token> content; 
+public:
+    Element(const std::string& w, const std::string& c);
 
+private:
+    Token which;
+    std::vector<Token> content;
 };
 #endif /* ifndef SSRC_PARSER_ELEMENT_H */

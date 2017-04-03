@@ -4,27 +4,37 @@
 #include "dfa.h"
 #include <iostream>
 
-DFA::DFA(Status &status) 
+DFA::DFA(Status& status)
 {
     dstatus.clear();
     dstatus.push_back(status);
     start_status = 0;
 }
 
-size_t DFA::add_status(Status &status1, Token &token, Status &status2)
+size_t DFA::add_status(Status& status1, Token& token, Status& status2)
 {
     size_t start = 0, end = 0, tloc = 0;
     bool find_s = false, find_e = false, find_t = false;
     for (size_t i = 0; i < dstatus.size(); ++i) {
-        if (dstatus[i] == status1) { find_s = true; start = i; }
-        if (dstatus[i] == status2) { find_e = true; end = i; }
+        if (dstatus[i] == status1) {
+            find_s = true;
+            start = i;
+        }
+        if (dstatus[i] == status2) {
+            find_e = true;
+            end = i;
+        }
     }
     if (!find_s) {
         // deal error
         ;
     }
     for (size_t i = 0; i < dtokens.size(); ++i) {
-        if (dtokens[i] == token) { find_t = true; tloc = i; break; }
+        if (dtokens[i] == token) {
+            find_t = true;
+            tloc = i;
+            break;
+        }
     }
     if (!find_t) {
         dtokens.push_back(token);
@@ -36,22 +46,21 @@ size_t DFA::add_status(Status &status1, Token &token, Status &status2)
     }
     // deal relation
     if (relation.find(start) == relation.end()) {
-        std::map<size_t, size_t> tmp{{tloc, end}, };
+        std::map<size_t, size_t> tmp{
+            { tloc, end },
+        };
         relation[start] = tmp;
         return end;
-    }
-    else if (relation[start].find(tloc) != relation[start].end()) {
+    } else if (relation[start].find(tloc) != relation[start].end()) {
         relation[start][tloc] = end;
         return end;
-    }
-    else {
+    } else {
         dstatus[relation[start][tloc]] += status2;
         return relation[start][tloc];
     }
 }
 
-
-size_t DFA::add_status(size_t status1, Token &token, Status &status2)
+size_t DFA::add_status(size_t status1, Token& token, Status& status2)
 {
     if (status1 < dstatus.size())
         return add_status(dstatus[status1], token, status2);
@@ -61,7 +70,7 @@ size_t DFA::add_status(size_t status1, Token &token, Status &status2)
     }
 }
 
-Status DFA::get_status(size_t id) const 
+Status DFA::get_status(size_t id) const
 {
     if (id < dstatus.size())
         return dstatus[id];
@@ -72,8 +81,8 @@ Status DFA::get_status(size_t id) const
     }
 }
 
-template<typename T>
-size_t DFA::go(const size_t id, const T &t) const
+template <typename T>
+size_t DFA::go(const size_t id, const T& t) const
 {
     size_t tloc;
     bool find_t = false;
@@ -84,13 +93,10 @@ size_t DFA::go(const size_t id, const T &t) const
             break;
         }
     }
-    if (relation.find(id) != relation.end() && 
-            relation.at(id).find(tloc) != relation.at(id).end()) {
+    if (relation.find(id) != relation.end() && relation.at(id).find(tloc) != relation.at(id).end()) {
         return relation.at(id).at(tloc);
-    }
-    else {
+    } else {
         // deal error
         return ERROR;
     }
 }
-

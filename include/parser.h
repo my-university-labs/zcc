@@ -5,20 +5,25 @@
 #define SRC_PARSER_PARSER_H
 
 #include "grammar.h"
+#include "parsing_table.h"
 #include "token.h"
 #include "tokenizer.h"
-#include "parsing_table.h"
 
 #include <stack>
 
 class Parser {
 public:
-    Parser(std::string sourcef, std::string grammarf, std::string tablef) 
-        : grammar(grammarf), ptable(tablef), tokenizer(sourcef) {}
+    Parser(std::string sourcef, std::string grammarf, std::string tablef)
+        : grammar(grammarf)
+        , ptable(tablef)
+        , tokenizer(sourcef)
+    {
+    }
     // run parser
     void run();
+
 private:
-    // grammar 
+    // grammar
     Grammar grammar;
     // parsing table
     ParsingTable ptable;
@@ -29,4 +34,3 @@ private:
 };
 
 #endif
-

@@ -1,12 +1,12 @@
 /* author: dongchangzhang */
 /* time: Sat 11 Mar 2017 11:24:09 PM CST */
-#include "token.h"
 #include "parser.h"
+#include "token.h"
 
-#include<algorithm>
-#include<iostream>
-#include<vector>
-#include<string>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
 
 void Parser::run()
 {
@@ -24,7 +24,7 @@ void Parser::run()
     std::string which = "function_declare";
     std::vector<Token> r = grammar.get_production(which, 0);
     for (auto t : r) {
-        std::cout << t.get_token() << " " << t.get_attr() << " | " ;
+        std::cout << t.get_token() << " " << t.get_attr() << " | ";
     }
     std::cout << std::endl;
 }

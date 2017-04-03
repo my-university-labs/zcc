@@ -1,8 +1,8 @@
-VPATH = ./include:./include/tools/grammar/:./tools/grammar/:./src:src/lex \ 
+VPATH = ./include:./include/tools/grammar/:./tools/grammar/:./src:src/lex \
 :./src/parser:./src/plugin:./src/plugin/grammar:./src/plugin/table:./src/utils
 
 OBJ_DIR = build
-# complier 
+# complier
 TARGET = bin/zcc
 # use it to deal grammar
 TOOL = bin/grammar_tool
