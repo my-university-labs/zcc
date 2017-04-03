@@ -12,6 +12,7 @@
 
 class DFA {
 public:
+    DFA() {}
     DFA(Status& status);
 
     // status1 -token-> status2

@@ -3,8 +3,8 @@
 #ifndef INCLUDE_UNSTD_H
 #define INCLUDE_UNSTD_H
 
-#define NULL_STATE -1
-#define END_STATE -3
+#define NULL_STATE -100
+#define END_STATE -101
 #define ERROR 99999999
 
 #endif

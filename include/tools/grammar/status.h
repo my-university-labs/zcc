@@ -7,34 +7,26 @@
 #define TOOLS_GRAMMAR_STATUS_H
 
 #include "item.h"
+
 #include <algorithm>
-#include <vector>
+#include <unordered_set>
 
 class Status {
 public:
     Status() {}
 
-    std::vector<Item> get_content() const { return content; }
+    std::unordered_set<Item> get_content() const { return content; }
 
-    void add_item(Item& item) { content.push_back(item); }
+    void add_item(Item& item);
 
-    Status& operator+=(const Status& status)
-    {
-        for (auto s : status.content) {
-            if (find(content.begin(), content.end(), s) == content.end()) {
-                content.push_back(s);
-            }
-        }
-        return *this;
-    }
+    Status& operator+=(const Status& status);
 
-    bool operator==(const Status& status) const
-    {
-        return content == status.content;
-    }
+    bool operator==(const Status& status) const;
+
+    inline size_t size() { return content.size(); }
 
 private:
-    std::vector<Item> content;
+    std::unordered_set<Item> content;
     // wait;
 };
 #endif

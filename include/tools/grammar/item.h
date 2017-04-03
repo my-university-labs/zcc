@@ -18,16 +18,17 @@
 
 class Item {
 public:
-    Item(std::string& w, size_t i, size_t p, bool special)
+    Item(const std::string& w, const size_t i, const int e, const size_t p, const bool special)
         : which(w)
         , index(i)
+        , end_symbol(e)
         , production_size(p)
+        , decimal_location(0)
         , is_special(special)
     {
     }
-
-    Item(std::string& w, size_t i, size_t p)
-        : Item(w, i, p, false)
+    Item(const std::string& w, const size_t i, const int e, const size_t p)
+        : Item(w, i, e, p, false)
     {
     }
 
@@ -50,7 +51,7 @@ public:
 
     inline bool is_end() const { return had_end; }
 
-    int get_end_symbols() const { return end_symbol; }
+    int get_end_symbol() const { return end_symbol; }
 
     inline Token after_decimal(Grammar& grammar) const;
 
@@ -58,20 +59,24 @@ public:
 
     inline bool next_is_state(Grammar& grammar);
 
+    inline std::string get_which() const { return which; }
+
+    inline int get_index() const { return index; }
+
 private:
     /* which production */
     std::string which;
     /* the index of the production */
     size_t index;
+    /* end symbols id */
+    int end_symbol = END_STATE;
 
     size_t production_size;
 
-    bool is_special = false;
-    /* decimal before location */
     size_t decimal_location;
 
-    /* end symbols id */
-    int end_symbol = END_STATE;
+    bool is_special = false;
+    /* decimal before location */
 
     bool had_end = false;
 };
@@ -84,8 +89,10 @@ bool Item::move_decimal()
     } else if (decimal_location == production_size) {
         ++decimal_location;
         had_end = false;
-    } else
+    } else {
         return false;
+    }
+    return false;
 }
 
 Token Item::after_decimal(Grammar& grammar) const
@@ -108,11 +115,26 @@ std::vector<Token> Item::for_first(Grammar& grammar)
 
 bool Item::next_is_state(Grammar& grammar)
 {
+    if (had_end)
+        return false;
     Token token = after_decimal(grammar);
     if (token.is_state_token())
         return true;
     else
         return false;
+}
+
+// overwrite hash<Item>
+namespace std {
+template <>
+struct hash<Item> {
+    typedef size_t return_type;
+    typedef Item argument_type;
+    size_t operator()(const Item& i) const
+    {
+        return hash<string>()(i.get_which()) ^ hash<int>()(i.get_index()) ^ hash<int>()(i.get_end_symbol());
+    };
+};
 }
 
 #endif

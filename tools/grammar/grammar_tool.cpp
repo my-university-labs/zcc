@@ -18,19 +18,51 @@ void GrammarDealer::test_firstX(std::string X)
     for (auto i : r) {
         std::cout << i << std::endl;
     }
+    Item item("E", 0, END_STATE, 2);
 }
 
-Status GrammarDealer::closure(Item& item)
+Status GrammarDealer::closure(Status& status)
 {
+    size_t last_size = 0;
 
-    Status s;
-    return s;
+    while (last_size != status.size()) {
+        last_size = status.size();
+        // items in status -> unordered_set
+        auto content = status.get_content();
+        for (auto i : content) {
+            if (!i.is_end() && i.next_is_state(grammar)) {
+                // next state token X1
+                Token token = i.after_decimal(grammar);
+                // v<token> X1X2X3X4
+                auto for_terminal_symbols = i.for_first(grammar);
+                //terminal symbol -> unordered_set<int>
+                auto end_symbols = first(for_terminal_symbols);
+                // all productions v<v<token>>
+                auto ps = grammar.get_production(token);
+                for (size_t loc = 0; loc < ps.size(); ++loc) {
+                    for (auto end_symbol : end_symbols) {
+                        // which index end_symbol productionsize
+                        Item new_item(token.get_state(), loc, end_symbol, ps.at(loc).size());
+                        status.add_item(new_item);
+                    }
+                }
+            }
+        }
+    }
+    return status;
 }
 
-Status GrammarDealer::go(size_t status, Token& token)
+Status GrammarDealer::go(const Status& status, const Token& token)
 {
-    Status s;
-    return s;
+    Status new_status;
+    auto content = status.get_content();
+    for (auto item : content) {
+        if (!item.is_end() && item.after_decimal(grammar) == token) {
+            item.move_decimal();
+            new_status.add_item(item);
+        }
+    }
+    return closure(new_status);
 }
 
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
