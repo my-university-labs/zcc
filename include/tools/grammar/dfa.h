@@ -33,7 +33,6 @@ public:
     }
 
     template <typename T>
-
     size_t go(const size_t id, const T& t) const;
 
     inline size_t get_work_index() const
@@ -53,6 +52,10 @@ public:
     inline bool no_status_left() const
     {
         return (work_index >= dstatus.size() ? true : false);
+    }
+    inline void clear_work_index()
+    {
+        work_index = 0;
     }
 
 private:

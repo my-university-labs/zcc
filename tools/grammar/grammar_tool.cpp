@@ -92,6 +92,12 @@ size_t GrammarDealer::create_dfa()
     }
     return start_location;
 }
+
+void GrammarDealer::create_parsing_table()
+{
+    dfa.clear_work_index();
+
+}
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 {
     size_t index = 0;

@@ -7,6 +7,7 @@
 #include "dfa.h"
 #include "grammar.h"
 #include "item.h"
+#include "parsing_table.h"
 #include "status.h"
 #include "token.h"
 
@@ -38,10 +39,14 @@ private:
     std::unordered_set<int> firstX(const Token& token);
 
     size_t create_dfa();
+
+    void create_parsing_table();
     // save grammar
     Grammar grammar;
     // DFA
     DFA dfa;
+    // parsing table (goto && action)
+    ParsingTable parsing_table;
     // save first
     std::map<std::vector<Token>, std::unordered_set<int> > first_saver;
 };
