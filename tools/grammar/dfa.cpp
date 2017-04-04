@@ -70,6 +70,13 @@ size_t DFA::add_status(size_t status1, Token& token, Status& status2)
     }
 }
 
+size_t DFA::add_start_status(const Status& status)
+{
+    clear();
+    dstatus.push_back(status);
+    start_status = 0;
+    return start_status;
+}
 Status DFA::get_status(size_t id) const
 {
     if (id < dstatus.size())

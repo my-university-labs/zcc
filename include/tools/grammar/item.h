@@ -18,17 +18,12 @@
 
 class Item {
 public:
-    Item(const std::string& w, const size_t i, const int e, const size_t p, const bool special)
+    Item(const std::string& w, const size_t i, const int e, const size_t p)
         : which(w)
         , index(i)
         , end_symbol(e)
         , production_size(p)
         , decimal_location(0)
-        , is_special(special)
-    {
-    }
-    Item(const std::string& w, const size_t i, const int e, const size_t p)
-        : Item(w, i, e, p, false)
     {
     }
 
@@ -74,9 +69,6 @@ private:
     size_t production_size;
 
     size_t decimal_location;
-
-    bool is_special = false;
-    /* decimal before location */
 
     bool had_end = false;
 };

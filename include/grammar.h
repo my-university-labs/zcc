@@ -30,13 +30,19 @@ public:
 
     void check_grammar();
 
-    std::vector<Token> get_special_state()
+    std::vector<Token> get_special_state() const
     {
-        return get_production(start_state, 0);
+        return get_production(start_state, start_index);
     }
+    std::string get_start_state() const { return start_state; }
 
+    size_t get_start_index() const { return start_index; }
+
+    size_t get_start_size() const { return get_special_state().size(); }
 private:
     std::string start_state;
+
+    size_t start_index = 0;
 
     // grammar saver
     // key -> [production1, production2 ...]

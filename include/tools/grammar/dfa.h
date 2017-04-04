@@ -20,12 +20,44 @@ public:
 
     size_t add_status(size_t status1, Token& token, Status& status2);
 
+    size_t add_start_status(const Status& status);
+
     Status get_status(size_t id) const;
 
+    void clear()
+    {
+        dstatus.clear();
+        dtokens.clear();
+        relation.clear();
+        start_status = 0;
+    }
+
     template <typename T>
+
     size_t go(const size_t id, const T& t) const;
 
+    inline size_t get_work_index() const
+    {
+        return work_index;
+    }
+
+    inline size_t move_next()
+    {
+        ++work_index;
+        return work_index;
+    }
+    inline size_t get_status_times() const
+    {
+        return dstatus.size();
+    }
+    inline bool no_status_left() const
+    {
+        return (work_index >= dstatus.size() ? true : false);
+    }
+
 private:
+    size_t work_index = 0;
+
     size_t start_status;
     // save every status of dfa
     std::vector<Status> dstatus;

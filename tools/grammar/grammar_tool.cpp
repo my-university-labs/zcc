@@ -65,6 +65,33 @@ Status GrammarDealer::go(const Status& status, const Token& token)
     return closure(new_status);
 }
 
+size_t GrammarDealer::create_dfa()
+{
+    Item start_item(grammar.get_start_state(), grammar.get_start_index(),
+        END_STATE, grammar.get_start_size());
+    Status start_status;
+    start_status.add_item(start_item);
+    // I0
+    auto start = closure(start_status);
+    // save it to dfa as first state
+    size_t start_location = dfa.add_start_status(start);
+    // start to find I1 I2 ...
+    for (size_t index = dfa.get_work_index(); !dfa.no_status_left();
+         index = dfa.move_next()) {
+        std::unordered_set<Token> check_repeat;
+        Status work_status = dfa.get_status(index);
+        auto items = work_status.get_content();
+        for (auto item : items) {
+            Token adtoken = item.after_decimal(grammar);
+            if (check_repeat.find(adtoken) != check_repeat.end()) {
+                check_repeat.insert(adtoken);
+                auto new_status = go(work_status, adtoken);
+                dfa.add_status(work_status, adtoken, new_status);
+            }
+        }
+    }
+    return start_location;
+}
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 {
     size_t index = 0;
@@ -122,7 +149,6 @@ std::unordered_set<int> GrammarDealer::firstX(const Token& token)
                 Xset.insert(NULL_STATE);
             }
         }
-        // }
     }
     return Xset;
 }

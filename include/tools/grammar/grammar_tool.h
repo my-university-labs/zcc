@@ -37,7 +37,7 @@ private:
     // first(X)
     std::unordered_set<int> firstX(const Token& token);
 
-    void create_dfa();
+    size_t create_dfa();
     // save grammar
     Grammar grammar;
     // DFA

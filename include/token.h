@@ -149,4 +149,16 @@ private:
     bool is_null = false;
 };
 
+// overwrite hash<token>
+namespace std {
+template <>
+struct hash<Token> {
+    typedef size_t return_type;
+    typedef Token argument_type;
+    size_t operator()(const Token& t) const
+    {
+        return hash<string>()(t.get_attr()) ^ hash<int>()(t.get_token());
+    };
+};
+}
 #endif
