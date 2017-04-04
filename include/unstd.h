@@ -7,4 +7,6 @@
 #define END_STATE -101
 #define ERROR 99999999
 
+#define ACCEPT "accept"
+
 #endif

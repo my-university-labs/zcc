@@ -24,6 +24,25 @@ public:
 
     Status get_status(size_t id) const;
 
+    Token get_token(size_t id) const
+    {
+        if (dtokens.size() > id)
+            return dtokens.at(id);
+        else {
+            // deal error
+            return Token();
+        }
+        return Token();
+    }
+
+    std::map<size_t, size_t> get_relation(size_t id) const
+    {
+        if (relation.find(id) != relation.end())
+            return relation.at(id);
+        else
+            return std::map<size_t, size_t>();
+    }
+
     void clear()
     {
         dstatus.clear();

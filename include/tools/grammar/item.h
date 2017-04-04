@@ -56,7 +56,7 @@ public:
 
     inline std::string get_which() const { return which; }
 
-    inline int get_index() const { return index; }
+    inline size_t get_index() const { return index; }
 
 private:
     /* which production */

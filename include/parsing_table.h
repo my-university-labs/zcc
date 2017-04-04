@@ -11,7 +11,7 @@
 
 class ParsingTable {
 public:
-    typedef std::map<size_t, std::map<size_t, std::string> > action_type;
+    typedef std::map<size_t, std::map<int, std::string> > action_type;
     typedef std::map<size_t, std::map<Token, size_t> > goto_type;
     ParsingTable()
     {
@@ -20,6 +20,10 @@ public:
     }
     // have a table file then load it
     ParsingTable(std::string tablef);
+
+    void add_into_action(const size_t status, const int terminal_symbol, const std::string& action);
+
+    void add_into_goto(const size_t status, const Token& token, const size_t new_status);
 
 private:
     // action table;

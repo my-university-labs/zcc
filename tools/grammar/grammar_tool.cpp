@@ -6,6 +6,8 @@
 
 #include <algorithm>
 #include <iostream>
+#include <map>
+
 // predeclaration
 static bool merge_set_ignore_null(std::unordered_set<int>& set1,
     const std::unordered_set<int>& set2);
@@ -95,8 +97,43 @@ size_t GrammarDealer::create_dfa()
 
 void GrammarDealer::create_parsing_table()
 {
+    // move work status to first status
     dfa.clear_work_index();
-
+    // for all status I0 I1 I2 I3 ...
+    for (size_t index = dfa.get_work_index(); !dfa.no_status_left(); dfa.move_next()) {
+        // for every production item
+        auto status = dfa.get_status(index);
+        auto items = status.get_content();
+        for (auto item : items) {
+            // for goto table
+            auto relation = dfa.get_relation(index);
+            for (auto p : relation) {
+                Token tmp = dfa.get_token(p.first);
+                if (tmp.is_state_token()) {
+                    parsing_table.add_into_goto(index, tmp, p.second);
+                }
+            }
+            // for action table
+            if (item.is_end()) {
+                // is special production
+                if (item.get_which() == grammar.get_start_state()
+                    && item.get_index() == grammar.get_start_index()) {
+                    // accept
+                    parsing_table.add_into_action(index, END_STATE, ACCEPT);
+                } else if (item.get_which() != grammar.get_start_state()) {
+                    parsing_table.add_into_action(index, item.get_end_symbol(), item.get_which()
+                            + " | " + std::to_string(item.get_index()));
+                }
+                continue;
+            }
+            // [A->?.a?,b] && go(status, a) = status2 -> action[status_now_id, status2_id] = move in (status_2)
+            Token next_token = item.after_decimal(grammar);
+            if (!next_token.is_state_token() && !next_token.is_null_token()
+                && relation.find(next_token.get_token()) != relation.end()) {
+                parsing_table.add_into_action(index, next_token.get_token(), "move | " + std::to_string(relation.at(next_token.get_token())));
+            }
+        }
+    }
 }
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 {
