@@ -16,11 +16,19 @@ void ParsingTable::add_into_action(const size_t status, const int terminal_symbo
     std::cout << "DEBUG_ACTION" << status << " - " << terminal_symbol << " -> " << action << std::endl;
 #endif
     if (action_table.find(status) != action_table.end()) {
-        if ((action_table[status]).find(terminal_symbol) != (action_table[status]).end()) {
-            std::cerr << "Error At parsing_table.cpp 14: grammar error" << std::endl;
-            //exit(2);
-        } else {
+        if ((action_table[status]).find(terminal_symbol) == (action_table[status]).end()) {
             action_table[status][terminal_symbol] = action;
+        } else if ((action_table[status]).find(terminal_symbol) != (action_table[status]).end()
+            && action_table[status][terminal_symbol] != action) {
+            std::cerr << "Error At parsing_table.cpp 14: grammar error" << std::endl;
+            std::cerr << "More Info: " << status
+                      << " " << terminal_symbol
+                      << " " << action_table[status][terminal_symbol]
+                      << " " << action << std::endl;
+            exit(2);
+        } else {
+            // do nothing
+            ;
         }
     } else {
         std::map<int, std::string> tmp;
@@ -36,11 +44,18 @@ void ParsingTable::add_into_goto(const size_t status, const Token& token, const 
 #endif
 
     if (goto_table.find(status) != goto_table.end()) {
-        if (goto_table[status].find(token) != goto_table[status].end()) {
-            std::cerr << "Error At parsing_table.cpp 29: grammar error" << std::endl;
-            //exit(2);
-        } else {
+        if (goto_table[status].find(token) == goto_table[status].end()) {
             goto_table[status][token] = new_status;
+        } else if (goto_table[status].find(token) != goto_table[status].end()
+            && goto_table[status][token] != new_status) {
+            std::cerr << "Error At parsing_table.cpp 29: grammar error" << std::endl;
+            std::cerr << "More Info: " << status
+                      << " " << token.get_token()
+                      << " " << goto_table[status][token]
+                      << " " << new_status << std::endl;
+            exit(2);
+        } else {
+            ; // do nothing
         }
     } else {
         std::map<Token, size_t> tmp;

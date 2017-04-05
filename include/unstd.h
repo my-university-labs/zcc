@@ -19,8 +19,8 @@
 // #define DEBUG_PARSING_TABLE
 // #endif
 
-#ifndef DEBUG_PARSING_TABLE_GOTO
-#define DEBUG_PARSING_TABLE_GOTO
-#endif
+// #ifndef DEBUG_PARSING_TABLE_GOTO
+// #define DEBUG_PARSING_TABLE_GOTO
+// #endif
 
 #endif

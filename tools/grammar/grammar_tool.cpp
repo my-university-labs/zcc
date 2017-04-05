@@ -109,9 +109,6 @@ size_t GrammarDealer::create_dfa()
                 dfa.add_status(work_status, adtoken, new_status);
             }
         }
-        // debug
-        // if (closure_debug)
-        //     return 1;
     }
     return start_location;
 }
@@ -184,6 +181,7 @@ void GrammarDealer::create_parsing_table()
         }
     }
 }
+
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 {
     size_t index = 0;
@@ -200,6 +198,7 @@ std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
         Xsset.insert(NULL_STATE);
     return Xsset;
 }
+
 std::unordered_set<int> GrammarDealer::firstX(const Token& token)
 {
     std::unordered_set<int> Xset;
