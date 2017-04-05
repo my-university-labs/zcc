@@ -16,7 +16,7 @@ void GrammarDealer::run()
 {
     std::cout << "# CREATE DFA #" << std::endl;
     create_dfa();
-    dfa.check(grammar);
+    // dfa.check(grammar);
 
     std::cout << "# CREATE PARSING TABLE #" << std::endl;
     create_parsing_table();
@@ -151,16 +151,35 @@ void GrammarDealer::create_parsing_table()
                     parsing_table.add_into_action(index, END_STATE, ACCEPT);
                 } else if (item.get_which() != grammar.get_start_state()) {
 
-                    parsing_table.add_into_action(index, item.get_end_symbol(), item.get_which()
-                            + " | " + std::to_string(item.get_index()));
+                    parsing_table.add_into_action(index, item.get_end_symbol(),
+                        item.get_which() + " | " + std::to_string(item.get_index()));
                 }
                 continue;
             }
-            // [A->?.a?,b] && go(status, a) = status2 -> action[status_now_id, status2_id] = move in (status_2)
+            // [A->?.a?,b] && go(status, a) = status2 ->
+            // action[status_now_id, status2_id] = move in (status_2)
             Token next_token = item.after_decimal(grammar);
+#ifdef DEBUG_PARSING_TABLE_GOTO
+            std::cout << "DEBUG FOR ACTION TABLE " << std::endl;
+            std::cout << "next token is: " << std::endl;
+            std::cout << "is null state: " << next_token.is_null_token()
+                      << std::endl;
+            std::cout << "is state token: " << next_token.is_state_token()
+                      << " " << next_token.get_state() << std::endl;
+            std::cout << "is id: " << next_token.is_id() << " "
+                      << next_token.get_token() << std::endl;
+            std::cout << "is symbol ? : " << next_token.get_token()
+                      << next_token.get_attr() << std::endl;
+            std::cout << std::endl;
+            std::cout << (relation.find(next_token.get_token()) != relation.end())
+                      << std::endl;
+            std::cout << std::endl;
+#endif
             if (!next_token.is_state_token() && !next_token.is_null_token()
-                && relation.find(next_token.get_token()) != relation.end()) {
-                parsing_table.add_into_action(index, next_token.get_token(), "move | " + std::to_string(relation.at(next_token.get_token())));
+                && relation.find(dfa.get_token_id(next_token)) != relation.end()) {
+                parsing_table.add_into_action(index, next_token.get_token(),
+                    "move | "
+                        + std::to_string(relation.at(dfa.get_token_id(next_token))));
             }
         }
     }

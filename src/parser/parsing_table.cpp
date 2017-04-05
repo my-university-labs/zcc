@@ -15,7 +15,6 @@ void ParsingTable::add_into_action(const size_t status, const int terminal_symbo
 #ifdef DEBUG_PARSING_TABLE
     std::cout << "DEBUG_ACTION" << status << " - " << terminal_symbol << " -> " << action << std::endl;
 #endif
-
     if (action_table.find(status) != action_table.end()) {
         if ((action_table[status]).find(terminal_symbol) != (action_table[status]).end()) {
             std::cerr << "Error At parsing_table.cpp 14: grammar error" << std::endl;
@@ -53,7 +52,7 @@ void ParsingTable::add_into_goto(const size_t status, const Token& token, const 
 void ParsingTable::output_action_table()
 {
     for (auto& m : action_table) {
-        std::cout << m.first << std::endl;
+        std::cout << "from status : " << m.first << std::endl;
         for (auto p : m.second) {
             std::cout << p.first << " -> " << p.second << std::endl;
         }

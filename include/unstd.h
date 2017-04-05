@@ -10,13 +10,17 @@
 #define ACCEPT "accept"
 
 // debug dfa
-#ifndef DEBUG_DFA
-#define DEBUG_DFA
-#endif
+// #ifndef DEBUG_DFA
+// #define DEBUG_DFA
+// #endif
 
 // debug parsing table
-#ifndef DEBUG_PARSING_TABLE
-#define DEBUG_PARSING_TABLE
+// #ifndef DEBUG_PARSING_TABLE
+// #define DEBUG_PARSING_TABLE
+// #endif
+
+#ifndef DEBUG_PARSING_TABLE_GOTO
+#define DEBUG_PARSING_TABLE_GOTO
 #endif
 
 #endif

@@ -138,6 +138,8 @@ public:
 
     bool is_state_token() const { return is_state; }
 
+    bool is_id() const { return (token == ID ? true : false); }
+
 private:
     // token id
     int token;

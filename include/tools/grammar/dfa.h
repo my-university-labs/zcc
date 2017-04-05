@@ -88,6 +88,14 @@ public:
         }
         return ERROR;
     }
+    inline size_t get_token_id(const Token& token) const
+    {
+        for (size_t i = 0; i < dtokens.size(); ++i) {
+            if (dtokens[i] == token)
+                return i;
+        }
+        return ERROR;
+    }
     // for debug
     void check(Grammar& grammar);
 
