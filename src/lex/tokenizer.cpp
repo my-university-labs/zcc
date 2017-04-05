@@ -12,6 +12,7 @@
 #include "error.h"
 #include "symboltable.h"
 #include "token.h"
+#include "unstd.h"
 
 /* skip space char */
 void Tokenizer::skip_ws()
@@ -264,7 +265,7 @@ Token Tokenizer::next()
     } else {
         /* return */
         std::string stoken(vtoken.begin(), vtoken.end());
-#ifndef NOLOG
+#ifdef DEBUG
         std::cout << "# LOG-> " << stoken << std::endl;
 #endif
         if (rtype == 1 || rtype == 3) {

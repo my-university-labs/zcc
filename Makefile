@@ -21,7 +21,7 @@ CC = g++
 
 INCLUDE = -Iinclude -Iinclude/tools/grammar
 
-CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
+CPPFLAGS = -Wall -std=c++11  $(INCLUDE)
 
 all:$(TARGET)
 
@@ -61,27 +61,28 @@ $(OBJ_DIR)/error.o:src/utils/error.cpp error.h
 
 # grammar tool
 $(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp grammar_tool.h \
-	error.h item.h grammar.h token.h status.h
+error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp grammar_tool.h \
-	item.h status.h unstd.h
+dfa.h error.h grammar.h item.h parsing_table.h status.h token.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h token.h
+$(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h token.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/status.o: tools/grammar/status.cpp status.h item.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/item.o: tools/grammar/item.cpp item.h grammar.h token.h
+$(OBJ_DIR)/item.o: tools/grammar/item.cpp item.h grammar.h token.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # used by tool and main
 $(OBJ_DIR)/grammar.o:src/parser/grammar.cpp grammar.h error.h token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/parsing_table.o:src/parser/parsing_table.cpp parsing_table.h
+$(OBJ_DIR)/parsing_table.o:src/parser/parsing_table.cpp parsing_table.h status.h \
+token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean

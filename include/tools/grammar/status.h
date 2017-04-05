@@ -23,7 +23,7 @@ public:
 
     bool operator==(const Status& status) const;
 
-    inline size_t size() { return content.size(); }
+    inline size_t size() const { return content.size(); }
 
 private:
     std::unordered_set<Item> content;

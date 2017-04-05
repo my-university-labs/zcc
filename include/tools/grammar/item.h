@@ -11,8 +11,8 @@
 #include "grammar.h"
 #include "token.h"
 #include "unstd.h"
-
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -32,14 +32,14 @@ public:
         which = item.which;
         index = item.index;
         decimal_location = item.decimal_location;
-        end_symbol = end_symbol;
+        end_symbol = item.end_symbol;
         return *this;
     }
 
     bool operator==(const Item& item) const
     {
         return (which == item.which && index == item.index
-            && end_symbol == item.end_symbol);
+            && end_symbol == item.end_symbol && decimal_location == item.decimal_location);
     }
 
     inline bool move_decimal();
@@ -57,6 +57,10 @@ public:
     inline std::string get_which() const { return which; }
 
     inline size_t get_index() const { return index; }
+
+    inline size_t get_decimal() const { return decimal_location; }
+
+    inline size_t get_production_size() const { return production_size; }
 
 private:
     /* which production */
@@ -77,10 +81,12 @@ bool Item::move_decimal()
 {
     if (decimal_location < production_size) {
         ++decimal_location;
+        if (decimal_location == production_size)
+            had_end = true;
         return true;
     } else if (decimal_location == production_size) {
         ++decimal_location;
-        had_end = false;
+        had_end = true;
     } else {
         return false;
     }
@@ -107,7 +113,7 @@ std::vector<Token> Item::for_first(Grammar& grammar)
 
 bool Item::next_is_state(Grammar& grammar)
 {
-    if (had_end)
+    if (had_end || decimal_location == production_size)
         return false;
     Token token = after_decimal(grammar);
     if (token.is_state_token())

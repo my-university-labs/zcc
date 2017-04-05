@@ -29,6 +29,7 @@ public:
     void test_firstX(std::string X);
 
 private:
+    bool closure_debug = false;
     // 闭包
     Status closure(Status& status);
     // go function

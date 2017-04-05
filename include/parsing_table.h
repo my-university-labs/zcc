@@ -25,6 +25,10 @@ public:
 
     void add_into_goto(const size_t status, const Token& token, const size_t new_status);
 
+    void output_action_table();
+
+    void output_goto_table();
+
 private:
     // action table;
     // [status id, terminal symbol] -> action

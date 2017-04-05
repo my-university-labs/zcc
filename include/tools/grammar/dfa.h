@@ -16,9 +16,9 @@ public:
     DFA(Status& status);
 
     // status1 -token-> status2
-    size_t add_status(Status& status1, Token& token, Status& status2);
+    size_t add_status(const Status& status1, const Token& token, const Status& status2);
 
-    size_t add_status(size_t status1, Token& token, Status& status2);
+    size_t add_status(const size_t status1, const Token& token, const Status& status2);
 
     size_t add_start_status(const Status& status);
 
@@ -76,6 +76,16 @@ public:
     {
         work_index = 0;
     }
+    inline size_t get_status_id(const Status& status) const
+    {
+        for (size_t i = 0; i < dstatus.size(); ++i) {
+            if (dstatus[i] == status)
+                return i;
+        }
+        return ERROR;
+    }
+    // for debug
+    void check(Grammar& grammar);
 
 private:
     size_t work_index = 0;

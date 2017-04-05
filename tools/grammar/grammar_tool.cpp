@@ -12,6 +12,20 @@
 static bool merge_set_ignore_null(std::unordered_set<int>& set1,
     const std::unordered_set<int>& set2);
 
+void GrammarDealer::run()
+{
+    std::cout << "# CREATE DFA #" << std::endl;
+    create_dfa();
+    dfa.check(grammar);
+
+    // std::cout << "# CREATE PARSING TABLE #" << std::endl;
+    // create_parsing_table();
+    // std::cout << "# ACTION #" << std::endl;
+    // parsing_table.output_action_table();
+    // std::cout << "# GOTO #" << std::endl;
+    // parsing_table.output_goto_table();
+}
+
 void GrammarDealer::test_firstX(std::string X)
 {
     Token token(X);
@@ -26,7 +40,6 @@ void GrammarDealer::test_firstX(std::string X)
 Status GrammarDealer::closure(Status& status)
 {
     size_t last_size = 0;
-
     while (last_size != status.size()) {
         last_size = status.size();
         // items in status -> unordered_set
@@ -78,19 +91,27 @@ size_t GrammarDealer::create_dfa()
     // save it to dfa as first state
     size_t start_location = dfa.add_start_status(start);
     // start to find I1 I2 ...
+    closure_debug = true;
     for (size_t index = dfa.get_work_index(); !dfa.no_status_left();
          index = dfa.move_next()) {
+
         std::unordered_set<Token> check_repeat;
         Status work_status = dfa.get_status(index);
         auto items = work_status.get_content();
         for (auto item : items) {
+            if (item.is_end())
+                continue;
             Token adtoken = item.after_decimal(grammar);
-            if (check_repeat.find(adtoken) != check_repeat.end()) {
+            if (check_repeat.find(adtoken) == check_repeat.end()) {
                 check_repeat.insert(adtoken);
                 auto new_status = go(work_status, adtoken);
+
                 dfa.add_status(work_status, adtoken, new_status);
             }
         }
+        // debug
+        // if (closure_debug)
+        //     return 1;
     }
     return start_location;
 }
@@ -101,18 +122,22 @@ void GrammarDealer::create_parsing_table()
     dfa.clear_work_index();
     // for all status I0 I1 I2 I3 ...
     for (size_t index = dfa.get_work_index(); !dfa.no_status_left(); dfa.move_next()) {
+
         // for every production item
         auto status = dfa.get_status(index);
         auto items = status.get_content();
         for (auto item : items) {
+
             // for goto table
             auto relation = dfa.get_relation(index);
             for (auto p : relation) {
+
                 Token tmp = dfa.get_token(p.first);
                 if (tmp.is_state_token()) {
                     parsing_table.add_into_goto(index, tmp, p.second);
                 }
             }
+
             // for action table
             if (item.is_end()) {
                 // is special production
@@ -121,11 +146,13 @@ void GrammarDealer::create_parsing_table()
                     // accept
                     parsing_table.add_into_action(index, END_STATE, ACCEPT);
                 } else if (item.get_which() != grammar.get_start_state()) {
+
                     parsing_table.add_into_action(index, item.get_end_symbol(), item.get_which()
                             + " | " + std::to_string(item.get_index()));
                 }
                 continue;
             }
+
             // [A->?.a?,b] && go(status, a) = status2 -> action[status_now_id, status2_id] = move in (status_2)
             Token next_token = item.after_decimal(grammar);
             if (!next_token.is_state_token() && !next_token.is_null_token()

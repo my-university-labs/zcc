@@ -9,4 +9,9 @@
 
 #define ACCEPT "accept"
 
+// debug mod
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #endif
