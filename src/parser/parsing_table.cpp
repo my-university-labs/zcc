@@ -5,9 +5,51 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 ParsingTable::ParsingTable(std::string tablef)
 {
+    std::cout << "load parsing table info" << std::endl;
+    std::ifstream in(tablef);
+    if (in) {
+        std::string line;
+        bool read_action = false;
+        bool read_goto = false;
+        int Y;
+        size_t X, svalue;
+        std::string action, state;
+        while (std::getline(in, line)) {
+            if (line == action_flag) {
+                read_action = true;
+                read_goto = false;
+            } else if (line == goto_flag) {
+                read_action = false;
+                read_goto = true;
+            } else if (line == new_flag) {
+                std::getline(in, line);
+                std::istringstream is1(line);
+                is1 >> X;
+            } else {
+                if (read_action) {
+                    std::istringstream is2(line);
+                    is2 >> Y;
+                    std::getline(in, action);
+                    add_into_action(X, Y, action);
+                } else if (read_goto) {
+                    Token token(line);
+                    std::getline(in, line);
+                    std::istringstream is3(line);
+                    is3 >> svalue;
+                    add_into_goto(X, token, svalue);
+                }
+            }
+        }
+        in.close();
+    } else {
+        // deal error
+        std::cerr << "no parsing table info input" << std::endl;
+        exit(1);
+    }
 }
 
 void ParsingTable::add_into_action(const size_t status, const int terminal_symbol, const std::string& action)
@@ -63,7 +105,46 @@ void ParsingTable::add_into_goto(const size_t status, const Token& token, const 
         goto_table[status] = tmp;
     }
 }
-
+// save action table and goto table into file
+// default file name is PARSING_TABLE_FILE_NAME defined in unstd.h
+// the rule how to save table infomation is:
+// when meet std::string action_flag, start to write action info into next line
+// 0. when meet std::string new_flag, start to write X status ([X, terminal_symbol] = action)
+// 1. then write terminal_symbol next line
+// 2. then write action next line
+// repeat 1 2
+// when meet new_flag start from 0 again
+// goto table as same as action
+void ParsingTable::save_table_to_file()
+{
+    std::ofstream out(PARSING_TABLE_FILE_NAME);
+    if (out) {
+        out << action_flag << std::endl;
+        for (auto& m : action_table) {
+            out << new_flag << std::endl;
+            out << m.first << std::endl;
+            for (auto values : m.second) {
+                out << values.first << std::endl
+                    << values.second << std::endl;
+            }
+        }
+        out << goto_flag << std::endl;
+        for (auto& m : goto_table) {
+            out << new_flag << std::endl;
+            out << m.first << std::endl;
+            for (auto values : m.second) {
+                out << values.first.get_state() << std::endl
+                    << values.second << std::endl;
+            }
+        }
+        out.close();
+    } else {
+        // deal error
+        std::cerr << "can not open file " << PARSING_TABLE_FILE_NAME
+                  << " to save parsing table infomation" << std::endl;
+        exit(0);
+    }
+}
 void ParsingTable::output_action_table()
 {
     for (auto& m : action_table) {

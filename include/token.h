@@ -66,6 +66,8 @@
 
 #define VALUE 100
 
+#include "unstd.h"
+
 #include <map>
 #include <string>
 #include <vector>
@@ -82,7 +84,7 @@ class Token {
 public:
     // null token
     Token()
-        : token(-1)
+        : token(NULL_STATE)
         , value("null")
         , is_state(false)
         , is_null(true)

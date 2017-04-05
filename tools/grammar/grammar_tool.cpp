@@ -20,10 +20,11 @@ void GrammarDealer::run()
 
     std::cout << "# CREATE PARSING TABLE #" << std::endl;
     create_parsing_table();
-    std::cout << "# ACTION #" << std::endl;
-    parsing_table.output_action_table();
-    std::cout << "# GOTO #" << std::endl;
-    parsing_table.output_goto_table();
+    // std::cout << "# ACTION #" << std::endl;
+    // parsing_table.output_action_table();
+    // std::cout << "# GOTO #" << std::endl;
+    // parsing_table.output_goto_table();
+    parsing_table.save_table_to_file();
 }
 
 void GrammarDealer::test_firstX(std::string X)

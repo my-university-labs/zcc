@@ -6,6 +6,7 @@
 
 #include "status.h"
 #include "token.h"
+#include <fstream>
 #include <map>
 #include <string>
 
@@ -25,11 +26,19 @@ public:
 
     void add_into_goto(const size_t status, const Token& token, const size_t new_status);
 
+    void save_table_to_file();
+
     void output_action_table();
 
     void output_goto_table();
 
+    size_t get_default_start_state() const { return default_start_state; }
+
 private:
+    const std::string action_flag = "$ACTION_TABLE";
+    const std::string goto_flag = "$GOTO_TABLE";
+    const std::string new_flag = "$NEW";
+    const size_t default_start_state = 0;
     // action table;
     // [status id, terminal symbol] -> action
     action_type action_table;

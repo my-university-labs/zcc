@@ -13,12 +13,14 @@
 
 class Parser {
 public:
-    Parser(std::string sourcef, std::string grammarf, std::string tablef)
+    Parser(std::string grammarf, std::string tablef, std::string sourcef)
         : grammar(grammarf)
         , ptable(tablef)
         , tokenizer(sourcef)
     {
     }
+
+    void init();
     // run parser
     void run();
 
@@ -30,7 +32,8 @@ private:
     // tokenizer
     Tokenizer tokenizer;
     // stack to save state and input token
-    std::stack<Token> pstack;
+    std::stack<Token> token_stack;
+    std::stack<size_t> status_stack;
 };
 
 #endif
