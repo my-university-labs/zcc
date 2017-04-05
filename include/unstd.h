@@ -9,9 +9,14 @@
 
 #define ACCEPT "accept"
 
-// debug mod
-#ifndef DEBUG
-#define DEBUG
+// debug dfa
+#ifndef DEBUG_DFA
+#define DEBUG_DFA
+#endif
+
+// debug parsing table
+#ifndef DEBUG_PARSING_TABLE
+#define DEBUG_PARSING_TABLE
 #endif
 
 #endif

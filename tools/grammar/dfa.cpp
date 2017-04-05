@@ -13,7 +13,7 @@ DFA::DFA(Status& status)
 
 size_t DFA::add_status(const Status& status1, const Token& token, const Status& status2)
 {
-#ifdef DEBUG
+#ifdef DEBUG_DFA
     std::cout << get_status_id(status1) << " -> " << token.get_attr() << " | "
               << token.get_token() << " " << get_status_id(status2) << std::endl;
     std::cout << "status1 size -> " << status1.size() << " status2 size -> "
@@ -160,5 +160,14 @@ void DFA::check(Grammar& grammar)
             std::cout << " -> " << get_token_info(dtokens[i].get_token());
         }
         std::cout << std::endl;
+    }
+
+    std::cout << "# Show Relation ---------------> " << std::endl;
+
+    for (auto& m : relation) {
+        std::cout << "new relation: " << m.first << std::endl;
+        for (auto& i : m.second) {
+            std::cout << i.first << " -> " << i.second << std::endl;
+        }
     }
 }

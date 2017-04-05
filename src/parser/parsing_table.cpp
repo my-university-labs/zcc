@@ -12,6 +12,10 @@ ParsingTable::ParsingTable(std::string tablef)
 
 void ParsingTable::add_into_action(const size_t status, const int terminal_symbol, const std::string& action)
 {
+#ifdef DEBUG_PARSING_TABLE
+    std::cout << "DEBUG_ACTION" << status << " - " << terminal_symbol << " -> " << action << std::endl;
+#endif
+
     if (action_table.find(status) != action_table.end()) {
         if ((action_table[status]).find(terminal_symbol) != (action_table[status]).end()) {
             std::cerr << "Error At parsing_table.cpp 14: grammar error" << std::endl;
@@ -28,6 +32,10 @@ void ParsingTable::add_into_action(const size_t status, const int terminal_symbo
 
 void ParsingTable::add_into_goto(const size_t status, const Token& token, const size_t new_status)
 {
+#ifdef DEBUG_PARSING_TABLE
+    std::cout << "DEBUG_GOTO" << status << " - " << token.get_token() << " " << token.get_attr() << " -> " << new_status << std::endl;
+#endif
+
     if (goto_table.find(status) != goto_table.end()) {
         if (goto_table[status].find(token) != goto_table[status].end()) {
             std::cerr << "Error At parsing_table.cpp 29: grammar error" << std::endl;

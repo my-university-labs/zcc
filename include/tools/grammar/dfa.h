@@ -30,6 +30,8 @@ public:
             return dtokens.at(id);
         else {
             // deal error
+            std::cerr << "find error at dfa -> find token" << std::endl;
+            exit(0);
             return Token();
         }
         return Token();
@@ -43,6 +45,16 @@ public:
             return std::map<size_t, size_t>();
     }
 
+    inline size_t get_work_index() const
+    {
+        return work_index;
+    }
+
+    inline size_t get_status_times() const
+    {
+        return dstatus.size();
+    }
+
     void clear()
     {
         dstatus.clear();
@@ -54,20 +66,12 @@ public:
     template <typename T>
     size_t go(const size_t id, const T& t) const;
 
-    inline size_t get_work_index() const
-    {
-        return work_index;
-    }
-
     inline size_t move_next()
     {
         ++work_index;
         return work_index;
     }
-    inline size_t get_status_times() const
-    {
-        return dstatus.size();
-    }
+
     inline bool no_status_left() const
     {
         return (work_index >= dstatus.size() ? true : false);

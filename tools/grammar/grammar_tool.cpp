@@ -18,12 +18,12 @@ void GrammarDealer::run()
     create_dfa();
     dfa.check(grammar);
 
-    // std::cout << "# CREATE PARSING TABLE #" << std::endl;
-    // create_parsing_table();
-    // std::cout << "# ACTION #" << std::endl;
-    // parsing_table.output_action_table();
-    // std::cout << "# GOTO #" << std::endl;
-    // parsing_table.output_goto_table();
+    std::cout << "# CREATE PARSING TABLE #" << std::endl;
+    create_parsing_table();
+    std::cout << "# ACTION #" << std::endl;
+    parsing_table.output_action_table();
+    std::cout << "# GOTO #" << std::endl;
+    parsing_table.output_goto_table();
 }
 
 void GrammarDealer::test_firstX(std::string X)
@@ -121,23 +121,27 @@ void GrammarDealer::create_parsing_table()
     // move work status to first status
     dfa.clear_work_index();
     // for all status I0 I1 I2 I3 ...
-    for (size_t index = dfa.get_work_index(); !dfa.no_status_left(); dfa.move_next()) {
-
-        // for every production item
+    for (size_t index = dfa.get_work_index(); !dfa.no_status_left(); index = dfa.move_next()) {
+        // status to be deal
         auto status = dfa.get_status(index);
+        // iterms in status
         auto items = status.get_content();
-        for (auto item : items) {
-
-            // for goto table
-            auto relation = dfa.get_relation(index);
-            for (auto p : relation) {
-
-                Token tmp = dfa.get_token(p.first);
-                if (tmp.is_state_token()) {
-                    parsing_table.add_into_goto(index, tmp, p.second);
-                }
+        // relation from status_index to other
+        auto relation = dfa.get_relation(index);
+#ifdef DEBUG_PARSING_TABLE
+        std::cout << "\nDEBUG relation: " << index << "- > " << std::endl;
+        for (auto m : relation) {
+            std::cout << m.first << " -> " << m.second << std::endl;
+        }
+#endif
+        // goto toble
+        for (auto m : relation) {
+            if (dfa.get_token(m.first).is_state_token()) {
+                parsing_table.add_into_goto(index, dfa.get_token(m.first), m.second);
             }
-
+        }
+        // action table
+        for (auto item : items) {
             // for action table
             if (item.is_end()) {
                 // is special production
@@ -152,7 +156,6 @@ void GrammarDealer::create_parsing_table()
                 }
                 continue;
             }
-
             // [A->?.a?,b] && go(status, a) = status2 -> action[status_now_id, status2_id] = move in (status_2)
             Token next_token = item.after_decimal(grammar);
             if (!next_token.is_state_token() && !next_token.is_null_token()
