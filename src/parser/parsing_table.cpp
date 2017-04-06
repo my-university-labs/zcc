@@ -145,6 +145,44 @@ void ParsingTable::save_table_to_file()
         exit(0);
     }
 }
+
+ParsingTable::action_type ParsingTable::query_action(size_t start_status, int terminal_symbol) const
+{
+    action_type result;
+    if (action_table.find(start_status) != action_table.cend()
+        && action_table.at(start_status).find(terminal_symbol)
+            != action_table.at(start_status).cend()) {
+        result.error = false;
+        std::istringstream is(action_table.at(start_status).at(terminal_symbol));
+        is >> result.action;
+        if (result.action == MOVE_IN) {
+            is >> result.next_status;
+        } else if (result.action == REDUCTION) {
+            is >> result.which >> result.index;
+        } else {
+            // deal error
+            std::cerr << "Error at query_action" << std::endl;
+        }
+
+    } else {
+        result.error = true;
+    }
+    return result;
+}
+ParsingTable::goto_type ParsingTable::query_goto(size_t status, const Token& token) const
+{
+    goto_type result;
+    if (goto_table.find(status) != goto_table.cend()
+        && goto_table.at(status).find(token) != goto_table.at(status).cend()) {
+        result.next_status = goto_table.at(status).at(token);
+        result.error = false;
+        result.next_status = goto_table.at(status).at(token);
+    } else {
+        result.error = true;
+    }
+    return result;
+}
+
 void ParsingTable::output_action_table()
 {
     for (auto& m : action_table) {

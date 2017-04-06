@@ -100,7 +100,7 @@ public:
     }
     // state token
     Token(std::string state)
-        : token(-2)
+        : token(NORMAL_STATE)
         , value(state)
         , is_state(true)
         , is_null(false)

@@ -5,9 +5,13 @@
 
 #define NULL_STATE -100
 #define END_STATE -101
+#define NORMAL_STATE -102
 #define ERROR 99999999
 
-#define ACCEPT "accept"
+// for action table
+#define MOVE_IN "$move_in"
+#define REDUCTION "$reduction"
+#define ACCEPT "$accept"
 
 #define PARSING_TABLE_FILE_NAME "parsing_table.txt"
 

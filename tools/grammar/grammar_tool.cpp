@@ -20,10 +20,10 @@ void GrammarDealer::run()
 
     std::cout << "# CREATE PARSING TABLE #" << std::endl;
     create_parsing_table();
-    // std::cout << "# ACTION #" << std::endl;
-    // parsing_table.output_action_table();
-    // std::cout << "# GOTO #" << std::endl;
-    // parsing_table.output_goto_table();
+    std::cout << "# ACTION #" << std::endl;
+    parsing_table.output_action_table();
+    std::cout << "# GOTO #" << std::endl;
+    parsing_table.output_goto_table();
     parsing_table.save_table_to_file();
 }
 
@@ -148,9 +148,9 @@ void GrammarDealer::create_parsing_table()
                     // accept
                     parsing_table.add_into_action(index, END_STATE, ACCEPT);
                 } else if (item.get_which() != grammar.get_start_state()) {
-
+                    // 规约
                     parsing_table.add_into_action(index, item.get_end_symbol(),
-                        item.get_which() + " | " + std::to_string(item.get_index()));
+                        std::string(REDUCTION) + " " + item.get_which() + "  " + std::to_string(item.get_index()));
                 }
                 continue;
             }
@@ -175,8 +175,10 @@ void GrammarDealer::create_parsing_table()
 #endif
             if (!next_token.is_state_token() && !next_token.is_null_token()
                 && relation.find(dfa.get_token_id(next_token)) != relation.end()) {
+                // 移入 并进入状态 next
+
                 parsing_table.add_into_action(index, next_token.get_token(),
-                    "move | "
+                    std::string(MOVE_IN) + " "
                         + std::to_string(relation.at(dfa.get_token_id(next_token))));
             }
         }

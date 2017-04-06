@@ -34,7 +34,7 @@ public:
     /* get next token */
     Token next();
 
-    bool isend() { return finished; }
+    bool is_end() { return finished; }
     /* get line number */
     int get_linenu() { return linenu; }
 private:

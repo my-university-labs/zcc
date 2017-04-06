@@ -2,75 +2,75 @@ $ACTION_TABLE
 $NEW
 0
 0
-move | 1
+$move_in 1
 30
-move | 2
+$move_in 2
 $NEW
 1
 -101
-L | 1
+$reduction L  1
 28
-L | 1
+$reduction L  1
 $NEW
 2
 0
-move | 1
+$move_in 1
 30
-move | 2
+$move_in 2
 $NEW
 3
 -101
-accept
+$accept
 $NEW
 4
 -101
-R | 0
+$reduction R  0
 28
-move | 8
+$move_in 8
 $NEW
 5
 -101
-S | 1
+$reduction S  1
 $NEW
 6
 -101
-L | 0
+$reduction L  0
 28
-L | 0
+$reduction L  0
 $NEW
 7
 -101
-R | 0
+$reduction R  0
 28
-R | 0
+$reduction R  0
 $NEW
 8
 0
-move | 9
+$move_in 9
 30
-move | 10
+$move_in 10
 $NEW
 9
 -101
-L | 1
+$reduction L  1
 $NEW
 10
 0
-move | 9
+$move_in 9
 30
-move | 10
+$move_in 10
 $NEW
 11
 -101
-R | 0
+$reduction R  0
 $NEW
 12
 -101
-S | 0
+$reduction S  0
 $NEW
 13
 -101
-L | 0
+$reduction L  0
 $GOTO_TABLE
 $NEW
 0
