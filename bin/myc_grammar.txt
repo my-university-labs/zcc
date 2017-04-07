@@ -1,0 +1,21 @@
+-> program'
+    program
+-> program
+    qualifiers value_type ID ( arg_list ) { content  }
+-> qualifiers
+    static
+    const
+-> arg_list
+    qualifiers value_type identity A
+-> A
+    null
+    , arg_list
+-> content
+    ;
+-> value_type
+    int
+    float
+    double
+    char
+-> ID
+    identity

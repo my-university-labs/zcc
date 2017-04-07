@@ -62,11 +62,12 @@ void ParsingTable::add_into_action(const size_t status, const int terminal_symbo
             action_table[status][terminal_symbol] = action;
         } else if ((action_table[status]).find(terminal_symbol) != (action_table[status]).end()
             && action_table[status][terminal_symbol] != action) {
-            std::cerr << "Error At parsing_table.cpp 14: grammar error" << std::endl;
-            std::cerr << "More Info: " << status
-                      << " " << terminal_symbol
-                      << " " << action_table[status][terminal_symbol]
-                      << " " << action << std::endl;
+            std::cerr << "Error At parsing_table.cpp add_into_action: grammar error" << std::endl;
+            std::cerr << "More Info: " << std::endl
+                      << "from: " << status << std::endl
+                      << "meet: " << terminal_symbol << std::endl
+                      << "action table had: " << action_table[status][terminal_symbol] << std::endl
+                      << "want insert: " << action << std::endl;
             exit(2);
         } else {
             // do nothing
@@ -159,6 +160,8 @@ ParsingTable::action_type ParsingTable::query_action(size_t start_status, int te
             is >> result.next_status;
         } else if (result.action == REDUCTION) {
             is >> result.which >> result.index;
+        } else if (result.action == ACCEPT) {
+            ; // accept
         } else {
             // deal error
             std::cerr << "Error at query_action" << std::endl;

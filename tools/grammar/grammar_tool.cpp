@@ -14,6 +14,7 @@ static bool merge_set_ignore_null(std::unordered_set<int>& set1,
 
 void GrammarDealer::run()
 {
+    grammar.check_grammar();
     std::cout << "# CREATE DFA #" << std::endl;
     create_dfa();
     // dfa.check(grammar);
@@ -95,7 +96,6 @@ size_t GrammarDealer::create_dfa()
     closure_debug = true;
     for (size_t index = dfa.get_work_index(); !dfa.no_status_left();
          index = dfa.move_next()) {
-
         std::unordered_set<Token> check_repeat;
         Status work_status = dfa.get_status(index);
         auto items = work_status.get_content();
@@ -180,6 +180,9 @@ void GrammarDealer::create_parsing_table()
                 parsing_table.add_into_action(index, next_token.get_token(),
                     std::string(MOVE_IN) + " "
                         + std::to_string(relation.at(dfa.get_token_id(next_token))));
+            }
+            if (next_token.is_null_token()) {
+                std::cout << "null state need to be dealed in grammar_tool.cpp at 185" << std::endl;
             }
         }
     }
