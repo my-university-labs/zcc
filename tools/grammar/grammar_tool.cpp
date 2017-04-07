@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <sstream>
 
 // predeclaration
 static bool merge_set_ignore_null(std::unordered_set<int>& set1,
@@ -28,6 +29,25 @@ void GrammarDealer::run()
     parsing_table.save_table_to_file();
 }
 
+void GrammarDealer::test_first(std::string line)
+{
+    int code;
+    std::string word;
+    std::istringstream is(line);
+    std::vector<Token> target;
+    while (is >> word) {
+        if (word == "identity") {
+            target.push_back(Token(ID, word));
+        } else if ((code = get_code(word)) == ID)
+            target.push_back(Token(word));
+        else
+            target.push_back(Token(code, word));
+    }
+    auto r = first(target);
+    for (auto i : r) {
+        std::cout << i << std::endl;
+    }
+}
 void GrammarDealer::test_firstX(std::string X)
 {
     Token token(X);
@@ -190,6 +210,7 @@ void GrammarDealer::create_parsing_table()
 
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 {
+    times = 0;
     size_t index = 0;
     bool have_null = false;
     std::unordered_set<int> Xsset;
@@ -207,6 +228,9 @@ std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 
 std::unordered_set<int> GrammarDealer::firstX(const Token& token)
 {
+    ++times;
+    if (times > 100)
+        return std::unordered_set<int>();
     std::unordered_set<int> Xset;
     Xset.clear();
     if (!token.is_state_token() && !token.is_null_token()) {

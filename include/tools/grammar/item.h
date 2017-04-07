@@ -54,6 +54,8 @@ public:
 
     inline bool next_is_state(Grammar& grammar);
 
+    inline bool next_is_null(Grammar& grammar);
+
     inline std::string get_which() const { return which; }
 
     inline size_t get_index() const { return index; }
@@ -117,6 +119,17 @@ bool Item::next_is_state(Grammar& grammar)
         return false;
     Token token = after_decimal(grammar);
     if (token.is_state_token())
+        return true;
+    else
+        return false;
+}
+
+bool Item::next_is_null(Grammar& grammar)
+{
+    if (had_end || decimal_location == production_size)
+        return false;
+    Token token = after_decimal(grammar);
+    if (token.is_null_token())
         return true;
     else
         return false;

@@ -2,16 +2,20 @@
     program
 -> program
     qualifiers value_type ID ( arg_list ) { content  }
+    qualifiers value_type ID ( ) { content  }
 -> qualifiers
     static
     const
--> arg_list
-    qualifiers value_type identity A
--> A
-    null
-    , arg_list
 -> content
-    ;
+    if_statement
+-> if_statement
+    if ( expression ) statement
+    if ( expression ) statement else statement
+    if ( expression ) statement ELSEIFS
+    if ( expression ) statement ELSEIFS   else statement
+-> ELSEIFS
+    else if ( expression ) statement
+    ELSEIFS  else if ( expression ) statement
 -> value_type
     int
     float
@@ -19,3 +23,10 @@
     char
 -> ID
     identity
+-> expression
+    ID + ID
+-> statement
+    { value_type ID = value ; }
+-> arg_list
+    int
+    arg_list , int

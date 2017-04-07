@@ -15,10 +15,10 @@
 
 #define PARSING_TABLE_FILE_NAME "parsing_table.txt"
 
-// debug dfa
-// #ifndef DEBUG_DFA
-// #define DEBUG_DFA
-// #endif
+//debug dfa
+#ifndef DEBUG_DFA
+#define DEBUG_DFA
+#endif
 
 // debug parsing table
 // #ifndef DEBUG_PARSING_TABLE

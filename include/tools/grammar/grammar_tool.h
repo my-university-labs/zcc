@@ -28,6 +28,8 @@ public:
 
     void test_firstX(std::string X);
 
+    void test_first(std::string line);
+
 private:
     bool closure_debug = false;
     // 闭包
@@ -48,8 +50,11 @@ private:
     DFA dfa;
     // parsing table (goto && action)
     ParsingTable parsing_table;
+
+    bool not_changed = false;
+    size_t times = 0;
     // save first
-    std::map<std::vector<Token>, std::unordered_set<int> > first_saver;
+    std::map<Token, std::unordered_set<int> > first_visited;
 };
 
 #endif
