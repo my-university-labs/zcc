@@ -24,6 +24,8 @@ public:
     // run parser
     void run();
 
+    void hook_function(std::string& which, size_t& index, const std::vector<Token>& tokens);
+
 private:
     // grammar
     Grammar grammar;

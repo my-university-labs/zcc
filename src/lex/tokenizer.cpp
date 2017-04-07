@@ -232,8 +232,11 @@ Token Tokenizer::next()
     bool is_value = false;
     bool reidentify = false;
     check_buffer();
-    if (buffer_size == 0)
+    if (buffer_size == 0) {
+        Token token;
+        token.set_as_end();
         return token;
+    }
     std::vector<char> vtoken;
     ch = buffer[cursor++];
     vtoken.push_back(ch);
@@ -258,6 +261,7 @@ Token Tokenizer::next()
     }
     if (finished) {
         Token token;
+        token.set_as_end();
         return token;
     } else if (reidentify) {
         // std::cout << "re identify " << std::endl;
@@ -271,22 +275,18 @@ Token Tokenizer::next()
         if (rtype == 1 || rtype == 3) {
             // is char
             if (is_value) {
-                Token(VALUE, stoken);
-                return token;
+                return Token(VALUE, stoken);
             }
             // operator separator or key word
             int code = get_code(stoken);
-            Token token(code, stoken);
-            return token;
+            return Token(code, stoken);
         }
         // is value
         else if (rtype == 2) {
-            Token token(VALUE, stoken);
-            return token;
+            return Token(VALUE, stoken);
         } else {
             // no use now
-            Token token;
-            return token;
+            return Token();
         }
     }
 }

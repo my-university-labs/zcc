@@ -142,6 +142,7 @@ public:
 
     bool is_id() const { return (token == ID ? true : false); }
 
+    void set_as_end() { token = END_STATE; }
 private:
     // token id
     int token;

@@ -16,7 +16,9 @@ public:
     /* construct function */
     Tokenizer()
         : type(0)
-        , linenu(0){};
+        , linenu(0)
+    {
+    }
     // input a file
     Tokenizer(std::string f)
         : type(1)
@@ -51,12 +53,10 @@ private:
     /* meet EOF when read file */
     bool finished = false;
 
-    size_t cursor;
+    size_t cursor = 0;
 
-    size_t buffer_size;
+    size_t buffer_size = 0;
 
-    /* save token which will be return after scanning */
-    Token token;
     /* buffer for every line */
     std::string buffer;
     /* file stream */
