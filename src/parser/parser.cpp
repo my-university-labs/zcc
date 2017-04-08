@@ -34,11 +34,11 @@ void Parser::run()
             std::cerr << "error action" << std::endl;
             exit(3);
         } else if (action.action == MOVE_IN) {
-            std::cout << "token 1: " << token_now.get_token() << " " << token_now.get_attr() << std::endl;
+            // std::cout << "token 1: " << token_now.get_token() << " " << token_now.get_attr() << std::endl;
             status_stack.push(action.next_status);
             token_stack.push(token_now);
             token_now = tokenizer.next();
-            std::cout << "token 2: " << token_now.get_token() << " " << token_now.get_attr() << std::endl;
+            // std::cout << "token 2: " << token_now.get_token() << " " << token_now.get_attr() << std::endl;
         } else if (action.action == REDUCTION) {
             auto production = grammar.get_production(action.which, action.index);
             for (size_t i = 0; i < production.size(); ++i) {

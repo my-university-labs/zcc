@@ -1,13 +1,33 @@
 -> program'
     program
 -> program
-    qualifiers value_type ID ( arg_list ) { content  }
-    qualifiers value_type ID ( ) { content  }
--> qualifiers
+    value_declare_define
+    program value_declare_define
+    function_declare
+    program function_declare
+    function_define
+    program function_define
+-> value_declare_define
+    value_type value_declare_define_list ;
+-> value_declare_define_list
+    ID
+    ID , value_declare_define_list
+    ID = value
+    ID = value , value_declare_define_list
+-> function_define
+    value_type ID ( ) { content }
+    value_type ID ( arg_list ) { content }
+    func_qualifiers value_type ID ( arg_list ) { content  }
+    func_qualifiers value_type ID ( ) { content  }
+-> func_qualifiers
     static
-    const
 -> content
+    expression
     if_statement
+    for_statement
+    while_statement
+    do_while_statement
+    switch_statement
 -> if_statement
     if ( expression ) statement
     if ( expression ) statement else statement
@@ -16,6 +36,12 @@
 -> ELSEIFS
     else if ( expression ) statement
     ELSEIFS  else if ( expression ) statement
+-> for_statement
+    for ( expression ; expression ; expression; ) statement
+-> while_statement
+    while ( expression ) statement
+-> do_while_statement
+    do statement while ( expression ) ;
 -> value_type
     int
     float
