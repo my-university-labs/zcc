@@ -14,7 +14,6 @@ int main()
     ;
     ;
     ;
-
     int m = a + b * c / d % e * (a + b + c - d * e * (f * i));
     if (a + b) {
         int b = 1;

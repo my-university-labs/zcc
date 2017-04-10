@@ -10,21 +10,21 @@
 -> value_declare_define
     value_type value_declare_define_list ;
 -> value_declare_define_list
-    identity [ value ]
-    identity
-    identity , value_declare_define_list
-    identity = expression
-    identity = expression , value_declare_define_list
+    ID [ value ]
+    ID
+    ID , value_declare_define_list
+    ID = expression
+    ID = expression , value_declare_define_list
 -> function_declare
-    value_type identity ( ) ;
-    value_type identity ( arg_list ) ;
-    func_qualifiers value_type identity ( arg_list ) ;
-    func_qualifiers value_type identity ( ) ;
+    value_type ID ( ) ;
+    value_type ID ( arg_list ) ;
+    func_qualifiers value_type ID ( arg_list ) ;
+    func_qualifiers value_type ID ( ) ;
 -> function_define
-    value_type identity ( ) { content }
-    value_type identity ( arg_list ) { content }
-    func_qualifiers value_type identity ( arg_list ) { content  }
-    func_qualifiers value_type identity ( ) { content  }
+    value_type ID ( ) { content }
+    value_type ID ( arg_list ) { content }
+    func_qualifiers value_type ID ( arg_list ) { content  }
+    func_qualifiers value_type ID ( ) { content  }
 -> func_qualifiers
     static
 -> content
@@ -70,6 +70,8 @@
     char
 -> VALUE
     value
+-> ID
+    identity
 -> expression
     expression + _T
     expression - _T
@@ -81,7 +83,7 @@
     _F
 -> _F
     value
-    identity
+    ID
     ( expression )
 -> bool_expression
     expression
@@ -92,12 +94,12 @@
     expression && expression
     expression || expression
 -> expression_assignment
-    identity = expression
+    ID = expression
 -> expression_unary
-    ++ identity
-    -- identity
-    identity ++
-    identity --
+    ++ ID
+    -- ID
+    ID ++
+    ID --
 -> statement
     statement_no_bracket
     statement_have_bracket
@@ -108,5 +110,5 @@
 -> statement_have_bracket
    { content }
 -> arg_list
-    value_type identity
-    arg_list , value_type identity
+    value_type ID
+    arg_list , value_type ID
