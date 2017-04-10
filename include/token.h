@@ -63,6 +63,9 @@
 #define REVERSE 49 // '\\'
 #define SQUOTE 50 // '
 #define DQUOTE 51 // "
+#define ADDADD 52 // ++
+#define SUBSUB 53 // --
+#define MAO 54 // :
 
 #define VALUE 100
 

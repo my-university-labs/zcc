@@ -10,23 +10,30 @@
 -> value_declare_define
     value_type value_declare_define_list ;
 -> value_declare_define_list
-    ID
-    ID , value_declare_define_list
-    ID =  VALUE
-    ID = VALUE , value_declare_define_list
+    identity [ value ]
+    identity
+    identity , value_declare_define_list
+    identity = expression
+    identity = expression , value_declare_define_list
 -> function_declare
-    value_type ID ( ) ;
-    value_type ID ( arg_list ) ;
-    func_qualifiers value_type ID ( arg_list ) ;
-    func_qualifiers value_type ID ( ) ;
+    value_type identity ( ) ;
+    value_type identity ( arg_list ) ;
+    func_qualifiers value_type identity ( arg_list ) ;
+    func_qualifiers value_type identity ( ) ;
 -> function_define
-    value_type ID ( ) { content }
-    value_type ID ( arg_list ) { content }
-    func_qualifiers value_type ID ( arg_list ) { content  }
-    func_qualifiers value_type ID ( ) { content  }
+    value_type identity ( ) { content }
+    value_type identity ( arg_list ) { content }
+    func_qualifiers value_type identity ( arg_list ) { content  }
+    func_qualifiers value_type identity ( ) { content  }
 -> func_qualifiers
     static
 -> content
+    ;
+    content ;
+    content return ;
+    content return value ;
+    value_declare_define
+    content value_declare_define
     expression ;
     content expression ;
     expression_assignment ;
@@ -61,8 +68,6 @@
     float
     double
     char
--> ID
-    identity
 -> VALUE
     value
 -> expression
@@ -87,12 +92,12 @@
     expression && expression
     expression || expression
 -> expression_assignment
-    ID = expression
+    identity = expression
 -> expression_unary
-    ++ ID
-    -- ID
-    ID ++
-    ID --
+    ++ identity
+    -- identity
+    identity ++
+    identity --
 -> statement
     statement_no_bracket
     statement_have_bracket
@@ -101,8 +106,7 @@
     expression ;
     expression_assignment ;
 -> statement_have_bracket
-    { value_type ID = value ; }
-    { content }
+   { content }
 -> arg_list
-    value_type ID
-    arg_list , value_type ID
+    value_type identity
+    arg_list , value_type identity

@@ -18,7 +18,7 @@ void GrammarDealer::run()
     grammar.check_grammar();
     std::cout << "# CREATE DFA #" << std::endl;
     create_dfa();
-    // dfa.check(grammar);
+    dfa.check(grammar);
 
     std::cout << "# CREATE PARSING TABLE #" << std::endl;
     create_parsing_table();

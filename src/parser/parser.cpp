@@ -31,14 +31,16 @@ void Parser::run()
         // std::cout << action.action << std::endl;
         if (action.error) {
             // deal error;
-            std::cerr << "error action" << std::endl;
+            std::cerr << "error action at line :" << tokenizer.get_linenu() << std::endl;
+            std::cerr << "input token is : <" << token_now.get_token() << ", " << token_now.get_attr() << ">" << std::endl;
+            std::cerr << "More Info :" << std::endl;
+
             exit(3);
         } else if (action.action == MOVE_IN) {
             // std::cout << "token 1: " << token_now.get_token() << " " << token_now.get_attr() << std::endl;
             status_stack.push(action.next_status);
             token_stack.push(token_now);
             token_now = tokenizer.next();
-            // std::cout << "token 2: " << token_now.get_token() << " " << token_now.get_attr() << std::endl;
         } else if (action.action == REDUCTION) {
             auto production = grammar.get_production(action.which, action.index);
             for (size_t i = 0; i < production.size(); ++i) {
@@ -77,4 +79,7 @@ void Parser::hook_function(std::string& which, size_t& index, const std::vector<
         std::cout << " ";
     }
     std::cout << std::endl;
+}
+void Parser::deal_error(size_t status)
+{
 }

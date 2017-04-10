@@ -100,7 +100,6 @@ std::vector<Token> Grammar::get_production(const std::string& which, size_t id) 
 
 std::vector<std::vector<Token> > Grammar::get_production(const Token& token) const
 {
-
     if (grammar.find(token) != grammar.end()) {
         return grammar.at(token);
     } else {

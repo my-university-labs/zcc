@@ -1,9 +1,17 @@
--> S' 
-    S
--> S
-    A
--> A
-    identity B
--> B
-    null
-    , identity
+-> program'
+    program
+-> program
+    value_declare_define
+    program value_declare_define
+    function_declare
+    program function_declare
+    function_define
+    program function_define
+-> value_declare_define
+    value_type value_declare_define_list ;
+-> value_declare_define_list
+    ID [ value ]
+    ID
+    ID , value_declare_define_list
+    ID =  VALUE
+    ID = VALUE , value_declare_define_list

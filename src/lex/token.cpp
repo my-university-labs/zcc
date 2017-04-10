@@ -62,6 +62,9 @@ const std::map<std::string, int> token_dict{
     { "\\", REVERSE },
     { "'", SQUOTE },
     { "\"", DQUOTE },
+    { "++", ADDADD },
+    { "--", SUBSUB },
+    { ":", MAO },
 };
 
 bool is_good(const std::string& target)

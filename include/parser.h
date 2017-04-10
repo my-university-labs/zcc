@@ -36,6 +36,8 @@ private:
     // stack to save state and input token
     std::stack<Token> token_stack;
     std::stack<size_t> status_stack;
+
+    void deal_error(size_t status);
 };
 
 #endif
