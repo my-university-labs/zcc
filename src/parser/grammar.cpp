@@ -24,6 +24,8 @@ Grammar::Grammar(std::string grammarf)
     while (std::getline(in, line)) {
         std::istringstream is(line);
         is >> start;
+        if (start == "")
+            continue;
         if (start == "->") {
             is >> which;
             if (first_which) {
