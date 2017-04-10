@@ -12,8 +12,13 @@
 -> value_declare_define_list
     ID
     ID , value_declare_define_list
-    ID = value
-    ID = value , value_declare_define_list
+    ID =  VALUE
+    ID = VALUE , value_declare_define_list
+-> function_declare
+    value_type ID ( ) ;
+    value_type ID ( arg_list ) ;
+    func_qualifiers value_type ID ( arg_list ) ;
+    func_qualifiers value_type ID ( ) ;
 -> function_define
     value_type ID ( ) { content }
     value_type ID ( arg_list ) { content }
@@ -22,26 +27,35 @@
 -> func_qualifiers
     static
 -> content
-    expression
+    expression ;
+    content expression ;
+    expression_assignment ;
+    content expression_assignment ;
     if_statement
+    content if_statement
     for_statement
+    content for_statement
     while_statement
+    content while_statement
     do_while_statement
-    switch_statement
+    content do_while_statement
 -> if_statement
-    if ( expression ) statement
-    if ( expression ) statement else statement
-    if ( expression ) statement ELSEIFS
-    if ( expression ) statement ELSEIFS   else statement
+    if ( bool_expression ) statement
+    if ( bool_expression ) statement else statement
+    if ( bool_expression ) statement ELSEIFS
+    if ( bool_expression ) statement ELSEIFS   else statement
 -> ELSEIFS
-    else if ( expression ) statement
-    ELSEIFS  else if ( expression ) statement
+    else if ( bool_expression ) statement
+    ELSEIFS  else if ( bool_expression ) statement
 -> for_statement
-    for ( expression ; expression ; expression; ) statement
+    for ( expression_assignment ; bool_expression ; expression_assignment ) statement
+    for ( expression_assignment ; bool_expression ; expression_unary ) statement
+    for ( value_declare_define ; bool_expression ; expression_assignment ) statement
+    for ( value_declare_define ; bool_expression ; expression_unary ) statement
 -> while_statement
-    while ( expression ) statement
+    while ( bool_expression ) statement
 -> do_while_statement
-    do statement while ( expression ) ;
+    do statement while ( bool_expression ) ;
 -> value_type
     int
     float
@@ -49,10 +63,46 @@
     char
 -> ID
     identity
+-> VALUE
+    value
 -> expression
-    ID + ID
+    expression + _T
+    expression - _T
+    _T
+-> _T
+    _T * _F
+    _T / _F
+    _T % _F
+    _F
+-> _F
+    value
+    identity
+    ( expression )
+-> bool_expression
+    expression
+    expression > expression
+    expression < expression
+    expression == expression
+    expression != expression
+    expression && expression
+    expression || expression
+-> expression_assignment
+    ID = expression
+-> expression_unary
+    ++ ID
+    -- ID
+    ID ++
+    ID --
 -> statement
+    statement_no_bracket
+    statement_have_bracket
+-> statement_no_bracket
+    value_declare_define
+    expression ;
+    expression_assignment ;
+-> statement_have_bracket
     { value_type ID = value ; }
+    { content }
 -> arg_list
-    int
-    arg_list , int
+    value_type ID
+    arg_list , value_type ID
