@@ -12,9 +12,8 @@
 
 class DFA {
 public:
-    DFA() {}
+    DFA() = default;
     DFA(Status& status);
-
     // status1 -token-> status2
     size_t add_status(const Status& status1, const Token& token, const Status& status2);
 
@@ -24,7 +23,7 @@ public:
 
     Status get_status(size_t id) const;
 
-    Token get_token(size_t id) const
+    inline Token get_token(size_t id) const
     {
         if (dtokens.size() > id)
             return dtokens.at(id);
@@ -37,7 +36,7 @@ public:
         return Token();
     }
 
-    std::map<size_t, size_t> get_relation(size_t id) const
+    inline std::map<size_t, size_t> get_relation(size_t id) const
     {
         if (relation.find(id) != relation.end())
             return relation.at(id);
@@ -55,13 +54,16 @@ public:
         return dstatus.size();
     }
 
-    void clear()
+    inline size_t get_token_id(const Token& token) const
     {
-        dstatus.clear();
-        dtokens.clear();
-        relation.clear();
-        start_status = 0;
+        for (size_t i = 0; i < dtokens.size(); ++i) {
+            if (dtokens[i] == token)
+                return i;
+        }
+        return ERROR;
     }
+
+    size_t get_status_id(const Status& status) const;
 
     template <typename T>
     size_t go(const size_t id, const T& t) const;
@@ -76,32 +78,24 @@ public:
     {
         return (work_index >= dstatus.size() ? true : false);
     }
+
     inline void clear_work_index()
     {
         work_index = 0;
     }
-    inline size_t get_status_id(const Status& status) const
+
+    inline void clear()
     {
-        for (size_t i = 0; i < dstatus.size(); ++i) {
-            if (dstatus[i] == status)
-                return i;
-        }
-        return ERROR;
-    }
-    inline size_t get_token_id(const Token& token) const
-    {
-        for (size_t i = 0; i < dtokens.size(); ++i) {
-            if (dtokens[i] == token)
-                return i;
-        }
-        return ERROR;
+        dstatus.clear();
+        dtokens.clear();
+        relation.clear();
+        start_status = 0;
     }
     // for debug
     void check(Grammar& grammar);
 
 private:
     size_t work_index = 0;
-
     size_t start_status;
     // save every status of dfa
     std::vector<Status> dstatus;

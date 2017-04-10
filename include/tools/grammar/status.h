@@ -27,6 +27,5 @@ public:
 
 private:
     std::unordered_set<Item> content;
-    // wait;
 };
 #endif

@@ -9,6 +9,7 @@
 #include "token.h"
 #include "tokenizer.h"
 
+#include <map>
 #include <stack>
 
 class Parser {
@@ -24,7 +25,7 @@ public:
     // run parser
     void run();
 
-    void hook_function(std::string& which, size_t& index, const std::vector<Token>& tokens);
+    void hook_function(std::string& which, size_t& index, const std::vector<Token>& tokens, int linenu);
 
 private:
     // grammar
@@ -35,9 +36,10 @@ private:
     Tokenizer tokenizer;
     // stack to save state and input token
     std::stack<Token> token_stack;
+
     std::stack<size_t> status_stack;
 
-    void deal_error(size_t status);
+    void deal_error(int linenu, size_t cursor, const std::string& line, std::map<int, std::string> next_token_should_be);
 };
 
 #endif

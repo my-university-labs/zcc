@@ -8,6 +8,7 @@
 #include "token.h"
 #include <fstream>
 #include <map>
+#include <set>
 #include <string>
 
 class ParsingTable {
@@ -24,6 +25,7 @@ public:
         size_t index;
         // is error
         bool error;
+        std::map<int, std::string> next_token_should_be;
     } action_type;
 
     typedef struct {

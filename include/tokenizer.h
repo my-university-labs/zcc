@@ -39,6 +39,10 @@ public:
     bool is_end() { return finished; }
     /* get line number */
     int get_linenu() { return linenu; }
+
+    std::string get_line() { return buffer; }
+
+    size_t get_cursor() { return cursor; }
 private:
     /* work type : type = 0 -> deal file */
     int type;

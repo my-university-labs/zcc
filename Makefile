@@ -11,7 +11,7 @@ OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o \
 	grammar.o parsing_table.o
 
 OBJFS_GRAMMAR = grammar_main.o grammar_tool.o token.o error.o grammar.o \
-	parsing_table.o item.o status.o dfa.o
+	parsing_table.o status.o dfa.o
 
 OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
@@ -38,9 +38,8 @@ prepare:
 	@-mkdir -p build
 
 # main
-$(OBJ_DIR)/main.o: src/main.cpp error.h token.h tokenizer.h
+$(OBJ_DIR)/main.o: src/main.cpp error.h tokenizer.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
-
 
 $(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp tokenizer.h symboltable.h \
 	token.h error.h
@@ -58,7 +57,6 @@ $(OBJ_DIR)/symboltable.o:src/plugin/table/symboltable.cpp symboltable.h
 $(OBJ_DIR)/error.o:src/utils/error.cpp error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-
 # grammar tool
 $(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp grammar_tool.h \
 error.h
@@ -72,9 +70,6 @@ $(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h token.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/status.o: tools/grammar/status.cpp status.h item.h
-	$(CC) $(CPPFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/item.o: tools/grammar/item.cpp item.h grammar.h token.h unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # used by tool and main

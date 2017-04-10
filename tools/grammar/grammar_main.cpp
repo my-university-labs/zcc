@@ -14,9 +14,6 @@ int main(int argc, char* argv[])
 
     GrammarDealer dealer(argv[1]);
     dealer.run();
-    std::string X;
-    while (std::getline(std::cin, X))
-        dealer.test_first(X);
 
     return 0;
 }

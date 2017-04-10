@@ -92,7 +92,8 @@ std::vector<Token> Grammar::get_production(const std::string& which, size_t id) 
     if (grammar.find(parent) != grammar.end() && grammar.at(parent).size() > id) {
         return grammar.at(parent).at(id);
     } else {
-        std::cout << "not find grammar 1 at grammar.cpp : " << which << " " << id << std::endl;
+        std::cout << "not find grammar 1 at grammar.cpp : "
+                  << which << " " << id << std::endl;
         std::vector<Token> tmp;
         return tmp;
     }
@@ -103,7 +104,8 @@ std::vector<std::vector<Token> > Grammar::get_production(const Token& token) con
     if (grammar.find(token) != grammar.end()) {
         return grammar.at(token);
     } else {
-        std::cout << "not find grammar 2 at grammar.cpp : " << token.get_state() << std::endl;
+        std::cout << "not find grammar 2 at grammar.cpp : "
+                  << token.get_state() << std::endl;
         std::vector<std::vector<Token> > tmp;
         return tmp;
     }

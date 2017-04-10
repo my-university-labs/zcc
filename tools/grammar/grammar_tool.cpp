@@ -15,18 +15,14 @@ static bool merge_set_ignore_null(std::unordered_set<int>& set1,
 
 void GrammarDealer::run()
 {
-    grammar.check_grammar();
     std::cout << "# CREATE DFA #" << std::endl;
     create_dfa();
-    dfa.check(grammar);
-
     std::cout << "# CREATE PARSING TABLE #" << std::endl;
     create_parsing_table();
-    std::cout << "# ACTION #" << std::endl;
-    parsing_table.output_action_table();
-    std::cout << "# GOTO #" << std::endl;
-    parsing_table.output_goto_table();
+    std::cout << "# SAVE PARSING TABLE INFORMATION TO FILE: "
+              << PARSING_TABLE_FILE_NAME << std::endl;
     parsing_table.save_table_to_file();
+    std::cout << "$ ALL DONE" << std::endl;
 }
 
 void GrammarDealer::test_first(std::string line)
@@ -79,7 +75,8 @@ Status GrammarDealer::closure(Status& status)
                 for (size_t loc = 0; loc < ps.size(); ++loc) {
                     for (auto end_symbol : end_symbols) {
                         // which index end_symbol productionsize
-                        Item new_item(token.get_state(), loc, end_symbol, ps.at(loc).size());
+                        Item new_item(token.get_state(),
+                            loc, end_symbol, ps.at(loc).size());
                         status.add_item(new_item);
                     }
                 }
@@ -139,7 +136,8 @@ void GrammarDealer::create_parsing_table()
     // move work status to first status
     dfa.clear_work_index();
     // for all status I0 I1 I2 I3 ...
-    for (size_t index = dfa.get_work_index(); !dfa.no_status_left(); index = dfa.move_next()) {
+    for (size_t index = dfa.get_work_index();
+         !dfa.no_status_left(); index = dfa.move_next()) {
         // status to be deal
         auto status = dfa.get_status(index);
         // iterms in status
@@ -170,7 +168,9 @@ void GrammarDealer::create_parsing_table()
                 } else if (item.get_which() != grammar.get_start_state()) {
                     // 规约
                     parsing_table.add_into_action(index, item.get_end_symbol(),
-                        std::string(REDUCTION) + " " + item.get_which() + "  " + std::to_string(item.get_index()));
+                        std::string(REDUCTION) + " "
+                            + item.get_which() + "  "
+                            + std::to_string(item.get_index()));
                 }
                 continue;
             }
@@ -196,13 +196,13 @@ void GrammarDealer::create_parsing_table()
             if (!next_token.is_state_token() && !next_token.is_null_token()
                 && relation.find(dfa.get_token_id(next_token)) != relation.end()) {
                 // 移入 并进入状态 next
-
                 parsing_table.add_into_action(index, next_token.get_token(),
                     std::string(MOVE_IN) + " "
                         + std::to_string(relation.at(dfa.get_token_id(next_token))));
             }
             if (next_token.is_null_token()) {
-                std::cout << "null state need to be dealed in grammar_tool.cpp at 185" << std::endl;
+                std::cout << "null state need to be dealed in grammar_tool.cpp at 185"
+                          << std::endl;
             }
         }
     }

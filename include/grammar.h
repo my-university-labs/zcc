@@ -43,7 +43,6 @@ private:
     std::string start_state;
 
     size_t start_index = 0;
-
     // grammar saver
     // key -> [production1, production2 ...]
     std::map<Token, std::vector<std::vector<Token> > > grammar;

@@ -111,12 +111,22 @@ size_t DFA::go(const size_t id, const T& t) const
             break;
         }
     }
-    if (relation.find(id) != relation.end() && relation.at(id).find(tloc) != relation.at(id).end()) {
+    if (relation.find(id) != relation.end()
+        && relation.at(id).find(tloc) != relation.at(id).end()) {
         return relation.at(id).at(tloc);
     } else {
         // deal error
         return ERROR;
     }
+}
+
+size_t DFA::get_status_id(const Status& status) const
+{
+    for (size_t i = 0; i < dstatus.size(); ++i) {
+        if (dstatus[i] == status)
+            return i;
+    }
+    return ERROR;
 }
 
 void DFA::check(Grammar& grammar)
@@ -125,11 +135,10 @@ void DFA::check(Grammar& grammar)
     std::cout << "Stauts size: " << dstatus.size() << std::endl;
     std::cout << "Token size: " << dtokens.size() << std::endl;
     std::cout << "# Show all Status ------------> " << std::endl;
-
     for (size_t i = 0; i < dstatus.size(); ++i) {
         std::cout << "Status " << i << std::endl;
         for (auto it : dstatus[i].get_content()) {
-            std::cout << it.get_which() << " -> "; //<< it.get_index() << " " << it.get_decimal() << " " << it.get_production_size() << std::endl;
+            std::cout << it.get_which() << " -> ";
             auto p = grammar.get_production(it.get_which(), it.get_index());
             for (auto t : p) {
                 if (t.is_state_token()) {
@@ -161,9 +170,7 @@ void DFA::check(Grammar& grammar)
         }
         std::cout << std::endl;
     }
-
     std::cout << "# Show Relation ---------------> " << std::endl;
-
     for (auto& m : relation) {
         std::cout << "new relation: " << m.first << std::endl;
         for (auto& i : m.second) {

@@ -9,7 +9,6 @@
 
 ParsingTable::ParsingTable(std::string tablef)
 {
-    std::cout << "load parsing table info" << std::endl;
     std::ifstream in(tablef);
     if (in) {
         std::string line;
@@ -52,21 +51,27 @@ ParsingTable::ParsingTable(std::string tablef)
     }
 }
 
-void ParsingTable::add_into_action(const size_t status, const int terminal_symbol, const std::string& action)
+void ParsingTable::add_into_action(const size_t status,
+    const int terminal_symbol, const std::string& action)
 {
 #ifdef DEBUG_PARSING_TABLE
-    std::cout << "DEBUG_ACTION" << status << " - " << terminal_symbol << " -> " << action << std::endl;
+    std::cout << "DEBUG_ACTION" << status << " - "
+              << terminal_symbol << " -> " << action << std::endl;
 #endif
     if (action_table.find(status) != action_table.end()) {
-        if ((action_table[status]).find(terminal_symbol) == (action_table[status]).end()) {
+        if ((action_table[status]).find(terminal_symbol)
+            == (action_table[status]).end()) {
             action_table[status][terminal_symbol] = action;
-        } else if ((action_table[status]).find(terminal_symbol) != (action_table[status]).end()
+        } else if ((action_table[status]).find(terminal_symbol)
+                != (action_table[status]).end()
             && action_table[status][terminal_symbol] != action) {
-            std::cerr << "Error At parsing_table.cpp add_into_action: grammar error" << std::endl;
+            std::cerr << "Error At parsing_table.cpp add_into_action: grammar error"
+                      << std::endl;
             std::cerr << "More Info: " << std::endl
                       << "from: " << status << std::endl
                       << "meet: " << terminal_symbol << std::endl
-                      << "action table had: " << action_table[status][terminal_symbol] << std::endl
+                      << "action table had: " << action_table[status][terminal_symbol]
+                      << std::endl
                       << "want insert: " << action << std::endl;
             exit(2);
         } else {
@@ -80,10 +85,12 @@ void ParsingTable::add_into_action(const size_t status, const int terminal_symbo
     }
 }
 
-void ParsingTable::add_into_goto(const size_t status, const Token& token, const size_t new_status)
+void ParsingTable::add_into_goto(const size_t status, const Token& token,
+    const size_t new_status)
 {
 #ifdef DEBUG_PARSING_TABLE
-    std::cout << "DEBUG_GOTO" << status << " - " << token.get_token() << " " << token.get_attr() << " -> " << new_status << std::endl;
+    std::cout << "DEBUG_GOTO" << status << " - " << token.get_token()
+              << " " << token.get_attr() << " -> " << new_status << std::endl;
 #endif
 
     if (goto_table.find(status) != goto_table.end()) {
@@ -91,7 +98,8 @@ void ParsingTable::add_into_goto(const size_t status, const Token& token, const 
             goto_table[status][token] = new_status;
         } else if (goto_table[status].find(token) != goto_table[status].end()
             && goto_table[status][token] != new_status) {
-            std::cerr << "Error At parsing_table.cpp 29: grammar error" << std::endl;
+            std::cerr << "Error At parsing_table.cpp 29: grammar error"
+                      << std::endl;
             std::cerr << "More Info: " << status
                       << " " << token.get_token()
                       << " " << goto_table[status][token]
@@ -147,7 +155,8 @@ void ParsingTable::save_table_to_file()
     }
 }
 
-ParsingTable::action_type ParsingTable::query_action(size_t start_status, int terminal_symbol) const
+ParsingTable::action_type ParsingTable::query_action(size_t start_status,
+    int terminal_symbol) const
 {
     action_type result;
     if (action_table.find(start_status) != action_table.cend()
@@ -169,6 +178,9 @@ ParsingTable::action_type ParsingTable::query_action(size_t start_status, int te
 
     } else {
         result.error = true;
+        if (action_table.find(start_status) != action_table.cend()) {
+            result.next_token_should_be = action_table.at(start_status);
+        }
     }
     return result;
 }

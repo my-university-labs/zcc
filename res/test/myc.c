@@ -16,26 +16,29 @@ int main()
     ;
     int m = a + b * c / d % e * (a + b + c - d * e * (f * i));
     if (a + b) {
+
         int b = 1;
     } else if (a * b) {
         int b = 1;
     } else {
         int b = 3;
     }
-
+    do {
+        ;
+    } while (1);
     if (a + b) {
         int b = 1;
     }
     while (a + b) {
         int b = 1;
     }
-    for (i = 1; i < 100; i++) {
+    for (i = 1; i < 100; i++)
         int i = 1;
-        a = a + b;
-        if (a && b) {
-            b = a;
-        }
+    a = a + b;
+    if (a && b) {
+        b = a;
     }
+
     return 0;
 }
 float function_test(int a, int b)
@@ -44,4 +47,3 @@ float function_test(int a, int b)
         int i = 0;
     } while (i > 10);
     return 0.12;
-}

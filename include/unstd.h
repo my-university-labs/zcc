@@ -1,5 +1,6 @@
 /* author: dongchangzhang */
 /* time: Sun 02 Apr 2017 09:26:01 PM CST */
+// define something will be used by many many function
 #ifndef INCLUDE_UNSTD_H
 #define INCLUDE_UNSTD_H
 
