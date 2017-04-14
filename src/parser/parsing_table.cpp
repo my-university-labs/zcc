@@ -65,11 +65,49 @@ void ParsingTable::add_into_action(const size_t status,
         } else if ((action_table[status]).find(terminal_symbol)
                 != (action_table[status]).end()
             && action_table[status][terminal_symbol] != action) {
+            // add rule for the ambiguity of if-else
+            // rule1: when meet else, move in it
+            if (get_token_info(terminal_symbol) == "else") {
+                size_t index = 0;
+                std::string tmp;
+                while (action[index] != ' ') {
+                    tmp += action[index++];
+                }
+                if (tmp == MOVE_IN) {
+                    std::cout << "deal ambiguity: meet else and move in else" << std::endl;
+                    action_table[status][terminal_symbol] = action;
+                    return;
+                } else {
+                    std::cout << "deal ambiguity: want reduce but fuck reduction" << std::endl;
+                    return;
+                }
+            } else { // runle2 : when want to reduce ELSEIFS and reduce if -> reduce ELSEIFS
+                std::string act1, act2, which1, which2;
+                std::string action_exist = action_table[status][terminal_symbol];
+                std::istringstream is1(action_exist);
+                is1 >> act1 >> which1;
+                std::istringstream is2(action);
+                is2 >> act2 >> which2;
+                if (act1 == act2 && act1 == REDUCTION) {
+                    if (which1 == which2) {
+                        std::cout << "fuck same same same" << std::endl;
+                        return;
+                    } else if (which1 == "if_statement" && which2 == "ELSEIFS") {
+                        std::cout << "deal ambiguity: reduce ELSEIF but not if" << std::endl;
+                        action_table[status][terminal_symbol] = action;
+                    } else if (which1 == "ELSEIFS" && which2 == "if_statement") {
+                        std::cout << "deal ambiguity: nothing to do" << std::endl;
+                        ; // do nothing
+                    }
+                    return;
+                }
+            }
+            // deal error
             std::cerr << "Error At parsing_table.cpp add_into_action: grammar error"
                       << std::endl;
             std::cerr << "More Info: " << std::endl
-                      << "from: " << status << std::endl
-                      << "meet: " << terminal_symbol << std::endl
+                      << "from status " << status << std::endl
+                      << "meet terminal symbol code " << terminal_symbol << " is: " << get_token_info(terminal_symbol) << std::endl
                       << "action table had: " << action_table[status][terminal_symbol]
                       << std::endl
                       << "want insert: " << action << std::endl;

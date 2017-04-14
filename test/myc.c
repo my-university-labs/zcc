@@ -48,17 +48,33 @@ float function_test(int a, int b)
         int i = 0;
     } while (i > 10);
 
-    for (i = 0; i || Y ; ++i) ++i;
+    for (i = 0; i || Y; ++i)
+        ++i;
     return 0.12;
     switch (ch) {
-        case 1: 
-            if (ch == 1) int a;
-            break;
-        case 2: 
-            while (i < 10) --i;
-        case 3:
-        case 4:
-        default:
-            b = 0;
+    case 1:
+        if (ch == 1)
+            int a;
+        break;
+    case 2:
+        while (i < 10)
+            --i;
+    case 3:
+    case 4:
+    default:
+        b = 0;
     }
+    if (a + b)
+        if (a + b)
+            a = 1;
+        else if (b + c)
+            b = 2;
+        else
+            b = 2;
+    else if (a)
+        b = 2;
+    else if (c)
+        d = 3;
+    else
+        d = 3;
 }
