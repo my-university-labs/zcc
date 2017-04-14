@@ -32,8 +32,9 @@ int main()
     while (a + b) {
         int b = 1;
     }
-    for (i = 1; i < 100; i++)
+    for (i = 1; i < 100; i++) {
         int i = 1;
+    }
     a = a + b;
     if (a && b) {
         b = a;
@@ -46,4 +47,18 @@ float function_test(int a, int b)
     do {
         int i = 0;
     } while (i > 10);
+
+    for (i = 0; i || Y ; ++i) ++i;
     return 0.12;
+    switch (ch) {
+        case 1: 
+            if (ch == 1) int a;
+            break;
+        case 2: 
+            while (i < 10) --i;
+        case 3:
+        case 4:
+        default:
+            b = 0;
+    }
+}

@@ -10,16 +10,24 @@
 -> value_declare_define
     value_type value_declare_define_list ;
 -> value_declare_define_list
-    ID [ value ]
     ID
-    ID , value_declare_define_list
+    value_declare_define_list , ID
+    ID array_times
+    value_declare_define_list , ID array_times
     ID = expression
-    ID = expression , value_declare_define_list
+    value_declare_define_list ID = expression
+-> array_times
+    [ VALUE ]
+    array_times [ VALUE ]
 -> function_declare
     value_type ID ( ) ;
     value_type ID ( arg_list ) ;
     func_qualifiers value_type ID ( arg_list ) ;
     func_qualifiers value_type ID ( ) ;
+    void ID ( ) ;
+    void ID ( arg_list ) ;
+    func_qualifiers void ID ( arg_list ) ;
+    func_qualifiers void ID ( ) ;
 -> function_define
     value_type ID ( ) { content }
     value_type ID ( arg_list ) { content }
@@ -28,24 +36,34 @@
 -> func_qualifiers
     static
 -> content
+    content_alone
+    content_many
+-> content_alone
     ;
+    return ;
+    return VALUE ;
+    value_declare_define
+    expression ;
+    expression_assignment ;
+    expression_unary ;
+    for_statement
+    while_statement
+    do_while_statement
+    switch_statement
+-> content_many
+    if_statement
     content ;
     content return ;
-    content return value ;
-    value_declare_define
+    content return VALUE ;
     content value_declare_define
-    expression ;
     content expression ;
-    expression_assignment ;
     content expression_assignment ;
-    if_statement
+    content expression_unary ;
     content if_statement
-    for_statement
     content for_statement
-    while_statement
     content while_statement
-    do_while_statement
     content do_while_statement
+    content switch_statement
 -> if_statement
     if ( bool_expression ) statement
     if ( bool_expression ) statement else statement
@@ -57,12 +75,20 @@
 -> for_statement
     for ( expression_assignment ; bool_expression ; expression_assignment ) statement
     for ( expression_assignment ; bool_expression ; expression_unary ) statement
-    for ( value_declare_define ; bool_expression ; expression_assignment ) statement
-    for ( value_declare_define ; bool_expression ; expression_unary ) statement
 -> while_statement
     while ( bool_expression ) statement
 -> do_while_statement
     do statement while ( bool_expression ) ;
+-> switch_statement
+    switch ( expression ) { CASE }
+    switch ( expression ) { CASE default : content }
+-> CASE
+    case expression :
+    case expression : content
+    case expression : content break ;
+    CASE case expression :
+    CASE case expression : content
+    CASE case expression : content break ;
 -> value_type
     int
     float
@@ -82,7 +108,7 @@
     _T % _F
     _F
 -> _F
-    value
+    VALUE
     ID
     ( expression )
 -> bool_expression
@@ -101,13 +127,7 @@
     ID ++
     ID --
 -> statement
-    statement_no_bracket
-    statement_have_bracket
--> statement_no_bracket
-    value_declare_define
-    expression ;
-    expression_assignment ;
--> statement_have_bracket
+    content_alone
    { content }
 -> arg_list
     value_type ID
