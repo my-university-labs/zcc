@@ -65,41 +65,53 @@ void ParsingTable::add_into_action(const size_t status,
         } else if ((action_table[status]).find(terminal_symbol)
                 != (action_table[status]).end()
             && action_table[status][terminal_symbol] != action) {
+            std::string act1, act2, which1, which2;
+            std::string action_exist = action_table[status][terminal_symbol];
+            std::istringstream is1(action_exist);
+            is1 >> act1 >> which1;
+            std::istringstream is2(action);
+            is2 >> act2 >> which2;
             // add rule for the ambiguity of if-else
-            // rule1: when meet else, move in it
             if (get_token_info(terminal_symbol) == "else") {
-                size_t index = 0;
-                std::string tmp;
-                while (action[index] != ' ') {
-                    tmp += action[index++];
-                }
-                if (tmp == MOVE_IN) {
-                    std::cout << "deal ambiguity: meet else and move in else" << std::endl;
+
+                if (act2 == REDUCTION && which2 == "if_statement") {
+                    // rule1: when meet else, and want to reduce if_statement
+                    // ignore this action
+                    return;
+                } else if (act1 == REDUCTION && act1 == act2
+                    && which1 == "if_statement" && which2 != "if_statement") {
+                    // rule2 : when reduce if_statement had in the table
+                    // but this action want to reduce another expression
+                    // then write this new action into action-table
                     action_table[status][terminal_symbol] = action;
                     return;
-                } else {
-                    std::cout << "deal ambiguity: want reduce but fuck reduction" << std::endl;
+                } else if (act1 == REDUCTION && which1 == "IF"
+                    && act2 == REDUCTION && which2 == "ELSEIFS") {
+                    // rule3: when want to reduce ELSEIFS
+                    // but reduce IF had in the action-table
+                    // then write this new action into action-table
+                    action_table[status][terminal_symbol] = action;
+                    return;
+                } else if (act1 == REDUCTION && which1 == "ELSEIFS"
+                    && act2 == REDUCTION && which2 == "IF") {
+                    // rule4: when reduce ELSEIFS had in action-table
+                    // but want to reduce IF
+                    // ignore this action
                     return;
                 }
-            } else { // runle2 : when want to reduce ELSEIFS and reduce if -> reduce ELSEIFS
-                std::string act1, act2, which1, which2;
-                std::string action_exist = action_table[status][terminal_symbol];
-                std::istringstream is1(action_exist);
-                is1 >> act1 >> which1;
-                std::istringstream is2(action);
-                is2 >> act2 >> which2;
+            } else {
                 if (act1 == act2 && act1 == REDUCTION) {
-                    if (which1 == which2) {
-                        std::cout << "fuck same same same" << std::endl;
-                        return;
-                    } else if (which1 == "if_statement" && which2 == "ELSEIFS") {
-                        std::cout << "deal ambiguity: reduce ELSEIF but not if" << std::endl;
+                    if (which2 == "ELSEIFS" && act2 == REDUCTION) {
+                        // rule5: when want to reduce ELSEIFS
+                        // but do not meet 'else'
+                        // then add this action into action-table
                         action_table[status][terminal_symbol] = action;
-                    } else if (which1 == "ELSEIFS" && which2 == "if_statement") {
-                        std::cout << "deal ambiguity: nothing to do" << std::endl;
-                        ; // do nothing
+                        return;
+                    } else if (which1 == "ELSEIFS" && act1 == REDUCTION) {
+                        // rule6: reduce ELSEIFS had in action table
+                        // ignore this action
+                        return;
                     }
-                    return;
                 }
             }
             // deal error
@@ -107,7 +119,8 @@ void ParsingTable::add_into_action(const size_t status,
                       << std::endl;
             std::cerr << "More Info: " << std::endl
                       << "from status " << status << std::endl
-                      << "meet terminal symbol code " << terminal_symbol << " is: " << get_token_info(terminal_symbol) << std::endl
+                      << "meet terminal symbol code " << terminal_symbol
+                      << " is: " << get_token_info(terminal_symbol) << std::endl
                       << "action table had: " << action_table[status][terminal_symbol]
                       << std::endl
                       << "want insert: " << action << std::endl;
@@ -130,7 +143,6 @@ void ParsingTable::add_into_goto(const size_t status, const Token& token,
     std::cout << "DEBUG_GOTO" << status << " - " << token.get_token()
               << " " << token.get_attr() << " -> " << new_status << std::endl;
 #endif
-
     if (goto_table.find(status) != goto_table.end()) {
         if (goto_table[status].find(token) == goto_table[status].end()) {
             goto_table[status][token] = new_status;
@@ -235,7 +247,7 @@ ParsingTable::goto_type ParsingTable::query_goto(size_t status, const Token& tok
     }
     return result;
 }
-
+// for debug1
 void ParsingTable::output_action_table()
 {
     for (auto& m : action_table) {
@@ -246,7 +258,7 @@ void ParsingTable::output_action_table()
         std::cout << " ------------------- " << std::endl;
     }
 }
-
+// for debug2
 void ParsingTable::output_goto_table()
 {
     for (auto& m : goto_table) {

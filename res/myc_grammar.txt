@@ -35,6 +35,9 @@
     func_qualifiers value_type ID ( ) { content  }
 -> func_qualifiers
     static
+-> arg_list
+    value_type ID
+    arg_list , value_type ID
 -> content
     content_alone
     content_many
@@ -42,6 +45,8 @@
     ;
     return ;
     return VALUE ;
+    break ;
+    continue ;
     value_declare_define
     expression ;
     expression_assignment ;
@@ -51,10 +56,16 @@
     while_statement
     do_while_statement
     switch_statement
+-> content_alone_loop
+    content_alone
+    break ;
+    continue ;
 -> content_many
     content ;
     content return ;
     content return VALUE ;
+    content break ;
+    content continue ;
     content value_declare_define
     content expression ;
     content expression_assignment ;
@@ -65,13 +76,17 @@
     content do_while_statement
     content switch_statement
 -> if_statement
+    IF
+    IF ELSEIFS
+    IF ELSE
+    IF ELSEIFS ELSE
+-> IF
     if ( bool_expression ) statement
-    if ( bool_expression ) statement else statement
-    if ( bool_expression ) statement ELSEIFS
-    if ( bool_expression ) statement ELSEIFS   else statement
 -> ELSEIFS
     else if ( bool_expression ) statement
     ELSEIFS  else if ( bool_expression ) statement
+-> ELSE
+    else statement
 -> for_statement
     for ( expression_assignment ; bool_expression ; expression_assignment ) statement
     for ( expression_assignment ; bool_expression ; expression_unary ) statement
@@ -85,10 +100,8 @@
 -> CASE
     case expression :
     case expression : content
-    case expression : content break ;
     CASE case expression :
     CASE case expression : content
-    CASE case expression : content break ;
 -> value_type
     int
     float
@@ -113,6 +126,7 @@
     ( expression )
 -> bool_expression
     expression
+    expression_unary
     expression > expression
     expression < expression
     expression == expression
@@ -129,6 +143,3 @@
 -> statement
     content_alone
    { content }
--> arg_list
-    value_type ID
-    arg_list , value_type ID
