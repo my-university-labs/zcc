@@ -15,7 +15,7 @@
     ID array_times
     value_declare_define_list , ID array_times
     ID = expression
-    value_declare_define_list ID = expression
+    value_declare_define_list , ID = expression
 -> array_times
     [ VALUE ]
     array_times [ VALUE ]
@@ -31,8 +31,12 @@
 -> function_define
     value_type ID ( ) { content }
     value_type ID ( arg_list ) { content }
+    void ID ( ) { content }
+    void ID ( arg_list ) { content }
     func_qualifiers value_type ID ( arg_list ) { content  }
     func_qualifiers value_type ID ( ) { content  }
+    func_qualifiers void ID ( arg_list ) { content  }
+    func_qualifiers void ID ( ) { content  }
 -> func_qualifiers
     static
 -> arg_list
@@ -56,10 +60,6 @@
     while_statement
     do_while_statement
     switch_statement
--> content_alone_loop
-    content_alone
-    break ;
-    continue ;
 -> content_many
     content ;
     content return ;

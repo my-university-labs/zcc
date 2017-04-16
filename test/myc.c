@@ -1,3 +1,4 @@
+void a(int a, int b);
 int main()
 {
     if (a)
@@ -22,18 +23,23 @@ int main()
     }
 
     char a;
-    switch(a) {
-        case '1':
-            if (a) ++a;
-            break;
-        case 2:
-        case 3:
-        case 4:
-        default:
-            while (i) {
-                continue;
-            }
+    switch (a) {
+    case '1':
+        if (a)
+            ++a;
+        break;
+    case 2:
+    case 3:
+    case 4:
+    default:
+        while (i) {
+            continue;
+        }
     }
 
     return 0;
+}
+void a(int a, int b)
+{
+    ;
 }
