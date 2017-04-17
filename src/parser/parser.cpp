@@ -68,7 +68,7 @@ void Parser::run()
 void Parser::hook_function(std::string& which, size_t& index,
     const std::vector<Token>& tokens, int linenu)
 {
-    std::cout << "At line : " << std::left << std::setw(5) << linenu
+    std::cout << std::left << std::setw(3) << linenu
               << " :  " << std::left << std::setw(30) << which << "  ->  ";
 
     for (auto t : tokens) {
