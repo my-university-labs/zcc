@@ -1,8 +1,10 @@
 @echo off
 
-echo input test-file-name
+set lib_loc=%cd%\lib
 
-set/p xxxx= >nul
+set PATH=%lib_loc%;
+
+echo input test-file-name please
 
 echo file is %xxxx%
 
