@@ -3,6 +3,7 @@
 
 #include "error.h"
 #include "parser.h"
+#include "translate.h"
 
 #include <algorithm>
 #include <iomanip>

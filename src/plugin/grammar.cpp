@@ -18,9 +18,9 @@ Grammar::Grammar(std::string grammarf)
         exit(1);
     }
     std::string which;
-    std::string start, comment, line;
+    std::string start, action, comment, line;
     std::vector<Token> ptmp;
-    std::vector<std::vector<Token> > productions;
+    std::vector<std::vector<Token>> productions;
     while (std::getline(in, line)) {
         std::istringstream is(line);
         is >> start;
@@ -36,6 +36,7 @@ Grammar::Grammar(std::string grammarf)
             comment = line;
         } else if (start != "") {
             ptmp.clear();
+            action = NONE_ACTION;
             while (true) {
                 if (start == "identity") {
                     // id
@@ -48,6 +49,8 @@ Grammar::Grammar(std::string grammarf)
                 } else if (start == "null") {
                     Token token;
                     ptmp.push_back(token);
+                } else if (start == ACTION) {
+                    is >> action;
                 } else if ((code = get_code(start)) != ID) {
                     // key word, separator or operator
                     Token token(code, start);
@@ -67,6 +70,12 @@ Grammar::Grammar(std::string grammarf)
                 productions.clear();
                 productions.push_back(ptmp);
                 grammar[parent] = productions;
+            }
+            if (actions.find(parent) != actions.end()) {
+                actions[parent].push_back(action);
+            } else {
+                std::vector<std::string> newa{ action };
+                actions[parent] = newa;
             }
         }
     }
@@ -101,14 +110,26 @@ std::vector<Token> Grammar::get_production(const std::string& which, size_t id) 
     }
 }
 
-std::vector<std::vector<Token> > Grammar::get_production(const Token& token) const
+std::vector<std::vector<Token>> Grammar::get_production(const Token& token) const
 {
     if (grammar.find(token) != grammar.end()) {
         return grammar.at(token);
     } else {
         std::cout << "not find grammar 2 at grammar.cpp : "
                   << token.get_state() << std::endl;
-        std::vector<std::vector<Token> > tmp;
+        std::vector<std::vector<Token>> tmp;
         return tmp;
+    }
+}
+
+std::string Grammar::get_action(const std::string& which, size_t id) const
+{
+    Token parent(which);
+    if (actions.find(parent) != actions.end() && actions.at(parent).size() > id) {
+        return actions.at(parent).at(id);
+    } else {
+        std::cout << "not find grammar 1 at grammar.cpp : "
+                  << which << " " << id << std::endl;
+        return NONE_ACTION;
     }
 }

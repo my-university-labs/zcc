@@ -14,6 +14,9 @@
 #define REDUCTION "$reduction"
 #define ACCEPT "$accept"
 
+#define ACTION "$action"
+
+#define NONE_ACTION "$none_action"
 #define PARSING_TABLE_FILE_NAME "parsing_table.txt"
 
 // debug dfa

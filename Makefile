@@ -4,7 +4,7 @@ TARGET = bin/zcc
 # use it to deal grammar
 TOOL = bin/parsingtable_creater
 
-OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar.o parsing_table.o
+OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar.o parsing_table.o translate.o
 
 OBJFS_GRAMMAR = pmain.o grammar_tool.o token.o error.o grammar.o parsing_table.o status.o dfa.o
 
@@ -14,7 +14,7 @@ OBJECTS_GRAMMAR = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS_GRAMMAR))
 
 CC = g++
 
-INCLUDE = -Iinclude -Iinclude/lex -Iinclude/parser -Iinclude/plugin -Iinclude/utils -Iinclude/tools/grammar
+INCLUDE = -Iinclude -Iinclude/lex -Iinclude/parser -Iinclude/plugin -Iinclude/utils -Iinclude/tools/grammar -Iinclude/translate
 
 CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 
@@ -33,7 +33,7 @@ prepare:
 	@-mkdir -p build
 
 # main
-$(OBJ_DIR)/main.o: src/main.cpp include/utils/error.h include/parser/parser.h
+$(OBJ_DIR)/main.o: src/main.cpp include/utils/error.h include/parser/parser.h include/translate/translate.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp include/lex/tokenizer.h include/plugin/symboltable.h include/plugin/token.h include/utils/error.h
@@ -49,6 +49,9 @@ $(OBJ_DIR)/symboltable.o:src/plugin/symboltable.cpp include/plugin/symboltable.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/error.o:src/utils/error.cpp include/utils/error.h
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/translate.o:src/translate/translate.cpp include/translate/translate.h include/plugin/token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # grammar tool

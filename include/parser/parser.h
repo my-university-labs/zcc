@@ -28,6 +28,12 @@ public:
     void hook_function(std::string& which, size_t& index, const std::vector<Token>& tokens, int linenu);
 
 private:
+    typedef struct {
+        int type;
+        std::string sval;
+        int ival;
+        float fval;
+    } val_type;
     // grammar
     Grammar grammar;
     // parsing table
@@ -38,6 +44,8 @@ private:
     std::stack<Token> token_stack;
 
     std::stack<size_t> status_stack;
+
+    std::stack<val_type> value_stack;
 
     void deal_error(int linenu, size_t cursor, const std::string& line, std::map<int, std::string> next_token_should_be);
 };

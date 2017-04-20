@@ -10,11 +10,11 @@
 -> value_declare_define
     value_type value_declare_define_list ;
 -> value_declare_define_list
-    ID
+    ID $action action_value_declare
     value_declare_define_list , ID
     ID array_times
     value_declare_define_list , ID array_times
-    ID = expression
+    ID = expression $action action_value_define
     value_declare_define_list , ID = expression
 -> array_times
     [ VALUE ]
@@ -103,10 +103,10 @@
     CASE case expression :
     CASE case expression : content
 -> value_type
-    int
-    float
-    double
-    char
+    int  $action action_VT
+    float  $action action_VT
+    double  $action action_VT
+    char  $action action_VT
 -> VALUE
     value
 -> ID

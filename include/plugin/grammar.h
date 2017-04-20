@@ -26,7 +26,9 @@ public:
 
     std::vector<Token> get_production(const std::string& which, size_t id) const;
 
-    std::vector<std::vector<Token> > get_production(const Token& token) const;
+    std::vector<std::vector<Token>> get_production(const Token& token) const;
+
+    std::string get_action(const std::string& which, size_t id) const;
 
     void check_grammar();
 
@@ -39,12 +41,14 @@ public:
     size_t get_start_index() const { return start_index; }
 
     size_t get_start_size() const { return get_special_state().size(); }
+
 private:
     std::string start_state;
 
     size_t start_index = 0;
     // grammar saver
     // key -> [production1, production2 ...]
-    std::map<Token, std::vector<std::vector<Token> > > grammar;
+    std::map<Token, std::vector<std::vector<Token>>> grammar;
+    std::map<Token, std::vector<std::string>> actions;
 };
 #endif

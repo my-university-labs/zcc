@@ -2,6 +2,7 @@
 /* time: Sat 11 Mar 2017 11:24:09 PM CST */
 #include "parser.h"
 #include "token.h"
+#include "translate.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -68,6 +69,9 @@ void Parser::run()
 void Parser::hook_function(std::string& which, size_t& index,
     const std::vector<Token>& tokens, int linenu)
 {
+    std::cout << "action is: " << grammar.get_action(which, index) << std::endl;
+    std::string action = grammar.get_action(which, index);
+    action_run(action);
     std::cout << std::left << std::setw(3) << linenu
               << " :  " << std::left << std::setw(30) << which << "  ->  ";
 
