@@ -2,9 +2,8 @@
 
 while [ 1 == 1 ]
 do
-read files
+    read files
 
-./bin/zcc res/myc_grammar.txt res/parsing_table.txt $files
-echo "---------------------------------"
-echo ""
+    ./bin/zcc res/myc_grammar.txt res/parsing_table.txt $files
+    echo "---------------------------------"
 done

@@ -1,17 +1,12 @@
-VPATH = ./include:./include/tools/grammar/:./tools/grammar/:./src:src/lex \
-:./src/parser:./src/plugin:./src/plugin/grammar:./src/plugin/table:./src/utils
-
 OBJ_DIR = build
 # complier
 TARGET = bin/zcc
 # use it to deal grammar
 TOOL = bin/grammar_tool
 
-OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o \
-	grammar.o parsing_table.o
+OBJFS = main.o tokenizer.o token.o parser.o symboltable.o error.o grammar.o parsing_table.o
 
-OBJFS_GRAMMAR = grammar_main.o grammar_tool.o token.o error.o grammar.o \
-	parsing_table.o status.o dfa.o
+OBJFS_GRAMMAR = grammar_main.o grammar_tool.o token.o error.o grammar.o parsing_table.o status.o dfa.o
 
 OBJECTS = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS))
 
@@ -19,9 +14,9 @@ OBJECTS_GRAMMAR = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS_GRAMMAR))
 
 CC = g++
 
-INCLUDE = -Iinclude -Iinclude/tools/grammar
+INCLUDE = -Iinclude -Iinclude/lex -Iinclude/parser -Iinclude/plugin/symboltable -Iinclude/plugin/token -Iinclude/plugin/grammar -Iinclude/plugin/parsingtable -Iinclude/utils -Iinclude/tools/grammar
 
-CPPFLAGS = -Wall -std=c++11  $(INCLUDE)
+CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 
 all:$(TARGET)
 
@@ -38,46 +33,42 @@ prepare:
 	@-mkdir -p build
 
 # main
-$(OBJ_DIR)/main.o: src/main.cpp error.h tokenizer.h
+$(OBJ_DIR)/main.o: src/main.cpp include/utils/error.h include/parser/parser.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp tokenizer.h symboltable.h \
-	token.h error.h
+$(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp include/lex/tokenizer.h include/plugin/symboltable/symboltable.h include/plugin/token/token.h include/utils/error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/token.o:src/lex/token.cpp token.h
+$(OBJ_DIR)/token.o:src/plugin/token/token.cpp include/plugin/token/token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/parser.o:src/parser/parser.cpp parser.h token.h
+$(OBJ_DIR)/parser.o:src/parser/parser.cpp include/parser/parser.h include/plugin/token/token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/symboltable.o:src/plugin/table/symboltable.cpp symboltable.h
+$(OBJ_DIR)/symboltable.o:src/plugin/symboltable/symboltable.cpp include/plugin/symboltable/symboltable.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/error.o:src/utils/error.cpp error.h
+$(OBJ_DIR)/error.o:src/utils/error.cpp include/utils/error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # grammar tool
-$(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp grammar_tool.h \
-error.h
+$(OBJ_DIR)/grammar_main.o: tools/grammar/grammar_main.cpp include/tools/grammar/grammar_tool.h include/utils/error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp grammar_tool.h \
-dfa.h error.h grammar.h item.h parsing_table.h status.h token.h unstd.h
+$(OBJ_DIR)/grammar_tool.o: tools/grammar/grammar_tool.cpp include/tools/grammar/grammar_tool.h include/tools/grammar/dfa.h include/utils/error.h include/plugin/grammar/grammar.h include/tools/grammar/item.h include/plugin/parsingtable/parsing_table.h include/tools/grammar/status.h include/plugin/token/token.h include/unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp dfa.h status.h item.h token.h unstd.h
+$(OBJ_DIR)/dfa.o: tools/grammar/dfa.cpp include/tools/grammar/dfa.h include/tools/grammar/status.h include/tools/grammar/item.h include/plugin/token/token.h include/unstd.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/status.o: tools/grammar/status.cpp status.h item.h
+$(OBJ_DIR)/status.o: tools/grammar/status.cpp include/tools/grammar/status.h include/tools/grammar/item.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # used by tool and main
-$(OBJ_DIR)/grammar.o:src/parser/grammar.cpp grammar.h error.h token.h
+$(OBJ_DIR)/grammar.o:src/plugin/grammar/grammar.cpp include/plugin/grammar/grammar.h include/utils/error.h include/plugin/token/token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/parsing_table.o:src/parser/parsing_table.cpp parsing_table.h status.h \
-token.h
+$(OBJ_DIR)/parsing_table.o:src/plugin/parsingtable/parsing_table.cpp include/plugin/parsingtable/parsing_table.h include/tools/grammar/status.h include/plugin/token/token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean
