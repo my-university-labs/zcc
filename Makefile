@@ -42,7 +42,7 @@ $(OBJ_DIR)/tokenizer.o:src/lex/tokenizer.cpp include/lex/tokenizer.h include/plu
 $(OBJ_DIR)/token.o:src/plugin/token.cpp include/plugin/token.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/parser.o:src/parser/parser.cpp include/parser/parser.h include/plugin/token.h
+$(OBJ_DIR)/parser.o:src/parser/parser.cpp include/parser/parser.h include/plugin/token.h include/translate/translate.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/symboltable.o:src/plugin/symboltable.cpp include/plugin/symboltable.h
@@ -51,7 +51,7 @@ $(OBJ_DIR)/symboltable.o:src/plugin/symboltable.cpp include/plugin/symboltable.h
 $(OBJ_DIR)/error.o:src/utils/error.cpp include/utils/error.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/translate.o:src/translate/translate.cpp include/translate/translate.h include/plugin/token.h
+$(OBJ_DIR)/translate.o:src/translate/translate.cpp include/translate/translate.h include/plugin/token.h include/parser/parser.h
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # grammar tool

@@ -1,2 +1,1 @@
-int a = 0;
-int b;
+int a = 1 * 2;

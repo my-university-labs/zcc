@@ -128,3 +128,9 @@ bool issymbol(char X)
         return false;
     }
 }
+
+std::ostream& operator<<(std::ostream& os, Token& token)
+{
+    os << get_token_info(token.get_token());
+    return os;
+}

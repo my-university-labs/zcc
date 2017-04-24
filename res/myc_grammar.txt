@@ -108,22 +108,22 @@
     double  $action action_VT
     char  $action action_VT
 -> VALUE
-    value
+    value $action action_VE
 -> ID
-    identity
+    identity $action action_ID
 -> expression
-    expression + _T
-    expression - _T
-    _T
+    expression + _T $action action_CALC
+    expression - _T $action action_CALC
+    _T $action action_SWAP
 -> _T
-    _T * _F
-    _T / _F
-    _T % _F
-    _F
+    _T * _F $action action_CALC
+    _T / _F $action action_CALC
+    _T % _F $action action_CALC
+    _F $action action_SWAP
 -> _F
-    VALUE
-    ID
-    ( expression )
+    VALUE $action action_SWAP
+    ID $action action_SWAP
+    ( expression ) $action action_SWAP
 -> bool_expression
     expression
     expression_unary

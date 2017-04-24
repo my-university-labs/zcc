@@ -13,8 +13,12 @@
 #define MOVE_IN "$move_in"
 #define REDUCTION "$reduction"
 #define ACCEPT "$accept"
-
+// for action when do reduction
 #define ACTION "$action"
+// for vol
+#define VOL_IS_VALUE_TYPE 1
+#define VOL_IS_NUM_VALUE 2
+#define VOL_IS_ID 3
 
 #define NONE_ACTION "$none_action"
 #define PARSING_TABLE_FILE_NAME "parsing_table.txt"

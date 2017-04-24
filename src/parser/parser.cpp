@@ -1,8 +1,6 @@
 /* author: dongchangzhang */
 /* time: Sat 11 Mar 2017 11:24:09 PM CST */
 #include "parser.h"
-#include "token.h"
-#include "translate.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -17,6 +15,8 @@ void Parser::init()
         token_stack.pop();
     while (!status_stack.empty())
         status_stack.pop();
+    while (!vol_stack.empty())
+        vol_stack.pop();
     // null symbol
     Token start_token;
     token_stack.push(start_token);
@@ -45,36 +45,39 @@ void Parser::run()
             token_stack.push(token_now);
             token_now = tokenizer.next();
         } else if (action.action == REDUCTION) {
-            auto production = grammar.get_production(action.which, action.index);
-            for (size_t i = 0; i < production.size(); ++i) {
-                token_stack.pop();
-                status_stack.pop();
-            }
-            auto status_new = status_stack.top();
-            auto togo0 = ptable.query_goto(status_new, Token(action.which));
-            token_stack.push(Token(action.which));
-            status_stack.push(togo0.next_status);
-            hook_function(action.which, action.index, production, tokenizer.get_linenu());
-
+            hook_function(action.which, action.index, tokenizer.get_linenu());
         } else if (action.action == ACCEPT) {
-            std::cout << "backto status : " << status_now
-                      << " ->> FUCK ACCEPT" << std::endl;
+            std::cout << "\nFUCK ACCEPT" << std::endl;
             exit(0);
         } else {
             std::cerr << "terminate" << std::endl;
+            exit(1);
         }
     }
 }
-
-void Parser::hook_function(std::string& which, size_t& index,
-    const std::vector<Token>& tokens, int linenu)
+void Parser::hook_function(std::string& which, size_t& index, int linenu)
 {
-    std::cout << "action is: " << grammar.get_action(which, index) << std::endl;
+    std::cout << "___" << std::endl;
     std::string action = grammar.get_action(which, index);
-    action_run(action);
-    std::cout << std::left << std::setw(3) << linenu
-              << " :  " << std::left << std::setw(30) << which << "  ->  ";
-
+    translater.action_run(*this, action, which, index);
+    // auto production = grammar.get_production(which, index);
+    // // pop
+    // for (size_t i = 0; i < production.size(); ++i) {
+    //     token_stack.pop();
+    //     status_stack.pop();
+    // }
+    // push
+    auto status_new = status_stack.top();
+    auto togo0 = ptable.query_goto(status_new, Token(which));
+    token_stack.push(Token(which));
+    status_stack.push(togo0.next_status);
+    print_production(which, index, linenu);
+}
+void Parser::print_production(std::string& which, size_t& index, int linenu)
+{
+    auto tokens = grammar.get_production(which, index);
+    std::cout << std::left << std::setw(5) << linenu
+              << which << "  ->  ";
     for (auto t : tokens) {
         if (t.is_state_token()) {
             std::cout << t.get_state();
@@ -108,4 +111,16 @@ void Parser::deal_error(int linenu, size_t cursor, const std::string& line,
         }
     }
     std::cout << std::endl;
+}
+std::ostream& operator<<(std::ostream& os, Parser::vol_type& vol)
+{
+    if (vol.type == VOL_IS_VALUE_TYPE)
+        os << vol.ivol;
+    else if (vol.type == VOL_IS_ID)
+        os << vol.svol;
+    else if (vol.type == VOL_IS_NUM_VALUE)
+        os << vol.svol;
+    else
+        os << "VOL_ERROR" << std::endl;
+    return os;
 }

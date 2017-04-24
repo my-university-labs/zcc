@@ -8,12 +8,21 @@
 #include "parsing_table.h"
 #include "token.h"
 #include "tokenizer.h"
+#include "translate.h"
 
+#include <iostream>
 #include <map>
 #include <stack>
-
 class Parser {
 public:
+    friend class Translater;
+    typedef struct {
+        int type;
+        std::string svol;
+        int ivol;
+        float fvol;
+    } vol_type;
+    Parser() = default;
     Parser(std::string grammarf, std::string tablef, std::string sourcef)
         : grammar(grammarf)
         , ptable(tablef)
@@ -25,29 +34,27 @@ public:
     // run parser
     void run();
 
-    void hook_function(std::string& which, size_t& index, const std::vector<Token>& tokens, int linenu);
+    void hook_function(std::string& which, size_t& index, int linenu);
 
 private:
-    typedef struct {
-        int type;
-        std::string sval;
-        int ival;
-        float fval;
-    } val_type;
     // grammar
     Grammar grammar;
     // parsing table
     ParsingTable ptable;
     // tokenizer
     Tokenizer tokenizer;
+
+    Translater translater;
     // stack to save state and input token
     std::stack<Token> token_stack;
 
     std::stack<size_t> status_stack;
 
-    std::stack<val_type> value_stack;
+    std::stack<vol_type> vol_stack;
 
     void deal_error(int linenu, size_t cursor, const std::string& line, std::map<int, std::string> next_token_should_be);
+    void print_production(std::string& which, size_t& index, int linenu);
 };
+std::ostream& operator<<(std::ostream& os, Parser::vol_type& vol);
 
 #endif
