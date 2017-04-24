@@ -8,17 +8,17 @@
     function_define
     program function_define
 -> value_declare_define
-    value_type value_declare_define_list ;
+    value_type value_declare_define_list ; $action action_POP
 -> value_declare_define_list
     ID $action action_value_declare
-    value_declare_define_list , ID
-    ID array_times
-    value_declare_define_list , ID array_times
+    value_declare_define_list , ID $action action_value_declare1
+    ID array_times $action action_ARRAY
+    value_declare_define_list , ID array_times $action action_ARRAY
     ID = expression $action action_value_define
-    value_declare_define_list , ID = expression
+    value_declare_define_list , ID = expression $action action_value_define1
 -> array_times
-    [ VALUE ]
-    array_times [ VALUE ]
+    [ VALUE ] $action action_ATIMES
+    array_times [ VALUE ] $action action_ATIMES
 -> function_declare
     value_type ID ( ) ;
     value_type ID ( arg_list ) ;

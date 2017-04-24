@@ -57,7 +57,6 @@ void Parser::run()
 }
 void Parser::hook_function(std::string& which, size_t& index, int linenu)
 {
-    std::cout << "___" << std::endl;
     std::string action = grammar.get_action(which, index);
     translater.action_run(*this, action, which, index);
     // auto production = grammar.get_production(which, index);
@@ -115,11 +114,11 @@ void Parser::deal_error(int linenu, size_t cursor, const std::string& line,
 std::ostream& operator<<(std::ostream& os, Parser::vol_type& vol)
 {
     if (vol.type == VOL_IS_VALUE_TYPE)
-        os << vol.ivol;
+        os << vol.svol;
     else if (vol.type == VOL_IS_ID)
         os << vol.svol;
     else if (vol.type == VOL_IS_NUM_VALUE)
-        os << vol.svol;
+        os << vol.ivol;
     else
         os << "VOL_ERROR" << std::endl;
     return os;

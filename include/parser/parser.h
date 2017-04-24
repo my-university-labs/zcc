@@ -13,6 +13,7 @@
 #include <iostream>
 #include <map>
 #include <stack>
+#include <vector>
 class Parser {
 public:
     friend class Translater;
@@ -21,6 +22,8 @@ public:
         std::string svol;
         int ivol;
         float fvol;
+        std::vector<size_t> array_times;
+
     } vol_type;
     Parser() = default;
     Parser(std::string grammarf, std::string tablef, std::string sourcef)
