@@ -7,8 +7,3 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
-std::string install_id(const std::string& id)
-{
-    return id;
-}

@@ -31,6 +31,8 @@ private:
     template <typename T1, typename T2, typename T3>
     T1 calcu_exp(T1& value1, T2& value2, T3& op);
 
+    void pop_all(Parser& parser);
+
     void action_ARRAY(Parser& parser);
 
     void action_ATIMES(Parser& parser);

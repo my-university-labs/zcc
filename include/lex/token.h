@@ -69,6 +69,7 @@
 
 #define VALUE 100
 
+#include "symboltable.h"
 #include "unstd.h"
 
 #include <map>
@@ -97,6 +98,13 @@ public:
     Token(int t, std::string v)
         : token(t)
         , value(v)
+        , is_state(false)
+        , is_null(false)
+    {
+    }
+    Token(int t, SymbolTable::addr_type& addr)
+        : token(t)
+        , addr(addr)
         , is_state(false)
         , is_null(false)
     {
@@ -145,12 +153,16 @@ public:
 
     bool is_id() const { return (token == ID ? true : false); }
 
+    bool is_value() const { return (token == VALUE ? true : false); }
+
     void set_as_end() { token = END_STATE; }
 
 private:
     // token id
     int token;
     // token attr
+    SymbolTable::addr_type addr;
+
     std::string value;
     // is state or not
     bool is_state = false;

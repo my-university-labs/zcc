@@ -10,7 +10,6 @@
 #include <string>
 
 #include "error.h"
-#include "symboltable.h"
 #include "token.h"
 #include "unstd.h"
 
@@ -200,17 +199,16 @@ void Tokenizer::deal_symbol(std::vector<char>& vtoken, bool& reidentify, bool& i
         }
         break;
     case '\'':
-        ++cursor;
         vtoken.clear();
         is_value = true;
         /* char '' */
-        if (nextch == '\'')
+        if (have_two && buffer[cursor] == '\'')
             return;
         else {
             /* char '?' */
-            if (buffer[cursor] == '\'') {
-                vtoken.push_back(nextch);
-                ++cursor;
+            vtoken.push_back(buffer[cursor++]);
+            if (buffer[cursor++] == '\'') {
+                return;
             } else {
                 deal_error(LACK_SQUOTE, reidentify);
             }
@@ -225,7 +223,7 @@ void Tokenizer::deal_error(int error_type, bool& reidentify)
     print_error(linenu, cursor, error_type, buffer);
 }
 
-Token Tokenizer::next()
+Token Tokenizer::next(SymbolTableManager& stmg)
 {
     char ch;
     int rtype = 0;
@@ -265,17 +263,16 @@ Token Tokenizer::next()
         return token;
     } else if (reidentify) {
         // std::cout << "re identify " << std::endl;
-        return next();
+        return next(stmg);
     } else {
         /* return */
         std::string stoken(vtoken.begin(), vtoken.end());
-#ifdef DEBUG
-        std::cout << "# LOG-> " << stoken << std::endl;
-#endif
         if (rtype == 1 || rtype == 3) {
             // is char
             if (is_value) {
-                return Token(VALUE, stoken);
+                // char
+                auto ret = stmg.install_value(stoken[0]);
+                return Token(VALUE, ret);
             }
             // operator separator or key word
             int code = get_code(stoken);

@@ -26,7 +26,7 @@ void Parser::init()
 void Parser::run()
 {
     init();
-    Token token_now = tokenizer.next();
+    Token token_now = tokenizer.next(smanager);
     Token last_token = token_now;
     while (true) {
         size_t status_now = status_stack.top();
@@ -43,7 +43,7 @@ void Parser::run()
         } else if (action.action == MOVE_IN) {
             status_stack.push(action.next_status);
             token_stack.push(token_now);
-            token_now = tokenizer.next();
+            token_now = tokenizer.next(smanager);
         } else if (action.action == REDUCTION) {
             hook_function(action.which, action.index, tokenizer.get_linenu());
         } else if (action.action == ACCEPT) {
@@ -70,7 +70,7 @@ void Parser::hook_function(std::string& which, size_t& index, int linenu)
     auto togo0 = ptable.query_goto(status_new, Token(which));
     token_stack.push(Token(which));
     status_stack.push(togo0.next_status);
-    print_production(which, index, linenu);
+    // print_production(which, index, linenu);
 }
 void Parser::print_production(std::string& which, size_t& index, int linenu)
 {

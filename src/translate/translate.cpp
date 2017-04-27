@@ -46,10 +46,7 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
     } else {
         // std::cout << "ELSE -> Translater" << std::endl;
         // pop
-        for (size_t i = 0; i < action_production.size(); ++i) {
-            parser.token_stack.pop();
-            parser.status_stack.pop();
-        }
+        pop_all(parser);
     }
 }
 template <typename T1, typename T2, typename T3>
@@ -68,13 +65,16 @@ T1 Translater::calcu_exp(T1& value1, T2& value2, T3& op)
     return r;
 }
 
-void Translater::action_ARRAY(Parser& parser)
+void Translater::pop_all(Parser& parser)
 {
-    std::cout << "AA" << parser.vol_stack.size() << std::endl;
     for (size_t i = 0; i < action_production.size(); ++i) {
         parser.token_stack.pop();
         parser.status_stack.pop();
     }
+}
+void Translater::action_ARRAY(Parser& parser)
+{
+    pop_all(parser);
     auto times = parser.vol_stack.top();
     parser.vol_stack.pop();
 
@@ -83,14 +83,14 @@ void Translater::action_ARRAY(Parser& parser)
 
     // auto type = parser.vol_stack.top();
 
-    std::cout << times.array_times[0] << " " << times.array_times[1] << " " << id.svol << std::endl;
+    std::cout << "insert into symbol table: array name -> " << id.svol << " times is: ";
+    for (auto t : times.array_times)
+        std::cout << t << " ";
+    std::cout << std::endl;
 }
 void Translater::action_ATIMES(Parser& parser)
 {
-    for (size_t i = 0; i < action_production.size(); ++i) {
-        parser.token_stack.pop();
-        parser.status_stack.pop();
-    }
+    pop_all(parser);
     auto times = parser.vol_stack.top();
     parser.vol_stack.pop();
     if (parser.vol_stack.top().type == VOL_IS_ARRAY) {
@@ -99,6 +99,7 @@ void Translater::action_ATIMES(Parser& parser)
         Parser::vol_type vol;
         vol.type = VOL_IS_ARRAY;
         vol.array_times.push_back(times.ivol);
+        parser.vol_stack.push(vol);
     }
 }
 
@@ -142,7 +143,6 @@ void Translater::action_ID(Parser& parser)
 void Translater::action_POP(Parser& parser)
 {
     parser.vol_stack.pop();
-    std::cout << "POP" << parser.vol_stack.size() << std::endl;
     for (size_t i = 0; i < action_production.size(); ++i) {
         parser.token_stack.pop();
         parser.status_stack.pop();

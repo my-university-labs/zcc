@@ -6,6 +6,7 @@
 
 #include "grammar.h"
 #include "parsing_table.h"
+#include "symboltable.h"
 #include "token.h"
 #include "tokenizer.h"
 #include "translate.h"
@@ -44,7 +45,9 @@ private:
     Grammar grammar;
     // parsing table
     ParsingTable ptable;
-    // tokenizer
+
+    SymbolTableManager smanager;
+
     Tokenizer tokenizer;
 
     Translater translater;

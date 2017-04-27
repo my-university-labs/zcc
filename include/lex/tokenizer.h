@@ -5,6 +5,7 @@
 #define SRC_TOKENIZER_H
 
 /* Token defined in this file */
+#include "symboltablemanager.h"
 #include "token.h"
 
 #include <fstream>
@@ -34,7 +35,7 @@ public:
             in.close();
     }
     /* get next token */
-    Token next();
+    Token next(SymbolTableManager& stmg);
 
     bool is_end() { return finished; }
     /* get line number */
@@ -43,6 +44,7 @@ public:
     std::string get_line() { return buffer; }
 
     size_t get_cursor() { return cursor; }
+
 private:
     /* work type : type = 0 -> deal file */
     int type;
