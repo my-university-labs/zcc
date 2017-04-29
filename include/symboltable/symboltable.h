@@ -4,51 +4,76 @@
 #ifndef SRC_PLUGIN_SYMBOLTABLE_H
 #define SRC_PLUGIN_SYMBOLTABLE_H
 
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#define ST_FUNC 1003
-#define ST_VALUE 1001
-#define ST_ARRAY 1002
+#define ST_ID 1000
+#define ST_INT 1001
+#define ST_FUNC 1002
+#define ST_CHAR 1003
+#define ST_ARRAY 1004
+#define ST_TMPVAL 1005
+
+#define NONE_FLAG 1000000000
+
+// information for value and value definenation
+struct value_info_type {
+    int type;
+    union {
+        int ivalue;
+        float fvalue;
+        char cvalue;
+    } value;
+};
+// array
+struct array_info_type {
+    size_t array_times;
+    int type;
+    std::vector<size_t> times_info;
+};
+// function
+struct func_info_type {
+    int return_type;
+    size_t arg_times;
+};
+// addr -> how to locate info about id
+struct addr_type {
+    addr_type() = default;
+    size_t index = NONE_FLAG;
+    size_t type;
+    size_t location = NONE_FLAG;
+
+    bool operator==(const addr_type& addr) const
+    {
+        return addr.index == index && addr.type == type && addr.location == location;
+    }
+    bool operator!=(const addr_type& addr) const
+    {
+        return !(*this == addr);
+    }
+};
 
 class SymbolTable {
 public:
-    // information for value and value definenation
-    typedef struct {
-        int type;
-        union {
-            int ivalue;
-            float fvalue;
-            char cvalue;
-        } value;
-    } value_info_type;
-    // array
-    typedef struct {
-        size_t array_times;
-        int type;
-        std::vector<size_t> times_info;
-    } array_info_type;
-    // function
-    typedef struct {
-        int return_type;
-        size_t arg_times;
+    SymbolTable()
+        = default;
+    addr_type install_id(const std::string& id);
+    addr_type install_value(int val);
+    addr_type install_value(char val);
 
-    } func_info_type;
-    // addr -> how to locate info about id
-    typedef struct {
-        size_t which;
-        size_t where;
-    } addr_type;
+    int get_int(addr_type& addr);
+    char get_char(addr_type& addr);
 
-public:
-    SymbolTable() = default;
-
+    void print_addr_info(addr_type& addr);
     void query(std::string& id);
 
 private:
     // all id will be save in here
-    std::unordered_map<std::string, addr_type> symboltable;
+    std::vector<std::string> symbols;
+    // query information
+    std::unordered_map<size_t, addr_type> symbols_relation;
     // all function information will be save in here
     std::vector<func_info_type> func_informations;
     // all value
@@ -56,4 +81,5 @@ private:
     // all array
     std::vector<array_info_type> array_informations;
 };
+
 #endif

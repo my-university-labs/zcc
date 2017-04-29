@@ -94,7 +94,7 @@ public:
         , is_null(true)
     {
     }
-    // value token && key world && id
+    // key world
     Token(int t, std::string v)
         : token(t)
         , value(v)
@@ -102,7 +102,8 @@ public:
         , is_null(false)
     {
     }
-    Token(int t, SymbolTable::addr_type& addr)
+    // value && id
+    Token(int t, addr_type& addr)
         : token(t)
         , addr(addr)
         , is_state(false)
@@ -128,6 +129,7 @@ public:
         this->value = t.value;
         this->is_state = t.is_state;
         this->is_null = t.is_null;
+        this->addr = t.addr;
         return *this;
     }
 
@@ -147,6 +149,15 @@ public:
 
     std::string get_state() const { return value; }
 
+    addr_type get_addr() const
+    {
+        if (token == ID || token == VALUE)
+            return addr;
+        else
+            std::cerr << "terminal - token";
+        exit(0);
+    }
+
     bool is_null_token() const { return is_null; }
 
     bool is_state_token() const { return is_state; }
@@ -157,11 +168,13 @@ public:
 
     void set_as_end() { token = END_STATE; }
 
+    void print_addr() { std::cout << "from token.h " << addr.type << " " << addr.index << " " << addr.location << std::endl; }
+
 private:
     // token id
     int token;
     // token attr
-    SymbolTable::addr_type addr;
+    addr_type addr;
 
     std::string value;
     // is state or not

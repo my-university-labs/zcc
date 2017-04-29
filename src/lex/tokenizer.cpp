@@ -7,6 +7,7 @@
 #include <cctype>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "error.h"
@@ -276,11 +277,19 @@ Token Tokenizer::next(SymbolTableManager& stmg)
             }
             // operator separator or key word
             int code = get_code(stoken);
-            return Token(code, stoken);
+            if (code == ID) {
+                auto ret = stmg.install_id(stoken);
+                return Token(code, ret);
+            } else
+                return Token(code, stoken);
         }
         // is value
         else if (rtype == 2) {
-            return Token(VALUE, stoken);
+            int tmp;
+            std::stringstream ss(stoken);
+            ss >> tmp;
+            auto ret = stmg.install_value(tmp);
+            return Token(VALUE, ret);
         } else {
             // no use now
             return Token();

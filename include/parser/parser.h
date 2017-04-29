@@ -23,7 +23,9 @@ public:
         std::string svol;
         int ivol;
         float fvol;
-        std::vector<size_t> array_times;
+        size_t index;
+        std::vector<addr_type> array_times;
+        addr_type addr;
 
     } vol_type;
     Parser() = default;

@@ -6,14 +6,6 @@
 #include <iostream>
 #include <sstream>
 
-static int get_int(std::string v)
-{
-    int r;
-    std::stringstream ss(v);
-    ss >> r;
-    return r;
-}
-
 void Translater::action_run(Parser& parser, std::string& action, std::string& which, size_t index)
 {
     action_which = which;
@@ -49,13 +41,22 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
         pop_all(parser);
     }
 }
-template <typename T1, typename T2, typename T3>
-void Translater::generate_code(T1& value1, T2& value2, T3& op)
-{
-    std::cout << "code" << timer_increase() << ": ";
 
-    std::cout << op << "  " << value1 << ", " << value2 << std::endl;
+template <typename T0, typename T1, typename T2>
+size_t Translater::generate_code(T0 op, T1& value1, T2& value2, Parser& parser)
+{
+    if (value1.type == VOL_IS_TMP && value2.type == VOL_IS_TMP)
+        return cmanager.generate_code(op, value1.index, value2.index, parser.smanager);
+    else if (value1.type == VOL_IS_TMP && value2.type != VOL_IS_TMP)
+        return cmanager.generate_code(op, value1.index, value2.addr, parser.smanager);
+    else if (value1.type != VOL_IS_TMP && value2.type == VOL_IS_TMP)
+        return cmanager.generate_code(op, value1.addr, value2.index, parser.smanager);
+    else if (value1.type != VOL_IS_TMP && value2.type != VOL_IS_TMP)
+        return cmanager.generate_code(op, value1.addr, value2.addr, parser.smanager);
+    else
+        return 0;
 }
+
 template <typename T1, typename T2, typename T3>
 T1 Translater::calcu_exp(T1& value1, T2& value2, T3& op)
 {
@@ -84,8 +85,10 @@ void Translater::action_ARRAY(Parser& parser)
     // auto type = parser.vol_stack.top();
 
     std::cout << "insert into symbol table: array name -> " << id.svol << " times is: ";
-    for (auto t : times.array_times)
-        std::cout << t << " ";
+    for (auto t : times.array_times) {
+        parser.smanager.print_addr_info(t);
+        std::cout << " ";
+    }
     std::cout << std::endl;
 }
 void Translater::action_ATIMES(Parser& parser)
@@ -94,11 +97,11 @@ void Translater::action_ATIMES(Parser& parser)
     auto times = parser.vol_stack.top();
     parser.vol_stack.pop();
     if (parser.vol_stack.top().type == VOL_IS_ARRAY) {
-        parser.vol_stack.top().array_times.push_back(times.ivol);
+        parser.vol_stack.top().array_times.push_back(times.addr);
     } else {
         Parser::vol_type vol;
         vol.type = VOL_IS_ARRAY;
-        vol.array_times.push_back(times.ivol);
+        vol.array_times.push_back(times.addr);
         parser.vol_stack.push(vol);
     }
 }
@@ -121,10 +124,13 @@ void Translater::action_CALC(Parser& parser)
     parser.token_stack.pop();
     parser.status_stack.pop();
 
-    auto result = calcu_exp(value1, value2, op);
-    parser.vol_stack.push(result);
+    auto r = generate_code(op.get_token(), value1, value2, parser);
+    cmanager.print_code(r, parser.smanager);
 
-    generate_code(value1, value2, op);
+    Parser::vol_type vol;
+    vol.index = r;
+    vol.type = VOL_IS_TMP;
+    parser.vol_stack.push(vol);
 }
 void Translater::action_ID(Parser& parser)
 {
@@ -134,7 +140,7 @@ void Translater::action_ID(Parser& parser)
     Parser::vol_type vol;
     auto token = parser.token_stack.top();
     vol.type = VOL_IS_ID;
-    vol.svol = token.get_attr();
+    vol.addr = token.get_addr();
     parser.token_stack.pop();
     parser.status_stack.pop();
     parser.vol_stack.push(vol);
@@ -163,7 +169,7 @@ void Translater::action_VE(Parser& parser)
     Parser::vol_type vol;
     auto token = parser.token_stack.top();
     vol.type = VOL_IS_NUM_VALUE;
-    vol.ivol = get_int(token.get_attr());
+    vol.addr = token.get_addr();
     parser.token_stack.pop();
     parser.status_stack.pop();
     parser.vol_stack.push(vol);
@@ -221,7 +227,7 @@ void Translater::action_value_define(Parser& parser)
 
     auto type = parser.vol_stack.top();
 
-    std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << " " << vol.ivol << std::endl;
+    std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << " " << vol.index << std::endl;
 }
 void Translater::action_value_define1(Parser& parser)
 {

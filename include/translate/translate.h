@@ -4,6 +4,7 @@
 #ifndef SRC_TRANSLATE_TRANSLATE_H
 #define SRC_TRANSLATE_TRANSLATE_H
 
+#include "codemanager.h"
 #include "token.h"
 #include <string>
 #include <vector>
@@ -23,10 +24,12 @@ private:
     std::string action_which;
     std::vector<Token> action_production;
 
+    CodeManager cmanager;
+
     size_t timer_increase() { return ++timer; }
 
-    template <typename T1, typename T2, typename T3>
-    void generate_code(T1& value1, T2& value2, T3& op);
+    template <typename T0, typename T1, typename T2>
+    size_t generate_code(T0 op, T1& value1, T2& value2, Parser& parser);
 
     template <typename T1, typename T2, typename T3>
     T1 calcu_exp(T1& value1, T2& value2, T3& op);

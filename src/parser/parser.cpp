@@ -28,6 +28,9 @@ void Parser::run()
     init();
     Token token_now = tokenizer.next(smanager);
     Token last_token = token_now;
+    // if (token_now.is_id() || token_now.is_value())
+    //     token_now.print_addr();
+
     while (true) {
         size_t status_now = status_stack.top();
         auto action = ptable.query_action(status_now, token_now.get_token());
@@ -44,6 +47,8 @@ void Parser::run()
             status_stack.push(action.next_status);
             token_stack.push(token_now);
             token_now = tokenizer.next(smanager);
+            // if (token_now.is_id() || token_now.is_value())
+            //     token_now.print_addr();
         } else if (action.action == REDUCTION) {
             hook_function(action.which, action.index, tokenizer.get_linenu());
         } else if (action.action == ACCEPT) {
