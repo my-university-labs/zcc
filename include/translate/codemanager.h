@@ -24,6 +24,9 @@ public:
     size_t generate_code(int op, size_t addr1, addr_type& addr2, SymbolTableManager& stmg);
     size_t generate_code(int op, addr_type& addr1, size_t addr2, SymbolTableManager& stmg);
     size_t generate_code(int op, size_t addr1, size_t addr2, SymbolTableManager& stmg);
+
+    size_t get_tmp_id(size_t code);
+    addr_type get_tmp_addr(size_t id);
     void print_code(size_t id, SymbolTableManager& stmg);
 
 private:
@@ -31,10 +34,8 @@ private:
 
     std::vector<size_t> codes;
     std::vector<Code> code_res;
-    std::vector<size_t> tmp_values;
     std::unordered_map<size_t, size_t> relation;
 
     size_t get_timer() { return timer++; }
-    addr_type create_tmp_value(size_t code);
 };
 #endif

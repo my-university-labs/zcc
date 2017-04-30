@@ -7,7 +7,7 @@
 #define NULL_STATE -100
 #define END_STATE -101
 #define NORMAL_STATE -102
-#define ERROR 99999999
+#define ERROR 999999999
 
 // for action table
 #define MOVE_IN "$move_in"

@@ -7,11 +7,10 @@
 class Code {
 public:
     Code() = default;
-    Code(int p, addr_type& ad1, addr_type& ad2, size_t i)
+    Code(int p, addr_type& ad1, addr_type& ad2)
         : op(p)
         , addr1(ad1)
         , addr2(ad2)
-        , id(id)
     {
         result.type = ST_TMPVAL;
     }
@@ -29,14 +28,16 @@ public:
     }
     addr_type get_result() { return result; }
 
-    void try_to_calc(SymbolTableManager& stmg);
+    bool try_to_calc(SymbolTableManager& stmg);
+
+    bool check_result() { return have_result; }
 
 private:
     int op;
     addr_type addr1;
     addr_type addr2;
     addr_type result;
-    size_t id;
+    bool have_result = false;
     friend std::ostream& operator<<(std::ostream& os, const Code& code);
 };
 

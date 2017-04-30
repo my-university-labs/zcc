@@ -13,8 +13,14 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
     action_production = parser.grammar.get_production(which, index);
     if (action == "action_ARRAY") {
         action_ARRAY(parser);
+    } else if (action == "action_ASSIGN") {
+        action_ASSIGN(parser);
     } else if (action == "action_ATIMES") {
         action_ATIMES(parser);
+    } else if (action == "action_BOOL1") {
+        action_BOOL1(parser);
+    } else if (action == "action_BOOL2") {
+        action_BOOL2(parser);
     } else if (action == "action_CALC") {
         action_CALC(parser);
     } else if (action == "action_ID") {
@@ -42,30 +48,6 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
     }
 }
 
-template <typename T0, typename T1, typename T2>
-size_t Translater::generate_code(T0 op, T1& value1, T2& value2, Parser& parser)
-{
-    if (value1.type == VOL_IS_TMP && value2.type == VOL_IS_TMP)
-        return cmanager.generate_code(op, value1.index, value2.index, parser.smanager);
-    else if (value1.type == VOL_IS_TMP && value2.type != VOL_IS_TMP)
-        return cmanager.generate_code(op, value1.index, value2.addr, parser.smanager);
-    else if (value1.type != VOL_IS_TMP && value2.type == VOL_IS_TMP)
-        return cmanager.generate_code(op, value1.addr, value2.index, parser.smanager);
-    else if (value1.type != VOL_IS_TMP && value2.type != VOL_IS_TMP)
-        return cmanager.generate_code(op, value1.addr, value2.addr, parser.smanager);
-    else
-        return 0;
-}
-
-template <typename T1, typename T2, typename T3>
-T1 Translater::calcu_exp(T1& value1, T2& value2, T3& op)
-{
-    Parser::vol_type r = value1;
-    if (value1.type == value2.type && value1.type == VOL_IS_NUM_VALUE)
-        r.ivol += value2.ivol;
-    return r;
-}
-
 void Translater::pop_all(Parser& parser)
 {
     for (size_t i = 0; i < action_production.size(); ++i) {
@@ -91,6 +73,17 @@ void Translater::action_ARRAY(Parser& parser)
     }
     std::cout << std::endl;
 }
+
+void Translater::action_ASSIGN(Parser& parser)
+{
+    pop_all(parser);
+    auto vol = parser.vol_stack.top();
+    parser.vol_stack.pop();
+    auto id = parser.vol_stack.top();
+    parser.vol_stack.pop();
+    parser.smanager.assign(id.addr, vol.addr);
+}
+
 void Translater::action_ATIMES(Parser& parser)
 {
     pop_all(parser);
@@ -105,7 +98,12 @@ void Translater::action_ATIMES(Parser& parser)
         parser.vol_stack.push(vol);
     }
 }
-
+void Translater::action_BOOL1(Parser& parser)
+{
+}
+void Translater::action_BOOL2(Parser& parser)
+{
+}
 void Translater::action_CALC(Parser& parser)
 {
     // std::cout << "CALC -> Translater" << std::endl;
@@ -124,13 +122,15 @@ void Translater::action_CALC(Parser& parser)
     parser.token_stack.pop();
     parser.status_stack.pop();
 
-    auto r = generate_code(op.get_token(), value1, value2, parser);
+    auto r = cmanager.generate_code(op.get_token(), value1.addr, value2.addr, parser.smanager);
     cmanager.print_code(r, parser.smanager);
 
     Parser::vol_type vol;
-    vol.index = r;
-    vol.type = VOL_IS_TMP;
+    vol.index = cmanager.get_tmp_id(r);
+    vol.addr = cmanager.get_tmp_addr(vol.index);
     parser.vol_stack.push(vol);
+
+    // print_code(r, vol, op, value1, value2, parser);
 }
 void Translater::action_ID(Parser& parser)
 {
@@ -197,7 +197,8 @@ void Translater::action_value_declare(Parser& parser)
     parser.status_stack.pop();
     parser.vol_stack.pop();
     auto type = parser.vol_stack.top();
-    std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << std::endl;
+    parser.smanager.id_assagin(type.ivol, id.addr);
+    // std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << std::endl;
 }
 
 void Translater::action_value_declare1(Parser& parser)
@@ -226,8 +227,12 @@ void Translater::action_value_define(Parser& parser)
     parser.vol_stack.pop();
 
     auto type = parser.vol_stack.top();
+    if (vol.type == VOL_IS_TMP)
+        vol.addr = cmanager.get_tmp_addr(vol.index);
 
-    std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << " " << vol.index << std::endl;
+    parser.smanager.id_assagin(type.ivol, id.addr, vol.addr);
+
+    // std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << " " << vol.index << std::endl;
 }
 void Translater::action_value_define1(Parser& parser)
 {

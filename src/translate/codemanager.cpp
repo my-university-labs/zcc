@@ -2,6 +2,7 @@
 /* time: Thu Apr 27 20:37:17 2017 */
 
 #include "codemanager.h"
+#include "unstd.h"
 #include <algorithm>
 
 size_t CodeManager::generate_code(int op, addr_type& addr1, addr_type& addr2, SymbolTableManager& stmg)
@@ -36,13 +37,26 @@ size_t CodeManager::generate_code(int op, size_t addr1, size_t addr2, SymbolTabl
     addr_type tmp2 = code_res[addr2].get_result();
     return generate_code(op, tmp1, tmp2, stmg);
 }
+size_t CodeManager::get_tmp_id(size_t code)
+{
+    if (code < codes.size() && code_res[codes[code]].check_result())
+        return codes[code];
+    else {
+        return ERROR;
+    }
+}
 
+addr_type CodeManager::get_tmp_addr(size_t id)
+{
+    if (id < code_res.size() && code_res[id].check_result())
+        return code_res[id].get_result();
+    else {
+        addr_type addr;
+        addr.type = ST_NONE;
+        return addr;
+    }
+}
 void CodeManager::print_code(size_t id, SymbolTableManager& stmg)
 {
     code_res[codes[id]].print_code(stmg);
-}
-
-addr_type CodeManager::create_tmp_value(size_t code)
-{
-    return code_res[code].get_result();
 }

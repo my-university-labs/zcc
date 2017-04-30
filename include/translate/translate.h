@@ -16,6 +16,7 @@ public:
         : timer(0)
     {
     }
+
     void action_run(Parser& parser, std::string& action, std::string& which, size_t index);
 
 private:
@@ -28,17 +29,16 @@ private:
 
     size_t timer_increase() { return ++timer; }
 
-    template <typename T0, typename T1, typename T2>
-    size_t generate_code(T0 op, T1& value1, T2& value2, Parser& parser);
-
-    template <typename T1, typename T2, typename T3>
-    T1 calcu_exp(T1& value1, T2& value2, T3& op);
-
     void pop_all(Parser& parser);
 
     void action_ARRAY(Parser& parser);
 
+    void action_ASSIGN(Parser& parser);
+
     void action_ATIMES(Parser& parser);
+
+    void action_BOOL1(Parser& parser);
+    void action_BOOL2(Parser& parser);
 
     void action_CALC(Parser& parser);
 

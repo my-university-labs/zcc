@@ -125,16 +125,16 @@
     ID $action action_SWAP
     ( expression ) $action action_SWAP
 -> bool_expression
-    expression
+    expression $action action_BOOL1
     expression_unary
-    expression > expression
-    expression < expression
-    expression == expression
-    expression != expression
-    expression && expression
-    expression || expression
+    expression > expression action_BOOL2
+    expression < expression action_BOOL2
+    expression == expression action_BOOL2
+    expression != expression action_BOOL2
+    expression && expression action_BOOL2
+    expression || expression action_BOOL2
 -> expression_assignment
-    ID = expression
+    ID = expression  $action action_ASSIGN
 -> expression_unary
     ++ ID
     -- ID

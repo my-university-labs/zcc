@@ -17,8 +17,13 @@ public:
     addr_type install_id(const std::string& id);
     addr_type install_value(int val);
     addr_type install_value(char val);
+    void print_addr(addr_type& addr);
     void print_addr_info(addr_type& addr);
+    void id_assagin(int type, addr_type& addr_id);
+    void id_assagin(int type, addr_type& addr_id, addr_type& addr_value);
+    void assign(addr_type& id, addr_type& value);
 
+    void array_assagin(int type, addr_type& addr_id, std::vector<size_t>& array_times);
     int get_int(addr_type& addr);
     char get_char(addr_type& addr);
 
