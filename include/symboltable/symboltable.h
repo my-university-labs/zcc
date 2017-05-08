@@ -9,15 +9,17 @@
 #include <unordered_map>
 #include <vector>
 
-#define ST_ID 1000
-#define ST_INT 1001
-#define ST_FUNC 1002
-#define ST_CHAR 1003
-#define ST_ARRAY 1004
-#define ST_TMPVAL 1005
-#define ST_NONE 1006
+#define ADDR_IS_ID 101
+#define ADDR_IS_VALUE 102
+#define ADDR_IS_FUNCTION 103
+#define ADDR_IS_NONE 109
 
-#define NONE_FLAG 1000000000
+#define VALUE_TYPE_IS_INT 201
+#define VALUE_TYPE_IS_CHAR 202
+#define VALUE_TYPE_IS_FLOAT 203
+#define VALUE_TYPE_IS_DOUBLE 204
+#define VALUE_TYPE_IS_VOID 205
+#define VALUE_TYPE_IS_NONE 209
 
 // information for value and value definenation
 struct value_info_type {
@@ -42,25 +44,31 @@ struct func_info_type {
 // addr -> how to locate info about id
 struct addr_type {
     addr_type() = default;
-    size_t index = NONE_FLAG;
-    size_t type;
-    size_t location = NONE_FLAG;
+    int type;
+    int addition_info;
+    size_t index = 0;
+    size_t location = 0;
     addr_type(const addr_type& addr)
     {
-        index = addr.index;
         type = addr.type;
+        addition_info = addr.addition_info;
+        index = addr.index;
         location = addr.location;
     }
     addr_type& operator=(const addr_type& addr)
     {
-        index = addr.index;
         type = addr.type;
+        addition_info = addr.addition_info;
+        index = addr.index;
         location = addr.location;
         return *this;
     }
     bool operator==(const addr_type& addr) const
     {
-        return addr.index == index && addr.type == type && addr.location == location;
+        return addr.type == type
+            && addr.addition_info == addition_info
+            && addr.index == index
+            && addr.location == location;
     }
     bool operator!=(const addr_type& addr) const
     {
@@ -72,9 +80,10 @@ class SymbolTable {
 public:
     SymbolTable()
     {
+        // add int 0 as the first value
         value_informations.clear();
         value_info_type vit;
-        vit.type = ST_INT;
+        vit.type = VALUE_TYPE_IS_INT;
         vit.value.ivalue = 0;
         value_informations.push_back(vit);
     }
@@ -82,16 +91,15 @@ public:
     addr_type install_value(int val);
     addr_type install_value(char val);
 
-    void id_assagin(int type, addr_type& addr_id, addr_type& addr_value);
-    void array_assagin(int type, addr_type& addr_id, std::vector<size_t>& array_times);
-
-    void assign(addr_type& id, addr_type& value);
+    void declare_define_variable(int type, addr_type& addr_id, addr_type& addr_value);
+    void declare_array(int type, addr_type& addr_id, std::vector<size_t>& array_times);
+    void variable_assignment(addr_type& id, addr_type& value);
 
     int get_int(addr_type& addr);
     char get_char(addr_type& addr);
 
-    void print_addr(addr_type& addr);
-    void print_addr_info(addr_type& addr);
+    void show_addr(addr_type& addr);
+    void show_addr_content(addr_type& addr);
     void query(std::string& id);
 
 private:

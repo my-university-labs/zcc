@@ -1,2 +1,2 @@
 #!/bin/bash
-../bin/grammar_tool myc_grammar.txt
+../bin/parsingtable_creater myc_grammar.txt

@@ -68,7 +68,7 @@ void Translater::action_ARRAY(Parser& parser)
 
     std::cout << "insert into symbol table: array name -> " << id.svol << " times is: ";
     for (auto t : times.array_times) {
-        parser.smanager.print_addr_info(t);
+        parser.smanager.show_addr_content(t);
         std::cout << " ";
     }
     std::cout << std::endl;
@@ -81,7 +81,7 @@ void Translater::action_ASSIGN(Parser& parser)
     parser.vol_stack.pop();
     auto id = parser.vol_stack.top();
     parser.vol_stack.pop();
-    parser.smanager.assign(id.addr, vol.addr);
+    parser.smanager.variable_assignment(id.addr, vol.addr);
 }
 
 void Translater::action_ATIMES(Parser& parser)
@@ -197,7 +197,7 @@ void Translater::action_value_declare(Parser& parser)
     parser.status_stack.pop();
     parser.vol_stack.pop();
     auto type = parser.vol_stack.top();
-    parser.smanager.id_assagin(type.ivol, id.addr);
+    parser.smanager.declare_define_variable(type.ivol, id.addr);
     // std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << std::endl;
 }
 
@@ -230,7 +230,7 @@ void Translater::action_value_define(Parser& parser)
     if (vol.type == VOL_IS_TMP)
         vol.addr = cmanager.get_tmp_addr(vol.index);
 
-    parser.smanager.id_assagin(type.ivol, id.addr, vol.addr);
+    parser.smanager.declare_define_variable(type.ivol, id.addr, vol.addr);
 
     // std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << " " << vol.index << std::endl;
 }

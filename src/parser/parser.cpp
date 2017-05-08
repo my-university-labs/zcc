@@ -29,7 +29,7 @@ void Parser::run()
     Token token_now = tokenizer.next(smanager);
     Token last_token = token_now;
     // if (token_now.is_id() || token_now.is_value())
-    //     token_now.print_addr();
+    //     token_now.show_addr();
 
     while (true) {
         size_t status_now = status_stack.top();
@@ -48,7 +48,7 @@ void Parser::run()
             token_stack.push(token_now);
             token_now = tokenizer.next(smanager);
             // if (token_now.is_id() || token_now.is_value())
-            //     token_now.print_addr();
+            //     token_now.show_addr();
         } else if (action.action == REDUCTION) {
             hook_function(action.which, action.index, tokenizer.get_linenu());
         } else if (action.action == ACCEPT) {

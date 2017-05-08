@@ -168,7 +168,7 @@ public:
 
     void set_as_end() { token = END_STATE; }
 
-    void print_addr() { std::cout << "from token.h " << addr.type << " " << addr.index << " " << addr.location << std::endl; }
+    void show_addr() { std::cout << "from token.h " << addr.type << " " << addr.index << " " << addr.location << std::endl; }
 
 private:
     // token id

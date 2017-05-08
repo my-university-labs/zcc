@@ -9,23 +9,23 @@ void Code::print_code(SymbolTableManager& stmg)
 
     std::cout << "---------------- info new ------------" << std::endl;
     if (have_result) {
-        stmg.print_addr_info(result);
+        stmg.show_addr_content(result);
         std::cout << " = ";
     }
     std::cout << get_token_info(op) << " ";
-    stmg.print_addr_info(addr1);
+    stmg.show_addr_content(addr1);
     std::cout << " ";
-    stmg.print_addr_info(addr2);
+    stmg.show_addr_content(addr2);
     std::cout << std::endl;
     std::cout << "------------------ code ------------" << std::endl;
     if (have_result) {
-        stmg.print_addr(result);
+        stmg.show_addr(result);
         std::cout << " = ";
     }
     std::cout << get_token_info(op) << " ";
-    stmg.print_addr(addr1);
+    stmg.show_addr(addr1);
     std::cout << " ";
-    stmg.print_addr(addr2);
+    stmg.show_addr(addr2);
     std::cout << std::endl;
 }
 bool Code::try_to_calc(SymbolTableManager& stmg)

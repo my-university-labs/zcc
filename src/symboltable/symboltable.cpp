@@ -7,71 +7,68 @@
 #include <string>
 #include <vector>
 
-void SymbolTable::print_addr(addr_type& addr)
-{
-    std::cout << "$" << addr.index << addr.type << addr.location;
-}
-
 addr_type SymbolTable::install_id(const std::string& id)
 {
     addr_type addr;
     auto ret = find(symbols.begin(), symbols.end(), id);
     if (ret != symbols.cend()) {
+        // have install it, return it
         size_t index = ret - symbols.begin();
-        // std::cout << index << " " << symbols_relation.size() << std::endl;
         if (symbols_relation.find(index) != symbols_relation.end()) {
             return symbols_relation[index];
         }
         addr.index = index;
     } else {
+        // not find, install a new one
         addr.index = symbols.size();
         symbols.push_back(id);
     }
-    addr.type = ST_ID;
+    addr.type = ADDR_IS_ID;
+    addr.addition_info = VALUE_TYPE_IS_NONE;
     return addr;
 }
 addr_type SymbolTable::install_value(int val)
 {
     value_info_type vit;
     addr_type addr;
-    vit.type = ST_INT;
+    vit.type = VALUE_TYPE_IS_INT;
     vit.value.ivalue = val;
-    addr.type = ST_INT;
+    addr.type = ADDR_IS_VALUE;
+    addr.addition_info = VALUE_TYPE_IS_INT;
     addr.location = value_informations.size();
     value_informations.push_back(vit);
-    // print_addr(addr);
-
     return addr;
 }
 addr_type SymbolTable::install_value(char val)
 {
     value_info_type vit;
     addr_type addr;
-    vit.type = ST_CHAR;
+    vit.type = VALUE_TYPE_IS_CHAR;
     vit.value.ivalue = val;
-    addr.type = ST_CHAR;
+    addr.type = ADDR_IS_VALUE;
+    addr.addition_info = VALUE_TYPE_IS_CHAR;
     addr.location = value_informations.size();
     value_informations.push_back(vit);
-    // print_addr(addr);
-
     return addr;
 }
 
-void SymbolTable::print_addr_info(addr_type& addr)
+void SymbolTable::show_addr_content(addr_type& addr)
 {
-    if (addr.type == ST_ID)
+    if (addr.type == ADDR_IS_ID)
         std::cout << symbols[addr.index];
-    else if (addr.type == ST_INT)
-        std::cout << value_informations[addr.location].value.ivalue;
-    else if (addr.type == ST_CHAR)
-        std::cout << value_informations[addr.location].value.cvalue;
-    else
-        std::cout << "NONE";
+    else if (addr.type == ADDR_IS_VALUE) {
+        if (addr.addition_info == VALUE_TYPE_IS_INT)
+            std::cout << value_informations[addr.location].value.ivalue;
+        else if (addr.type == VALUE_TYPE_IS_CHAR)
+            std::cout << value_informations[addr.location].value.cvalue;
+        else
+            std::cout << "NONE";
+    }
 }
 
 int SymbolTable::get_int(addr_type& addr)
 {
-    if (addr.type == ST_INT) {
+    if (addr.addition_info == VALUE_TYPE_IS_INT) {
         if (addr.location < value_informations.size())
             return value_informations[addr.location].value.ivalue;
     }
@@ -80,7 +77,7 @@ int SymbolTable::get_int(addr_type& addr)
 }
 char SymbolTable::get_char(addr_type& addr)
 {
-    if (addr.type == ST_CHAR) {
+    if (addr.type == VALUE_TYPE_IS_CHAR) {
         if (addr.location < value_informations.size())
             return value_informations[addr.location].value.cvalue;
     }
@@ -88,24 +85,20 @@ char SymbolTable::get_char(addr_type& addr)
     exit(1);
 }
 // declare
-void SymbolTable::id_assagin(int type, addr_type& addr_id, addr_type& addr_value)
+void SymbolTable::declare_define_variable(int type, addr_type& addr_id, addr_type& addr_value)
 {
     if (symbols_relation.find(addr_id.index) != symbols_relation.end()) {
         std::cerr << "redefine error" << std::endl;
         exit(0);
     }
     if (type == INT) {
-        addr_id.type = ST_INT;
+        addr_id.addition_info = VALUE_TYPE_IS_INT;
         addr_id.location = addr_value.location;
-        if (addr_id.location > value_informations.size()) {
-
-            addr_id.location = 0;
-        }
         symbols_relation[addr_id.index] = addr_id;
     }
 }
 // declare
-void SymbolTable::array_assagin(int type, addr_type& addr_id, std::vector<size_t>& array_times)
+void SymbolTable::declare_array(int type, addr_type& addr_id, std::vector<size_t>& array_times)
 {
     if (symbols_relation.find(addr_id.index) != symbols_relation.end()) {
         std::cerr << "redefine error" << std::endl;
@@ -113,8 +106,13 @@ void SymbolTable::array_assagin(int type, addr_type& addr_id, std::vector<size_t
     }
 }
 
-void SymbolTable::assign(addr_type& id, addr_type& value)
+void SymbolTable::variable_assignment(addr_type& id, addr_type& value)
 {
+    value.type = id.type;
     value.index = id.index;
     symbols_relation[id.index] = value;
+}
+void SymbolTable::show_addr(addr_type& addr)
+{
+    std::cout << "$" << addr.index << addr.type << addr.location;
 }

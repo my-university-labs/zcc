@@ -12,7 +12,6 @@ public:
         , addr1(ad1)
         , addr2(ad2)
     {
-        result.type = ST_TMPVAL;
     }
     void print_code(SymbolTableManager& stmg);
 
