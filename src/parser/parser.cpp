@@ -104,6 +104,7 @@ void Parser::deal_error(int linenu, size_t cursor, const std::string& line,
     std::cout << line << std::endl;
     std::cout << std::string(cursor, ' ') << "^" << std::endl;
     std::cout << "try :" << std::endl;
+    std::cout << next_token_should_be.size() << std::endl;
     for (auto action : next_token_should_be) {
 
         if (action.first == ID) {

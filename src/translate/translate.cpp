@@ -100,6 +100,25 @@ void Translater::action_ARRAY_ADDR(Parser& parser)
 void Translater::action_ARRAY_ASSIGN(Parser& parser)
 {
     pop_all(parser);
+    auto vol = parser.vol_stack.top();
+    parser.vol_stack.pop();
+    auto times = parser.vol_stack.top();
+    parser.vol_stack.pop();
+
+    auto id = parser.vol_stack.top();
+    parser.vol_stack.pop();
+
+    std::vector<int> tmp;
+    for (auto t : times.array_times) {
+        tmp.push_back(parser.smanager.get_int(t));
+    }
+    Parser::vol_type vol1;
+    vol1.type = VOL_IS_ARRAY_ELEMENT;
+    vol1.addr = parser.smanager.get_array_element_addr(id.addr, tmp);
+
+    parser.vol_stack.push(vol1);
+
+    parser.smanager.array_assignment(vol1.addr, vol.addr);
 }
 
 void Translater::action_ASSIGN(Parser& parser)
@@ -128,9 +147,32 @@ void Translater::action_ATIMES(Parser& parser)
 }
 void Translater::action_BOOL1(Parser& parser)
 {
+    pop_all(parser);
+    auto value = parser.vol_stack.top();
+    parser.vol_stack.pop();
+    value.type = VOL_IS_BOOL;
+    value.addr = parser.smanager.conver_to_bool(value.addr);
+    parser.vol_stack.push(value);
 }
 void Translater::action_BOOL2(Parser& parser)
 {
+    // > <
+    auto value2 = parser.vol_stack.top();
+    parser.vol_stack.pop();
+    parser.token_stack.pop();
+    parser.status_stack.pop();
+
+    auto op = parser.token_stack.top();
+    parser.token_stack.pop();
+    parser.status_stack.pop();
+
+    auto value1 = parser.vol_stack.top();
+    parser.vol_stack.pop();
+    parser.token_stack.pop();
+    parser.status_stack.pop();
+
+    auto r = cmanager.generate_code(op.get_token(), value1.addr, value2.addr, parser.smanager);
+    cmanager.print_code(r, parser.smanager);
 }
 void Translater::action_CALC(Parser& parser)
 {

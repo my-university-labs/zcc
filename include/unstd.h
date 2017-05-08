@@ -22,6 +22,7 @@
 #define VOL_IS_ARRAY 4
 #define VOL_IS_ARRAY_ELEMENT 5
 #define VOL_IS_TMP 6
+#define VOL_IS_BOOL 7
 
 #define NONE_ACTION "$none_action"
 #define PARSING_TABLE_FILE_NAME "parsing_table.txt"

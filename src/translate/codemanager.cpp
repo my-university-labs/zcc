@@ -58,5 +58,5 @@ addr_type CodeManager::get_tmp_addr(size_t id)
 }
 void CodeManager::print_code(size_t id, SymbolTableManager& stmg)
 {
-    code_res[codes[id]].print_code(stmg);
+    code_res[codes[id]].print_code(id, stmg);
 }

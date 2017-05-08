@@ -193,14 +193,13 @@ void GrammarDealer::create_parsing_table()
                       << std::endl;
             std::cout << std::endl;
 #endif
-            if (!next_token.is_state_token() && !next_token.is_null_token()
+            if (!next_token.is_state_token() // && !next_token.is_null_token()
                 && relation.find(dfa.get_token_id(next_token)) != relation.end()) {
                 // 移入 并进入状态 next
                 parsing_table.add_into_action(index, next_token.get_token(),
                     std::string(MOVE_IN) + " "
                         + std::to_string(relation.at(dfa.get_token_id(next_token))));
-            }
-            if (next_token.is_null_token()) {
+            } else if (next_token.is_null_token()) {
                 std::cout << "null state need to be dealed in grammar_tool.cpp at 185"
                           << std::endl;
             }

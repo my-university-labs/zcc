@@ -13,7 +13,7 @@ public:
         , addr2(ad2)
     {
     }
-    void print_code(SymbolTableManager& stmg);
+    void print_code(size_t id, SymbolTableManager& stmg);
 
     bool operator==(const Code& code) const
     {

@@ -100,7 +100,6 @@ void SymbolTable::declare_array(int type, addr_type& addr_id, std::vector<int>& 
         new_array.array_times = array_times.size();
         new_array.times_info = array_times;
         new_array.malloc_place();
-        std::cout << "------------" << new_array.array_values[1].value.ivalue << std::endl;
         array_informations.push_back(new_array);
     }
 }
@@ -117,9 +116,35 @@ void SymbolTable::variable_assignment(addr_type& id, addr_type& value)
     value.index = id.index;
     symbols_relation[id.index] = value;
 }
-void SymbolTable::array_assignment(addr_type& array, std::vector<int>& array_times, addr_type& value)
+void SymbolTable::array_assignment(addr_type& array_element, addr_type& value)
 {
-    array_informations[array.location].array_values[1].value.ivalue = value_informations[value.location].value.ivalue;
+    size_t index = get_array_index(array_element);
+    array_informations[array_element.location].array_values[index].value.ivalue = value_informations[value.location].value.ivalue;
+}
+size_t SymbolTable::get_array_index(addr_type& array_element)
+{
+    auto times = array_informations[array_element.location].times_info;
+    auto target = array_element.array_info;
+    if (times.size() != target.size()) {
+        std::cerr << "array error1 " << times.size() << " " << target.size() << std::endl;
+        return 0;
+    }
+    size_t index = 0;
+    for (size_t i = 0; i < times.size() - 1; ++i) {
+        if (target[i] < times[i]) {
+            index += target[i] * times[i];
+        } else {
+            std::cerr << "array error2" << std::endl;
+            return 0;
+        }
+    }
+    if (target[times.size() - 1] < times[times.size() - 1]) {
+        index += target[times.size() - 1];
+    } else {
+        std::cerr << "array error3" << std::endl;
+        return 0;
+    }
+    return index;
 }
 void SymbolTable::show_addr(addr_type& addr)
 {
@@ -130,7 +155,8 @@ void SymbolTable::show_addr(addr_type& addr)
 int SymbolTable::get_int(addr_type& addr)
 {
     if (addr.type == ADDR_IS_ARRAY && addr.addition_info == VALUE_TYPE_IS_INT) {
-        return array_informations[addr.location].array_values[1].value.ivalue;
+        size_t index = get_array_index(addr);
+        return array_informations[addr.location].array_values[index].value.ivalue;
 
     } else if (addr.addition_info == VALUE_TYPE_IS_INT) {
         if (addr.location < value_informations.size()) {
@@ -148,4 +174,18 @@ char SymbolTable::get_char(addr_type& addr)
     }
     std::cerr << "error at symbol char" << std::endl;
     exit(1);
+}
+addr_type SymbolTable::conver_to_bool(addr_type& addr)
+{
+    addr_type new_addr;
+    new_addr.type = ADDR_IS_BOOL;
+    if (addr.type == ADDR_IS_BOOL)
+        new_addr.addition_info = addr.addition_info;
+    else if (addr.addition_info == VALUE_TYPE_IS_INT) {
+        new_addr.addition_info = get_int(addr) != 0 ? 1 : 0;
+    } else {
+        std::cout << "HAHA" << std::endl;
+        new_addr.addition_info = 0;
+    }
+    return addr;
 }

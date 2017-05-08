@@ -4,7 +4,7 @@
 #include "code.h"
 #include "token.h"
 
-void Code::print_code(SymbolTableManager& stmg)
+void Code::print_code(size_t id, SymbolTableManager& stmg)
 {
 
     std::cout << "---------------- info new ------------" << std::endl;
@@ -18,6 +18,7 @@ void Code::print_code(SymbolTableManager& stmg)
     stmg.show_addr_content(addr2);
     std::cout << std::endl;
     std::cout << "------------------ code ------------" << std::endl;
+    std::cout << id << "    ";
     if (have_result) {
         stmg.show_addr(result);
         std::cout << " = ";
@@ -26,7 +27,8 @@ void Code::print_code(SymbolTableManager& stmg)
     stmg.show_addr(addr1);
     std::cout << " ";
     stmg.show_addr(addr2);
-    std::cout << std::endl;
+    std::cout << std::endl
+              << std::endl;
 }
 bool Code::try_to_calc(SymbolTableManager& stmg)
 {
@@ -44,6 +46,18 @@ bool Code::try_to_calc(SymbolTableManager& stmg)
         r = stmg.get_int(addr1) + stmg.get_int(addr2);
     } else if (op == SUB) {
         r = stmg.get_int(addr1) - stmg.get_int(addr2);
+    } else if (op == GT) {
+        r = stmg.get_int(addr1) > stmg.get_int(addr2);
+    } else if (op == LT) {
+        r = stmg.get_int(addr1) < stmg.get_int(addr2);
+    } else if (op == EQ) {
+        r = stmg.get_int(addr1) == stmg.get_int(addr2);
+    } else if (op == NE) {
+        r = stmg.get_int(addr1) != stmg.get_int(addr2);
+    } else if (op == OR) {
+        r = stmg.get_int(addr1) || stmg.get_int(addr2);
+    } else if (op == AND) {
+        r = stmg.get_int(addr1) && stmg.get_int(addr2);
     } else {
         have_result = false;
     }

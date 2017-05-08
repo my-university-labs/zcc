@@ -31,6 +31,8 @@ private:
 
     void pop_all(Parser& parser);
 
+    void bool_if(Parser& parser);
+
     void action_ARRAY(Parser& parser);
 
     void action_ARRAY_ADDR(Parser& parser);
