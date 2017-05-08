@@ -52,7 +52,7 @@ addr_type CodeManager::get_tmp_addr(size_t id)
         return code_res[id].get_result();
     else {
         addr_type addr;
-        addr.type = ST_NONE;
+        addr.type = ADDR_IS_NONE;
         return addr;
     }
 }

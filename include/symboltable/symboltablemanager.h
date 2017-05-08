@@ -23,7 +23,9 @@ public:
     void declare_define_variable(int type, addr_type& addr_id, addr_type& addr_value);
     void variable_assignment(addr_type& id, addr_type& value);
 
-    void declare_array(int type, addr_type& addr_id, std::vector<size_t>& array_times);
+    void declare_array(int type, addr_type& addr_id, std::vector<int>& array_times);
+    addr_type get_array_element_addr(addr_type& addr_id, std::vector<int>& array_times);
+
     int get_int(addr_type& addr);
     char get_char(addr_type& addr);
 

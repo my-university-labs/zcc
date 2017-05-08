@@ -1,10 +1,11 @@
 int main() {
-  int a = 1 * 2, b = 3 * 2, c = 2 * 2, d[100][200];
-  int e, f, g = 2 + 2;
-  int h = 1 + 3 * 4 / 3;
-
-  h = 7;
-  int i = h + 1;
-  int k = i + h;
+  int z[10];
+  int a = 1, b = 2;
+  int c = a + b;
+  int d = a - b;
+  int e = c * d;
+  a = e + e;
+  a = z[11] + 1;
+  z[11] = 2;
   return 0;
 }

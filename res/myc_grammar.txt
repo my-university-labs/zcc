@@ -12,10 +12,12 @@
 -> value_declare_define_list
     ID $action action_value_declare
     value_declare_define_list , ID $action action_value_declare1
-    ID array_times $action action_ARRAY
-    value_declare_define_list , ID array_times $action action_ARRAY
+    array $action action_ARRAY
+    value_declare_define_list , array $action action_ARRAY
     ID = expression $action action_value_define
     value_declare_define_list , ID = expression $action action_value_define1
+-> array
+    ID array_times
 -> array_times
     [ VALUE ] $action action_ATIMES
     array_times [ VALUE ] $action action_ATIMES
@@ -123,18 +125,20 @@
 -> _F
     VALUE $action action_SWAP
     ID $action action_SWAP
+    array $action action_ARRAY_ADDR
     ( expression ) $action action_SWAP
 -> bool_expression
     expression $action action_BOOL1
     expression_unary
-    expression > expression action_BOOL2
-    expression < expression action_BOOL2
-    expression == expression action_BOOL2
-    expression != expression action_BOOL2
-    expression && expression action_BOOL2
-    expression || expression action_BOOL2
+    expression > expression $action action_BOOL2
+    expression < expression $action action_BOOL2
+    expression == expression $action action_BOOL2
+    expression != expression $action action_BOOL2
+    expression && expression $action action_BOOL2
+    expression || expression $action action_BOOL2
 -> expression_assignment
     ID = expression  $action action_ASSIGN
+    array = expression $action action_ARRAY_ASSIGN
 -> expression_unary
     ++ ID
     -- ID

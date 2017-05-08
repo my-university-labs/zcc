@@ -47,9 +47,13 @@ void SymbolTableManager::declare_define_variable(int type, addr_type& addr_id, a
 {
     symbol_tables[cursor].declare_define_variable(type, addr_id, addr_value);
 }
-void SymbolTableManager::declare_array(int type, addr_type& addr_id, std::vector<size_t>& array_times)
+void SymbolTableManager::declare_array(int type, addr_type& addr_id, std::vector<int>& array_times)
 {
     symbol_tables[cursor].declare_array(type, addr_id, array_times);
+}
+addr_type SymbolTableManager::get_array_element_addr(addr_type& addr_id, std::vector<int>& array_times)
+{
+    return symbol_tables[cursor].get_array_element_addr(addr_id, array_times);
 }
 void SymbolTableManager::variable_assignment(addr_type& id, addr_type& value)
 {

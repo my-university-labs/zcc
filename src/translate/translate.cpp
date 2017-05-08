@@ -13,6 +13,10 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
     action_production = parser.grammar.get_production(which, index);
     if (action == "action_ARRAY") {
         action_ARRAY(parser);
+    } else if (action == "action_ARRAY_ADDR") {
+        action_ARRAY_ADDR(parser);
+    } else if (action == "action_ARRAY_ASSIGN") {
+        action_ARRAY_ASSIGN(parser);
     } else if (action == "action_ASSIGN") {
         action_ASSIGN(parser);
     } else if (action == "action_ATIMES") {
@@ -64,14 +68,38 @@ void Translater::action_ARRAY(Parser& parser)
     auto id = parser.vol_stack.top();
     parser.vol_stack.pop();
 
-    // auto type = parser.vol_stack.top();
+    auto type = parser.vol_stack.top();
 
-    std::cout << "insert into symbol table: array name -> " << id.svol << " times is: ";
+    std::vector<int> tmp;
     for (auto t : times.array_times) {
         parser.smanager.show_addr_content(t);
-        std::cout << " ";
+        tmp.push_back(parser.smanager.get_int(t));
     }
-    std::cout << std::endl;
+    parser.smanager.declare_array(type.ivol, id.addr, tmp);
+}
+
+void Translater::action_ARRAY_ADDR(Parser& parser)
+{
+    action_SWAP(parser);
+    auto times = parser.vol_stack.top();
+    parser.vol_stack.pop();
+
+    auto id = parser.vol_stack.top();
+    parser.vol_stack.pop();
+
+    std::vector<int> tmp;
+    for (auto t : times.array_times) {
+        tmp.push_back(parser.smanager.get_int(t));
+    }
+    Parser::vol_type vol;
+    vol.type = VOL_IS_ARRAY_ELEMENT;
+    vol.addr = parser.smanager.get_array_element_addr(id.addr, tmp);
+
+    parser.vol_stack.push(vol);
+}
+void Translater::action_ARRAY_ASSIGN(Parser& parser)
+{
+    pop_all(parser);
 }
 
 void Translater::action_ASSIGN(Parser& parser)

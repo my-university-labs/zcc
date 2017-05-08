@@ -33,11 +33,16 @@ private:
 
     void action_ARRAY(Parser& parser);
 
+    void action_ARRAY_ADDR(Parser& parser);
+
+    void action_ARRAY_ASSIGN(Parser& parser);
+
     void action_ASSIGN(Parser& parser);
 
     void action_ATIMES(Parser& parser);
 
     void action_BOOL1(Parser& parser);
+
     void action_BOOL2(Parser& parser);
 
     void action_CALC(Parser& parser);

@@ -11,7 +11,8 @@
 
 #define ADDR_IS_ID 101
 #define ADDR_IS_VALUE 102
-#define ADDR_IS_FUNCTION 103
+#define ADDR_IS_ARRAY 103
+#define ADDR_IS_FUNCTION 104
 #define ADDR_IS_NONE 109
 
 #define VALUE_TYPE_IS_INT 201
@@ -32,9 +33,27 @@ struct value_info_type {
 };
 // array
 struct array_info_type {
-    size_t array_times;
     int type;
-    std::vector<size_t> times_info;
+    size_t array_times;
+    std::vector<int> times_info;
+    value_info_type* array_values;
+    ~array_info_type()
+    {
+        if (array_values)
+            delete[] array_values;
+        array_values = nullptr;
+    }
+    bool malloc_place()
+    {
+        size_t size = 1;
+        for (auto s : times_info)
+            size *= s;
+        array_values = new value_info_type[size];
+        if (!array_values)
+            return false;
+        else
+            return true;
+    }
 };
 // function
 struct func_info_type {
@@ -48,12 +67,14 @@ struct addr_type {
     int addition_info;
     size_t index = 0;
     size_t location = 0;
+    std::vector<int> array_info;
     addr_type(const addr_type& addr)
     {
         type = addr.type;
         addition_info = addr.addition_info;
         index = addr.index;
         location = addr.location;
+        array_info = addr.array_info;
     }
     addr_type& operator=(const addr_type& addr)
     {
@@ -61,6 +82,7 @@ struct addr_type {
         addition_info = addr.addition_info;
         index = addr.index;
         location = addr.location;
+        array_info = addr.array_info;
         return *this;
     }
     bool operator==(const addr_type& addr) const
@@ -68,7 +90,8 @@ struct addr_type {
         return addr.type == type
             && addr.addition_info == addition_info
             && addr.index == index
-            && addr.location == location;
+            && addr.location == location
+            && addr.array_info == addr.array_info;
     }
     bool operator!=(const addr_type& addr) const
     {
@@ -92,8 +115,10 @@ public:
     addr_type install_value(char val);
 
     void declare_define_variable(int type, addr_type& addr_id, addr_type& addr_value);
-    void declare_array(int type, addr_type& addr_id, std::vector<size_t>& array_times);
+    void declare_array(int type, addr_type& addr_id, std::vector<int>& array_times);
+    addr_type get_array_element_addr(addr_type& addr_id, std::vector<int>& array_times);
     void variable_assignment(addr_type& id, addr_type& value);
+    void array_assignment(addr_type& array, std::vector<int>& array_times, addr_type& value);
 
     int get_int(addr_type& addr);
     char get_char(addr_type& addr);
@@ -113,6 +138,7 @@ private:
     std::vector<value_info_type> value_informations;
     // all array
     std::vector<array_info_type> array_informations;
+    std::vector<addr_type> addr_tmp;
 };
 
 #endif

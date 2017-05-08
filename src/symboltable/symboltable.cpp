@@ -56,7 +56,11 @@ void SymbolTable::show_addr_content(addr_type& addr)
 {
     if (addr.type == ADDR_IS_ID)
         std::cout << symbols[addr.index];
-    else if (addr.type == ADDR_IS_VALUE) {
+    else if (addr.type == ADDR_IS_ARRAY) {
+        std::cout << symbols[addr.index];
+        for (auto t : addr.array_info)
+            std::cout << "[" << t << "]";
+    } else if (addr.type == ADDR_IS_VALUE) {
         if (addr.addition_info == VALUE_TYPE_IS_INT)
             std::cout << value_informations[addr.location].value.ivalue;
         else if (addr.type == VALUE_TYPE_IS_CHAR)
@@ -66,24 +70,6 @@ void SymbolTable::show_addr_content(addr_type& addr)
     }
 }
 
-int SymbolTable::get_int(addr_type& addr)
-{
-    if (addr.addition_info == VALUE_TYPE_IS_INT) {
-        if (addr.location < value_informations.size())
-            return value_informations[addr.location].value.ivalue;
-    }
-    std::cerr << "error at symbol int" << std::endl;
-    exit(1);
-}
-char SymbolTable::get_char(addr_type& addr)
-{
-    if (addr.type == VALUE_TYPE_IS_CHAR) {
-        if (addr.location < value_informations.size())
-            return value_informations[addr.location].value.cvalue;
-    }
-    std::cerr << "error at symbol char" << std::endl;
-    exit(1);
-}
 // declare
 void SymbolTable::declare_define_variable(int type, addr_type& addr_id, addr_type& addr_value)
 {
@@ -98,21 +84,68 @@ void SymbolTable::declare_define_variable(int type, addr_type& addr_id, addr_typ
     }
 }
 // declare
-void SymbolTable::declare_array(int type, addr_type& addr_id, std::vector<size_t>& array_times)
+void SymbolTable::declare_array(int type, addr_type& addr_id, std::vector<int>& array_times)
 {
     if (symbols_relation.find(addr_id.index) != symbols_relation.end()) {
         std::cerr << "redefine error" << std::endl;
         exit(0);
     }
+    if (type == INT) {
+        addr_id.type = ADDR_IS_ARRAY;
+        addr_id.addition_info = VALUE_TYPE_IS_INT;
+        addr_id.location = array_informations.size();
+        symbols_relation[addr_id.index] = addr_id;
+        array_info_type new_array;
+        new_array.type = VALUE_TYPE_IS_INT;
+        new_array.array_times = array_times.size();
+        new_array.times_info = array_times;
+        new_array.malloc_place();
+        std::cout << "------------" << new_array.array_values[1].value.ivalue << std::endl;
+        array_informations.push_back(new_array);
+    }
 }
 
+addr_type SymbolTable::get_array_element_addr(addr_type& addr_id, std::vector<int>& array_times)
+{
+    addr_type addr = symbols_relation[addr_id.index];
+    addr.array_info = array_times;
+    return addr;
+}
 void SymbolTable::variable_assignment(addr_type& id, addr_type& value)
 {
     value.type = id.type;
     value.index = id.index;
     symbols_relation[id.index] = value;
 }
+void SymbolTable::array_assignment(addr_type& array, std::vector<int>& array_times, addr_type& value)
+{
+    array_informations[array.location].array_values[1].value.ivalue = value_informations[value.location].value.ivalue;
+}
 void SymbolTable::show_addr(addr_type& addr)
 {
-    std::cout << "$" << addr.index << addr.type << addr.location;
+    std::cout << "$" << addr.type << addr.addition_info << addr.index << addr.location;
+    for (auto c : addr.array_info)
+        std::cout << c;
+}
+int SymbolTable::get_int(addr_type& addr)
+{
+    if (addr.type == ADDR_IS_ARRAY && addr.addition_info == VALUE_TYPE_IS_INT) {
+        return array_informations[addr.location].array_values[1].value.ivalue;
+
+    } else if (addr.addition_info == VALUE_TYPE_IS_INT) {
+        if (addr.location < value_informations.size()) {
+            return value_informations[addr.location].value.ivalue;
+        }
+    }
+    std::cerr << "error at symbol int" << std::endl;
+    exit(1);
+}
+char SymbolTable::get_char(addr_type& addr)
+{
+    if (addr.type == VALUE_TYPE_IS_CHAR) {
+        if (addr.location < value_informations.size())
+            return value_informations[addr.location].value.cvalue;
+    }
+    std::cerr << "error at symbol char" << std::endl;
+    exit(1);
 }
