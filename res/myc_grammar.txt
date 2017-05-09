@@ -83,19 +83,25 @@
     IF ELSE
     IF ELSEIFS ELSE
 -> IF
-    if ( bool_expression ) M statement
+    if ( bool_expression ) M statement $action action_IF
 -> M
-    null
+    null $action action_M_FLAG
 -> ELSEIFS
-    else if ( bool_expression ) M statement
-    ELSEIFS  else if ( bool_expression )  M statement
+    N else if ( bool_expression ) M statement  $action action_ELSEIF
+    N ELSEIFS  else if ( bool_expression )  M statement $action action_ELSE
 -> ELSE
-    else statement
+    N else statement
+-> N
+    null $action action_N_FLAG
 -> for_statement
     for ( expression_assignment ; bool_expression ; expression_assignment ) statement
     for ( expression_assignment ; bool_expression ; expression_unary ) statement
 -> while_statement
-    while ( bool_expression ) statement
+    while M1 ( bool_expression ) M2 statement $action action_WHILE
+-> M1
+    null $action action_M1_FLAG
+-> M2
+    null $action action_M2_FLAG
 -> do_while_statement
     do statement while ( bool_expression ) ;
 -> switch_statement
@@ -130,14 +136,19 @@
     array $action action_ARRAY_ADDR
     ( expression ) $action action_SWAP
 -> bool_expression
-    expression $action action_BOOL1
-    expression_unary
-    expression > expression $action action_BOOL2
-    expression < expression $action action_BOOL2
-    expression == expression $action action_BOOL2
-    expression != expression $action action_BOOL2
-    expression && expression $action action_BOOL2
-    expression || expression $action action_BOOL2
+    bool_expression || M _A $action action_OR
+    _A $action action_SWAP
+-> _A
+    _A && M _B $action action_AND
+    _B $action action_SWAP
+-> _B
+    _B > _C $action action_BOOL2
+    _B < _C $action action_BOOL2
+    _B == _C $action action_BOOL2
+    _B != _C $action action_BOOL2
+    _C $action action_SWAP
+-> _C
+    expression $action action_SWAP
 -> expression_assignment
     ID = expression  $action action_ASSIGN
     array = expression $action action_ARRAY_ASSIGN

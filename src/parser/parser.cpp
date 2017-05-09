@@ -69,6 +69,7 @@ void Parser::run()
             hook_function(action.which, action.index, tokenizer.get_linenu());
         } else if (action.action == ACCEPT) {
             std::cout << "\nFUCK ACCEPT" << std::endl;
+            translater.gencode(smanager);
             break;
         } else {
             std::cerr << "terminate" << std::endl;
@@ -91,7 +92,7 @@ void Parser::hook_function(std::string& which, size_t& index, int linenu)
     auto togo0 = ptable.query_goto(status_new, Token(which));
     token_stack.push(Token(which));
     status_stack.push(togo0.next_status);
-    print_production(which, index, linenu);
+    // print_production(which, index, linenu);
 }
 void Parser::print_production(std::string& which, size_t& index, int linenu)
 {

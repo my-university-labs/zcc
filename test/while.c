@@ -1,19 +1,13 @@
 int main() {
   int b = 1;
   int a = 10;
-  while (a--) {
-    if (a && b) {
-      break;
-    } else {
-      continue;
-    }
-    while (1) {
-      break;
+  while (a > b) {
+    a = a + b;
+    while (a < b) {
+      b = a + b;
     }
   }
-  do {
-    while (1)
-      continue;
-  } while (1);
+  if (a > b)
+    a = 2;
   return 0;
 }

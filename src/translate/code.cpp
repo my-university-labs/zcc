@@ -2,33 +2,79 @@
 /* time: Thu Apr 27 20:36:59 2017 */
 
 #include "code.h"
+#include "codemanager.h"
 #include "token.h"
 
 void Code::print_code(size_t id, SymbolTableManager& stmg)
 {
+    print_code1(id, stmg);
+}
 
-    std::cout << "---------------- info new ------------" << std::endl;
-    if (have_result) {
+// man can see
+void Code::print_code1(size_t id, SymbolTableManager& stmg)
+{
+    std::cout << id << ":    ";
+    if (if_goto) {
+        std::cout << "if ";
+        stmg.show_addr_content(addr1);
+        std::cout << " " << get_token_info(op) << " ";
+        stmg.show_addr_content(addr2);
+        std::cout << " goto ";
+        stmg.show_addr_content(jump);
+        std::cout << "    ";
         stmg.show_addr_content(result);
-        std::cout << " = ";
+        std::cout << std::endl;
+    } else if (op == GOTO) {
+        std::cout << "goto ";
+        stmg.show_addr_content(addr1);
+        std::cout << std::endl;
+    } else {
+        // show info
+        if (have_result) {
+            stmg.show_addr_content(result);
+            std::cout << " = ";
+        }
+        stmg.show_addr_content(addr1);
+        if (op == ARRAY_ASSIGN)
+            std::cout << " = ";
+        else
+            std::cout << " " << get_token_info(op) << " ";
+        stmg.show_addr_content(addr2);
+        std::cout << std::endl;
     }
-    std::cout << get_token_info(op) << " ";
-    stmg.show_addr_content(addr1);
-    std::cout << " ";
-    stmg.show_addr_content(addr2);
-    std::cout << std::endl;
-    std::cout << "------------------ code ------------" << std::endl;
-    std::cout << id << "    ";
-    if (have_result) {
-        stmg.show_addr(result);
-        std::cout << " = ";
+}
+// addr
+void Code::print_code2(size_t id, SymbolTableManager& stmg)
+{
+    if (if_goto) {
+        std::cout << id << ":    if ";
+        stmg.show_addr(addr1);
+        std::cout << " " << get_token_info(op) << " ";
+        stmg.show_addr(addr2);
+        std::cout << " goto ";
+        stmg.show_addr(jump);
+        std::cout << std::endl;
+    } else if (op == GOTO) {
+        std::cout << id << ":   goto ";
+        stmg.show_addr(addr1);
+        std::cout << std::endl;
+    } else {
+        // show code
+        std::cout << id << ":   ";
+        if (have_result) {
+            stmg.show_addr(result);
+            std::cout << " = ";
+        }
+        stmg.show_addr(addr1);
+        if (op == ARRAY_ASSIGN)
+            std::cout << " = ";
+        else if (op == GOTO)
+            std::cout << " goto ";
+        else
+            std::cout << " " << get_token_info(op) << " ";
+        stmg.show_addr(addr2);
+        std::cout << std::endl;
     }
-    std::cout << get_token_info(op) << " ";
-    stmg.show_addr(addr1);
-    std::cout << " ";
-    stmg.show_addr(addr2);
-    std::cout << std::endl
-              << std::endl;
 }
 bool Code::try_to_calc(SymbolTableManager& stmg)
 {
@@ -58,6 +104,14 @@ bool Code::try_to_calc(SymbolTableManager& stmg)
         r = stmg.get_int(addr1) || stmg.get_int(addr2);
     } else if (op == AND) {
         r = stmg.get_int(addr1) && stmg.get_int(addr2);
+    } else if (op == ASSIGN) {
+        have_result = false;
+        stmg.variable_assignment(addr1, addr2);
+
+    } else if (op == ARRAY_ASSIGN) {
+        have_result = false;
+        stmg.array_assignment(addr1, addr2);
+
     } else {
         have_result = false;
     }

@@ -112,9 +112,17 @@ addr_type SymbolTable::get_array_element_addr(addr_type& addr_id, std::vector<in
 }
 void SymbolTable::variable_assignment(addr_type& id, addr_type& value)
 {
-    value.type = id.type;
-    value.index = id.index;
-    symbols_relation[id.index] = value;
+    addr_type new_value = value;
+    new_value.type = id.type;
+    new_value.index = id.index;
+    symbols_relation[id.index] = new_value;
+}
+void SymbolTable::value_assignment(addr_type& addr, int value)
+{
+    if (addr.type == ADDR_IS_VALUE && addr.addition_info == VALUE_TYPE_IS_INT)
+        value_informations[addr.location].value.ivalue = value;
+    else
+        std::cerr << "value assign false" << std::endl;
 }
 void SymbolTable::array_assignment(addr_type& array_element, addr_type& value)
 {
@@ -184,7 +192,7 @@ addr_type SymbolTable::conver_to_bool(addr_type& addr)
     else if (addr.addition_info == VALUE_TYPE_IS_INT) {
         new_addr.addition_info = get_int(addr) != 0 ? 1 : 0;
     } else {
-        std::cout << "HAHA" << std::endl;
+        show_addr(addr);
         new_addr.addition_info = 0;
     }
     return addr;

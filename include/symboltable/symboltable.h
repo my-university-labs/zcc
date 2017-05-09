@@ -14,7 +14,6 @@
 #define ADDR_IS_ARRAY 103
 #define ADDR_IS_BOOL 104
 #define ADDR_IS_FUNCTION 105
-#define ADDR_IS_JUMP 106
 #define ADDR_IS_NONE 109
 
 #define VALUE_TYPE_IS_INT 201
@@ -70,8 +69,6 @@ struct addr_type {
     int addition_info;
     size_t index = 0;
     size_t location = 0;
-    size_t jump_true;
-    size_t jump_false;
     std::vector<int> array_info;
     addr_type(const addr_type& addr)
     {
@@ -124,6 +121,7 @@ public:
     addr_type get_array_element_addr(addr_type& addr_id, std::vector<int>& array_times);
     void variable_assignment(addr_type& id, addr_type& value);
     void array_assignment(addr_type& array_element, addr_type& value);
+    void value_assignment(addr_type& addr, int value);
     size_t get_array_index(addr_type& array_element);
     int get_int(addr_type& addr);
     char get_char(addr_type& addr);

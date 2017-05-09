@@ -23,6 +23,8 @@ public:
     void declare_define_variable(int type, addr_type& addr_id, addr_type& addr_value);
     void variable_assignment(addr_type& id, addr_type& value);
     void array_assignment(addr_type& id, addr_type& value);
+    void value_assignment(addr_type& addr, int value);
+
     addr_type conver_to_bool(addr_type& addr);
 
     void declare_array(int type, addr_type& addr_id, std::vector<int>& array_times);

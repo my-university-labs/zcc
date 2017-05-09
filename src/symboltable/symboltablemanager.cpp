@@ -63,6 +63,11 @@ void SymbolTableManager::array_assignment(addr_type& id, addr_type& value)
 {
     symbol_tables[cursor].array_assignment(id, value);
 }
+void SymbolTableManager::value_assignment(addr_type& addr, int value)
+{
+    symbol_tables[cursor].value_assignment(addr, value);
+}
+
 addr_type SymbolTableManager::conver_to_bool(addr_type& addr)
 {
     return symbol_tables[cursor].conver_to_bool(addr);

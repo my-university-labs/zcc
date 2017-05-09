@@ -11,7 +11,7 @@ int main() {
   a = z[11] + z[2];
   a = z[11] + 1;
   d = a * c;
-  if (a && b) {
+  if (a > b) {
     ;
   }
   return 0;
