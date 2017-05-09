@@ -54,10 +54,15 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
 
 void Translater::pop_all(Parser& parser)
 {
+    std::cout << "@----------------------" << std::endl;
+    Token token;
     for (size_t i = 0; i < action_production.size(); ++i) {
+        token = parser.token_stack.top();
+        std::cout << token.get_attr() << std::endl;
         parser.token_stack.pop();
         parser.status_stack.pop();
     }
+    std::cout << "@----------------------" << std::endl;
 }
 void Translater::action_ARRAY(Parser& parser)
 {

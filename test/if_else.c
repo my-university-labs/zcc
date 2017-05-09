@@ -1,24 +1,13 @@
 int main() {
-  if (a)
+  if (1)
     if (1) {
-      ;
-    } else if (1) {
-      ;
-    } else if (1) {
-      ;
-    } else {
-      ;
-    }
-  else {
-    if (1)
-      a;
-    else {
-      if (1)
+      if (1) {
         ;
-      else if (2)
+      } else if (1 + 1) {
         ;
+      } else {
+        ;
+      }
+      return 0;
     }
-  }
-
-  return 0;
 }

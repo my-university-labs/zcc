@@ -32,10 +32,25 @@ void Parser::run()
     //     token_now.show_addr();
 
     while (true) {
+
         size_t status_now = status_stack.top();
         auto action = ptable.query_action(status_now, token_now.get_token());
         if (action.error) {
-            // deal error;
+            // move in null
+            auto action = ptable.query_action(status_now, NULL_STATE);
+            if (!action.error) {
+                last_token = Token();
+                status_stack.push(action.next_status);
+                token_stack.push(last_token);
+                // reduction ?
+                action = ptable.query_action(action.next_status, token_now.get_token());
+                if (!action.error) {
+                    hook_function(action.which, action.index, tokenizer.get_linenu());
+                    continue;
+                }
+            }
+            // deal error
+            std::cout << action.action << std::endl;
             deal_error(tokenizer.get_linenu(), tokenizer.get_cursor(),
                 tokenizer.get_line(), action.next_token_should_be);
             std::cerr << "error action at line :" << tokenizer.get_linenu()
@@ -43,7 +58,8 @@ void Parser::run()
             std::cerr << "input token is : <" << token_now.get_token() << ", "
                       << token_now.get_attr() << ">" << std::endl;
             exit(3);
-        } else if (action.action == MOVE_IN) {
+        }
+        if (action.action == MOVE_IN) {
             status_stack.push(action.next_status);
             token_stack.push(token_now);
             token_now = tokenizer.next(smanager);
@@ -53,7 +69,7 @@ void Parser::run()
             hook_function(action.which, action.index, tokenizer.get_linenu());
         } else if (action.action == ACCEPT) {
             std::cout << "\nFUCK ACCEPT" << std::endl;
-            exit(0);
+            break;
         } else {
             std::cerr << "terminate" << std::endl;
             exit(1);
@@ -75,7 +91,7 @@ void Parser::hook_function(std::string& which, size_t& index, int linenu)
     auto togo0 = ptable.query_goto(status_new, Token(which));
     token_stack.push(Token(which));
     status_stack.push(togo0.next_status);
-    // print_production(which, index, linenu);
+    print_production(which, index, linenu);
 }
 void Parser::print_production(std::string& which, size_t& index, int linenu)
 {
