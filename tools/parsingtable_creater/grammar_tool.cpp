@@ -177,31 +177,12 @@ void GrammarDealer::create_parsing_table()
             // [A->?.a?,b] && go(status, a) = status2 ->
             // action[status_now_id, status2_id] = move in (status_2)
             Token next_token = item.after_decimal(grammar);
-#ifdef DEBUG_PARSING_TABLE_GOTO
-            std::cout << "DEBUG FOR ACTION TABLE " << std::endl;
-            std::cout << "next token is: " << std::endl;
-            std::cout << "is null state: " << next_token.is_null_token()
-                      << std::endl;
-            std::cout << "is state token: " << next_token.is_state_token()
-                      << " " << next_token.get_state() << std::endl;
-            std::cout << "is id: " << next_token.is_id() << " "
-                      << next_token.get_token() << std::endl;
-            std::cout << "is symbol ? : " << next_token.get_token()
-                      << next_token.get_attr() << std::endl;
-            std::cout << std::endl;
-            std::cout << (relation.find(next_token.get_token()) != relation.end())
-                      << std::endl;
-            std::cout << std::endl;
-#endif
             if (!next_token.is_state_token() // && !next_token.is_null_token()
                 && relation.find(dfa.get_token_id(next_token)) != relation.end()) {
                 // 移入 并进入状态 next
                 parsing_table.add_into_action(index, next_token.get_token(),
                     std::string(MOVE_IN) + " "
                         + std::to_string(relation.at(dfa.get_token_id(next_token))));
-            } else if (next_token.is_null_token()) {
-                std::cout << "null state need to be dealed in grammar_tool.cpp at 185"
-                          << std::endl;
             }
         }
     }
@@ -209,7 +190,6 @@ void GrammarDealer::create_parsing_table()
 
 std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 {
-    times = 0;
     size_t index = 0;
     bool have_null = false;
     std::unordered_set<int> Xsset;
@@ -227,9 +207,6 @@ std::unordered_set<int> GrammarDealer::first(const std::vector<Token>& left)
 
 std::unordered_set<int> GrammarDealer::firstX(const Token& token)
 {
-    ++times;
-    if (times > 100)
-        return std::unordered_set<int>();
     std::unordered_set<int> Xset;
     Xset.clear();
     if (!token.is_state_token() && !token.is_null_token()) {
@@ -248,12 +225,13 @@ std::unordered_set<int> GrammarDealer::firstX(const Token& token)
         }
         // none terminal symbol
         bool have_null = false;
-        //  while (!changed) {
         for (auto& p : ps) { // every production
+
             for (auto& t : p) { // every token of every production
                 have_null = false;
-                if (t.is_state_token()) {
+                if (t.is_state_token() && t.get_state() != token.get_state()) {
                     auto s = firstX(t);
+                    // first_flag[t] = 0;
                     have_null = merge_set_ignore_null(Xset, s);
                     // don't have null state ->  break
                     if (!have_null) {
