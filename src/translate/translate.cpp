@@ -84,7 +84,8 @@ void Translater::action_AND(Parser& parser)
     auto value2 = parser.vol_stack.top();
     parser.vol_stack.pop();
 
-    addr_type jump_true = parser.smanager.install_value(0);
+    size_t next = code_manager.line_nums_now();
+    addr_type jump_true = parser.smanager.install_value((int)next + 2);
     auto r = code_manager.generate_code(AND, value1.addr, value2.addr, jump_true, parser.smanager);
     code_manager.print_code(r, parser.smanager);
 
@@ -95,7 +96,8 @@ void Translater::action_AND(Parser& parser)
     code_manager.print_code(r1, parser.smanager);
 
     backfill_false.push(jump_false);
-
+    if (bool_nums.size() > 0)
+        bool_nums.top() += 1;
     // size_t next = code_manager.line_nums_now();
     // auto addr = backfill_true.top();
     // parser.smanager.value_assignment(addr, (int)next);
@@ -222,7 +224,8 @@ void Translater::action_BOOL2(Parser& parser)
     parser.token_stack.pop();
     parser.status_stack.pop();
 
-    addr_type jump_true = parser.smanager.install_value(0);
+    size_t next = code_manager.line_nums_now();
+    addr_type jump_true = parser.smanager.install_value((int)next + 2);
     auto r = code_manager.generate_code(op.get_token(), value1.addr, value2.addr, jump_true, parser.smanager);
     code_manager.print_code(r, parser.smanager);
 
@@ -233,6 +236,8 @@ void Translater::action_BOOL2(Parser& parser)
     code_manager.print_code(r1, parser.smanager);
 
     backfill_false.push(jump_false);
+    if (bool_nums.size() > 0)
+        bool_nums.top() += 1;
 
     Parser::vol_type vol;
     vol.index = r;
@@ -360,10 +365,14 @@ void Translater::action_WHILE(Parser& parser)
     auto r1 = code_manager.generate_code(GOTO, jump_back, parser.smanager);
     code_manager.print_code(r1, parser.smanager);
     // the first line out of while statement, do backfill
-    // size_t next = code_manager.line_nums_now();
     size_t next = code_manager.line_nums_now();
-    auto addr = backfill_true.top();
-    parser.smanager.value_assignment(addr, (int)next);
+    for (size_t i = 0; i < bool_nums.top(); ++i) {
+        std::cout << "POP" << std::endl;
+        auto addr = backfill_false.top();
+        parser.smanager.value_assignment(addr, (int)next);
+        backfill_false.pop();
+    }
+    bool_nums.pop();
 }
 
 void Translater::action_value_declare(Parser& parser)
@@ -443,14 +452,19 @@ void Translater::action_N_FLAG(Parser& parser)
 void Translater::action_M1_FLAG(Parser& parser)
 {
     pop_all(parser);
+    // come into a new while
+    bool_nums.push(0);
     size_t next = code_manager.line_nums_now();
     line_to_jump.push(next);
 }
 void Translater::action_M2_FLAG(Parser& parser)
 {
     pop_all(parser);
+    // backfill true-jump
     size_t next = code_manager.line_nums_now();
     auto addr = backfill_true.top();
+    std::cout << backfill_true.size() << std::endl;
+    backfill_true.pop();
     parser.smanager.value_assignment(addr, (int)next);
 }
 void Translater::action_S_FLAG(Parser& parser)
