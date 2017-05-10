@@ -101,5 +101,7 @@ private:
     void action_M1_FLAG(Parser& parser);
     // M2
     void action_M2_FLAG(Parser& parser);
+    // S
+    void action_S_FLAG(Parser& parser);
 };
 #endif

@@ -83,16 +83,18 @@
     IF ELSE
     IF ELSEIFS ELSE
 -> IF
-    if ( bool_expression ) M statement $action action_IF
+    if S ( bool_expression ) M statement $action action_IF
 -> M
     null $action action_M_FLAG
 -> ELSEIFS
-    N else if ( bool_expression ) M statement  $action action_ELSEIF
-    N ELSEIFS  else if ( bool_expression )  M statement $action action_ELSE
+    N else if S ( bool_expression ) M statement  $action action_ELSEIF
+    N ELSEIFS  else if S ( bool_expression )  M statement $action action_ELSE
 -> ELSE
     N else statement
 -> N
     null $action action_N_FLAG
+-> S
+    null $action action_S_FLAG
 -> for_statement
     for ( expression_assignment ; bool_expression ; expression_assignment ) statement
     for ( expression_assignment ; bool_expression ; expression_unary ) statement

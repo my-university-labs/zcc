@@ -57,8 +57,10 @@ void Translater::action_run(Parser& parser, std::string& action, std::string& wh
         action_N_FLAG(parser);
     } else if (action == "action_M1_FLAG") {
         action_M1_FLAG(parser);
-    } else if (action == "action_M2_FLAG") {
+    } else if (action == "action_S_FLAG") {
         action_M2_FLAG(parser);
+    } else if (action == "action_S_FLAG") {
+        action_S_FLAG(parser);
     } else {
         // std::cout << "ELSE -> Translater" << std::endl;
         // pop
@@ -446,6 +448,14 @@ void Translater::action_M1_FLAG(Parser& parser)
 }
 void Translater::action_M2_FLAG(Parser& parser)
 {
+    pop_all(parser);
+    size_t next = code_manager.line_nums_now();
+    auto addr = backfill_true.top();
+    parser.smanager.value_assignment(addr, (int)next);
+}
+void Translater::action_S_FLAG(Parser& parser)
+{
+    // come into if
     pop_all(parser);
     size_t next = code_manager.line_nums_now();
     auto addr = backfill_true.top();
