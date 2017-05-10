@@ -64,3 +64,25 @@ void CodeManager::gen_all_code(SymbolTableManager& stmg)
         codes[i].print_code(i, stmg);
     }
 }
+
+size_t CodeManager::generate_tmp_code(int op, addr_type& addr1, SymbolTableManager& stmg)
+{
+    Code new_code(op, addr1);
+    new_code.try_to_calc(stmg);
+    codes_tmp.push_back(new_code);
+    return codes_tmp.size() - 1;
+}
+size_t CodeManager::generate_tmp_code(int op, addr_type& addr1, addr_type& addr2, addr_type& addr3, SymbolTableManager& stmg)
+{
+    Code new_code(op, addr1, addr2, addr3);
+    new_code.try_to_calc(stmg);
+    codes_tmp.push_back(new_code);
+    return codes_tmp.size() - 1;
+}
+void CodeManager::merge_code()
+{
+    for (auto code : codes_tmp) {
+        codes.push_back(code);
+    }
+    codes_tmp.clear();
+}

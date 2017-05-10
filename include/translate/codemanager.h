@@ -32,6 +32,11 @@ public:
     size_t generate_code(int op, addr_type& addr1, size_t addr2, SymbolTableManager& stmg);
     size_t generate_code(int op, size_t addr1, size_t addr2, SymbolTableManager& stmg);
 
+    size_t generate_tmp_code(int op, addr_type& addr1, SymbolTableManager& stmg);
+    size_t generate_tmp_code(int op, addr_type& addr1, addr_type& addr2, addr_type& addr3, SymbolTableManager& stmg);
+
+    void merge_code();
+
     void gen_all_code(SymbolTableManager& stmg);
 
     size_t line_nums_now() { return codes.size(); }
@@ -43,6 +48,7 @@ private:
     size_t timer = 0;
 
     std::vector<Code> codes;
+    std::vector<Code> codes_tmp;
     std::unordered_map<size_t, size_t> relation;
 
     size_t get_timer() { return timer++; }

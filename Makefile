@@ -21,7 +21,7 @@ INCLUDE = -Iinclude -Iinclude/lex -Iinclude/parser -Iinclude/symboltable \
 
 CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 
-all:$(TARGET)
+all:$(TARGET) $(TOOL)
 
 tool:$(TOOL)
 

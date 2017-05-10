@@ -78,26 +78,32 @@
     content do_while_statement
     content switch_statement
 -> if_statement
-    IF
+    IF $action action_IF_B
     IF ELSEIFS
-    IF ELSE
-    IF ELSEIFS ELSE
+    IF ELSE $action action_IF_B
+    IF ELSEIFS ELSE $action action_IF_B
 -> IF
-    if S ( bool_expression ) M statement $action action_IF
+    if SS ( bool_expression ) statement $action action_IF
 -> M
     null $action action_M_FLAG
+-> SS
+    null $action action_SS_FLAG
 -> ELSEIFS
-    N else if S ( bool_expression ) M statement  $action action_ELSEIF
-    N ELSEIFS  else if S ( bool_expression )  M statement $action action_ELSE
+    else S if ( bool_expression )  statement  $action action_ELSEIF
+    ELSEIFS S else if ( bool_expression )   statement $action action_ELSE
 -> ELSE
-    N else statement
--> N
-    null $action action_N_FLAG
+    else statement
 -> S
     null $action action_S_FLAG
 -> for_statement
-    for ( expression_assignment ; bool_expression ; expression_assignment ) statement
-    for ( expression_assignment ; bool_expression ; expression_unary ) statement
+    for F1 ( expression_assignment ; bool_expression ; F2 expression_assignment  ) F3 statement $action action_FOR
+    for F1 ( expression_assignment ; bool_expression ; F2 expression_unary  ) F3 statement  $action action_FOR
+-> F1
+    null $action action_F1_FLAG
+-> F2
+    null $action action_F2_FLAG
+-> F3
+    null $action action_F3_FLAG
 -> while_statement
     while M1 ( bool_expression ) M2 statement $action action_WHILE
 -> M1

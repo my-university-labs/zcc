@@ -42,9 +42,15 @@ private:
 
     size_t timer_increase() { return ++timer; }
 
+    bool gen_to_tmp = false;
+
     void pop_all(Parser& parser);
 
     void bool_if(Parser& parser);
+
+    size_t gen_3_addr(Parser& parser, int flag, addr_type& addr1, addr_type& addr2);
+
+    size_t gen_1_addr(Parser& parser, int flag);
 
     void action_AND(Parser& parser);
 
@@ -68,9 +74,13 @@ private:
 
     void action_ELSEIF(Parser& parser);
 
+    void action_FOR(Parser& parser);
+
     void action_ID(Parser& parser);
 
     void action_IF(Parser& parser);
+
+    void action_IF_B(Parser& parser);
 
     void action_OR(Parser& parser);
 
@@ -101,7 +111,15 @@ private:
     void action_M1_FLAG(Parser& parser);
     // M2
     void action_M2_FLAG(Parser& parser);
-    // S
+    // S elseif begin
     void action_S_FLAG(Parser& parser);
+    // SS if begin
+    void action_SS_FLAG(Parser& parser);
+    // F1
+    void action_F1_FLAG(Parser& parser);
+    // F2
+    void action_F2_FLAG(Parser& parser);
+    // F3
+    void action_F3_FLAG(Parser& parser);
 };
 #endif
