@@ -5,7 +5,8 @@ TARGET = bin/zcc
 TOOL = bin/parsingtable_creater
 
 OBJFS = main.o tokenizer.o token.o parser.o grammar.o parsing_table.o \
-    translate.o code.o codemanager.o symboltable.o symboltablemanager.o  error.o
+    translate.o code.o codemanager.o symboltable.o symboltablemanager.o \
+	 error.o asm.o
 
 OBJFS_GRAMMAR = pmain.o grammar_tool.o token.o error.o grammar.o \
     parsing_table.o status.o dfa.o
@@ -17,7 +18,7 @@ OBJECTS_GRAMMAR = $(patsubst %.o, $(OBJ_DIR)/%.o, $(OBJFS_GRAMMAR))
 CC = g++
 
 INCLUDE = -Iinclude -Iinclude/lex -Iinclude/parser -Iinclude/symboltable \
-    -Iinclude/utils -Iinclude/tools/grammar -Iinclude/translate
+    -Iinclude/utils -Iinclude/tools/grammar -Iinclude/translate -Iinclude/asm
 
 CPPFLAGS = -Wall -std=c++11 $(INCLUDE)
 
@@ -72,18 +73,21 @@ $(OBJ_DIR)/symboltablemanager.o:src/symboltable/symboltablemanager.cpp
 $(OBJ_DIR)/error.o:src/utils/error.cpp
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
+$(OBJ_DIR)/asm.o:src/asm/asm.cpp
+	$(CC) $(CPPFLAGS) -c $< -o $@
+
 # just used by grammar tool
 # grammar tool main
-$(OBJ_DIR)/pmain.o: tools/parsingtable_creater/pmain.cpp
+$(OBJ_DIR)/pmain.o: src/pmain.cpp
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/grammar_tool.o: tools/parsingtable_creater/grammar_tool.cpp
+$(OBJ_DIR)/grammar_tool.o: src/tools/parsingtable_creater/grammar_tool.cpp
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/dfa.o: tools/parsingtable_creater/dfa.cpp
+$(OBJ_DIR)/dfa.o: src/tools/parsingtable_creater/dfa.cpp
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/status.o: tools/parsingtable_creater/status.cpp
+$(OBJ_DIR)/status.o: src/tools/parsingtable_creater/status.cpp
 	$(CC) $(CPPFLAGS) -c $< -o $@
 
 
