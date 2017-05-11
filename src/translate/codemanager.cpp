@@ -1,6 +1,7 @@
 /* author: dongchangzhang */
 /* time: Thu Apr 27 20:37:17 2017 */
 
+#include "code.h"
 #include "codemanager.h"
 #include "unstd.h"
 #include <algorithm>
@@ -45,9 +46,11 @@ size_t CodeManager::generate_code(int op, size_t addr1, size_t addr2, SymbolTabl
 
 addr_type CodeManager::get_tmp_addr(size_t id)
 {
-    if (id < codes.size() && codes[id].check_result())
+    if (id < codes.size() && codes[id].check_result()) {
+        codes[id].set_result_as_tmp();
         return codes[id].get_result();
-    else {
+
+    } else {
         addr_type addr;
         addr.type = ADDR_IS_NONE;
         return addr;

@@ -61,7 +61,9 @@ void SymbolTable::show_addr_content(addr_type& addr)
         for (auto t : addr.array_info)
             std::cout << "[" << t << "]";
     } else if (addr.type == ADDR_IS_VALUE) {
-        if (addr.addition_info == VALUE_TYPE_IS_INT)
+        if (addr.tmp)
+            show_addr(addr);
+        else if (addr.addition_info == VALUE_TYPE_IS_INT)
             std::cout << value_informations[addr.location].value.ivalue;
         else if (addr.type == VALUE_TYPE_IS_CHAR)
             std::cout << value_informations[addr.location].value.cvalue;

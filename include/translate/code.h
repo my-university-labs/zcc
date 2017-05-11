@@ -1,6 +1,7 @@
-#ifndef PLUGIN_CODE_H
-#define PLUGIN_CODE_H
+#ifndef CODE_H
+#define CODE_H
 
+#include "codemanager.h"
 #include "symboltablemanager.h"
 #include <iostream>
 
@@ -41,11 +42,31 @@ public:
     {
         return !(*this == code);
     }
-    addr_type get_result() { return result; }
 
     bool try_to_calc(SymbolTableManager& stmg);
 
     bool check_result() { return have_result; }
+
+    void set_result_as_tmp() { result.tmp = true; }
+
+    bool is_goto() { return op == GOTO; }
+    bool is_if_goto() { return if_goto; }
+
+    addr_type get_addr1() { return addr1; }
+    addr_type get_addr2() { return addr2; }
+    addr_type get_result() { return result; }
+    addr_type get_jump() { return jump; }
+    int get_op() { return op; }
+
+    size_t goto_where(SymbolTableManager& stmg)
+    {
+        if (if_goto)
+            return stmg.get_int(jump);
+        else if (op == GOTO)
+            return stmg.get_int(addr1);
+
+        return 0;
+    }
 
 private:
     int op;

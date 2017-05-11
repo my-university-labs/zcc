@@ -2,8 +2,8 @@
 /* time: Thu Apr 27 20:36:59 2017 */
 
 #include "code.h"
-#include "codemanager.h"
 #include "token.h"
+#include <iomanip>
 
 void Code::print_code(size_t id, SymbolTableManager& stmg)
 {
@@ -13,7 +13,7 @@ void Code::print_code(size_t id, SymbolTableManager& stmg)
 // man can see
 void Code::print_code1(size_t id, SymbolTableManager& stmg)
 {
-    std::cout << id << ":    ";
+    std::cout << std::left << std::setw(5) << id << ":\t";
     if (if_goto) {
         std::cout << "if ";
         stmg.show_addr_content(addr1);
@@ -21,8 +21,6 @@ void Code::print_code1(size_t id, SymbolTableManager& stmg)
         stmg.show_addr_content(addr2);
         std::cout << " goto ";
         stmg.show_addr_content(jump);
-        std::cout << "    ";
-        stmg.show_addr_content(result);
         std::cout << std::endl;
     } else if (op == GOTO) {
         std::cout << "goto ";

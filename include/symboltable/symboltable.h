@@ -67,6 +67,7 @@ struct addr_type {
     addr_type() = default;
     int type;
     int addition_info;
+    bool tmp = false;
     size_t index = 0;
     size_t location = 0;
     std::vector<int> array_info;
@@ -74,6 +75,7 @@ struct addr_type {
     {
         type = addr.type;
         addition_info = addr.addition_info;
+        tmp = addr.tmp;
         index = addr.index;
         location = addr.location;
         array_info = addr.array_info;
@@ -82,9 +84,11 @@ struct addr_type {
     {
         type = addr.type;
         addition_info = addr.addition_info;
+        tmp = addr.tmp;
         index = addr.index;
         location = addr.location;
         array_info = addr.array_info;
+
         return *this;
     }
     bool operator==(const addr_type& addr) const

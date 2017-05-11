@@ -101,7 +101,6 @@ size_t Translater::gen_3_addr(Parser& parser, int flag, addr_type& addr1, addr_t
         r = code_manager.generate_code(flag, addr1, addr2, jump_true, parser.smanager);
     else
         r = code_manager.generate_tmp_code(flag, addr1, addr2, jump_true, parser.smanager);
-    code_manager.print_code(r, parser.smanager);
     backfill_true.push(jump_true);
     return r;
 }
@@ -114,7 +113,6 @@ size_t Translater::gen_1_addr(Parser& parser, int flag)
         r = code_manager.generate_code(flag, jump_false, parser.smanager);
     else
         r = code_manager.generate_tmp_code(flag, jump_false, parser.smanager);
-    code_manager.print_code(r, parser.smanager);
     backfill_false.push(jump_false);
     return r;
 }
@@ -198,8 +196,7 @@ void Translater::action_ARRAY_ASSIGN(Parser& parser)
 
     // parser.smanager.array_assignment(vol1.addr, vol.addr);
 
-    auto r = code_manager.generate_code(ARRAY_ASSIGN, vol1.addr, vol.addr, parser.smanager);
-    code_manager.print_code(r, parser.smanager);
+    code_manager.generate_code(ARRAY_ASSIGN, vol1.addr, vol.addr, parser.smanager);
 }
 
 void Translater::action_ASSIGN(Parser& parser)
@@ -210,9 +207,7 @@ void Translater::action_ASSIGN(Parser& parser)
     auto id = parser.vol_stack.top();
     parser.vol_stack.pop();
 
-    auto r = code_manager.generate_code(ASSIGN, id.addr, vol.addr, parser.smanager);
-
-    code_manager.print_code(r, parser.smanager);
+    code_manager.generate_code(ASSIGN, id.addr, vol.addr, parser.smanager);
 }
 
 void Translater::action_ATIMES(Parser& parser)
@@ -259,7 +254,6 @@ void Translater::action_BOOL2(Parser& parser)
     gen_1_addr(parser, GOTO);
 
     bool_nums.top() += 1;
-    std::cout << bool_nums.top() << " " << bool_nums.size() << std::endl;
 
     Parser::vol_type vol;
     vol.index = r;
@@ -268,8 +262,6 @@ void Translater::action_BOOL2(Parser& parser)
 }
 void Translater::action_CALC(Parser& parser)
 {
-    // std::cout << "CALC -> Translater" << std::endl;
-
     auto value2 = parser.vol_stack.top();
     parser.vol_stack.pop();
     parser.token_stack.pop();
@@ -285,14 +277,12 @@ void Translater::action_CALC(Parser& parser)
     parser.status_stack.pop();
 
     auto r = code_manager.generate_code(op.get_token(), value1.addr, value2.addr, parser.smanager);
-    code_manager.print_code(r, parser.smanager);
 
     Parser::vol_type vol;
     vol.index = r;
     vol.addr = code_manager.get_tmp_addr(r);
+    vol.addr.tmp = true;
     parser.vol_stack.push(vol);
-
-    // print_code(r, vol, op, value1, value2, parser);
 }
 void Translater::action_ELSE(Parser& parser)
 {
@@ -304,8 +294,7 @@ void Translater::action_ELSEIF(Parser& parser)
     // jump out if-elseif-else
     // need to be backfilled
     addr_type jump_false = parser.smanager.install_value(0);
-    auto r1 = code_manager.generate_code(GOTO, jump_false, parser.smanager);
-    code_manager.print_code(r1, parser.smanager);
+    code_manager.generate_code(GOTO, jump_false, parser.smanager);
     // backfill if-false-jump
     size_t next = code_manager.line_nums_now();
     for (int i = 0; i < bool_nums.top(); ++i) {
@@ -323,9 +312,6 @@ void Translater::action_FOR(Parser& parser)
 }
 void Translater::action_ID(Parser& parser)
 {
-
-    // std::cout << "ID -> Translater" << std::endl;
-    // pop
     Parser::vol_type vol;
     auto token = parser.token_stack.top();
     vol.type = VOL_IS_ID;
@@ -340,12 +326,10 @@ void Translater::action_IF(Parser& parser)
     // jump out if-elseif-else
     // need to be backfilled
     addr_type jump_false = parser.smanager.install_value(0);
-    auto r1 = code_manager.generate_code(GOTO, jump_false, parser.smanager);
-    code_manager.print_code(r1, parser.smanager);
+    code_manager.generate_code(GOTO, jump_false, parser.smanager);
     // backfill if-false-jump
     size_t next = code_manager.line_nums_now();
     for (int i = 0; i < bool_nums.top(); ++i) {
-        std::cout << "POP1" << std::endl;
         auto addr = backfill_false.top();
         parser.smanager.value_assignment(addr, (int)next);
         backfill_false.pop();
@@ -356,10 +340,8 @@ void Translater::action_IF(Parser& parser)
 void Translater::action_IF_B(Parser& parser)
 {
     pop_all(parser);
-    std::cout << bool_nums.top() << " " << backfill_false.size() << std::endl;
     size_t next = code_manager.line_nums_now();
     for (int i = 0; i < bool_nums.top(); ++i) {
-        std::cout << "POP2" << std::endl;
         auto addr = backfill_false.top();
         parser.smanager.value_assignment(addr, (int)next);
         backfill_false.pop();
@@ -377,13 +359,11 @@ void Translater::action_OR(Parser& parser)
     size_t next = code_manager.line_nums_now();
     addr_type jump_true = parser.smanager.install_value((int)next + 2);
     auto r = code_manager.generate_code(OR, value1.addr, value2.addr, jump_true, parser.smanager);
-    code_manager.print_code(r, parser.smanager);
 
     backfill_true.push(jump_true);
 
     addr_type jump_false = parser.smanager.install_value(0);
-    auto r1 = code_manager.generate_code(GOTO, jump_false, parser.smanager);
-    code_manager.print_code(r1, parser.smanager);
+    code_manager.generate_code(GOTO, jump_false, parser.smanager);
 
     backfill_false.push(jump_false);
     bool_nums.top() += 1;
@@ -403,16 +383,11 @@ void Translater::action_POP(Parser& parser)
 }
 void Translater::action_SWAP(Parser& parser)
 {
-
-    // std::cout << "SWAP -> Translater" << std::endl;
-    // pop
     parser.token_stack.pop();
     parser.status_stack.pop();
 }
 void Translater::action_VE(Parser& parser)
 {
-    // std::cout << "VE -> Translater" << std::endl;
-    // pop
     Parser::vol_type vol;
     auto token = parser.token_stack.top();
     vol.type = VOL_IS_NUM_VALUE;
@@ -424,9 +399,6 @@ void Translater::action_VE(Parser& parser)
 // value_type -> int | float | char etc...
 void Translater::action_VT(Parser& parser)
 {
-
-    // std::cout << "VT -> Translater" << std::endl;
-    // pop
     Parser::vol_type vol;
     auto token = parser.token_stack.top();
     vol.type = VOL_IS_VALUE_TYPE;
@@ -444,8 +416,7 @@ void Translater::action_WHILE(Parser& parser)
     line_to_jump.pop();
     parser.smanager.value_assignment(jump_back, (int)back_nu);
     // gencode
-    auto r1 = code_manager.generate_code(GOTO, jump_back, parser.smanager);
-    code_manager.print_code(r1, parser.smanager);
+    code_manager.generate_code(GOTO, jump_back, parser.smanager);
     // the first line out of while statement, do backfill
     size_t next = code_manager.line_nums_now();
     for (int i = 0; i < bool_nums.top(); ++i) {
@@ -458,15 +429,12 @@ void Translater::action_WHILE(Parser& parser)
 
 void Translater::action_value_declare(Parser& parser)
 {
-    // std::cout << "value_declare -> Translater" << std::endl;
-    // pop
     auto id = parser.vol_stack.top();
     parser.token_stack.pop();
     parser.status_stack.pop();
     parser.vol_stack.pop();
     auto type = parser.vol_stack.top();
     parser.smanager.declare_define_variable(type.ivol, id.addr);
-    // std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << std::endl;
 }
 
 void Translater::action_value_declare1(Parser& parser)
@@ -479,8 +447,6 @@ void Translater::action_value_declare1(Parser& parser)
 }
 void Translater::action_value_define(Parser& parser)
 {
-    // std::cout << "value_define -> Translater" << std::endl;
-    // pop
     auto vol = parser.vol_stack.top();
     parser.token_stack.pop();
     parser.status_stack.pop();
@@ -498,12 +464,8 @@ void Translater::action_value_define(Parser& parser)
     if (vol.type == VOL_IS_TMP)
         vol.addr = code_manager.get_tmp_addr(vol.index);
 
-    // parser.smanager.declare_define_variable(type.ivol, id.addr, vol.addr);
     parser.smanager.declare_define_variable(type.ivol, id.addr);
-    auto r = code_manager.generate_code(ASSIGN, id.addr, vol.addr, parser.smanager);
-    code_manager.print_code(r, parser.smanager);
-
-    // std::cout << "insert into symbol table: " << get_token_info(type.type) << " " << id.svol << " " << vol.index << std::endl;
+    code_manager.generate_code(ASSIGN, id.addr, vol.addr, parser.smanager);
 }
 void Translater::action_value_define1(Parser& parser)
 {
@@ -532,7 +494,6 @@ void Translater::action_M1_FLAG(Parser& parser)
 {
     pop_all(parser);
     // come into a new while
-    std::cout << "M1" << std::endl;
     bool_nums.push(0);
     size_t next = code_manager.line_nums_now();
     line_to_jump.push(next);
@@ -551,14 +512,12 @@ void Translater::action_S_FLAG(Parser& parser)
     // come into if
     pop_all(parser);
     bool_nums.top() += 1;
-    std::cout << "S" << std::endl;
     bool_nums.push(0);
 }
 void Translater::action_SS_FLAG(Parser& parser)
 {
     // come into if
     pop_all(parser);
-    std::cout << "SS" << std::endl;
     bool_nums.push(1);
     bool_nums.push(0);
 }
@@ -567,9 +526,7 @@ void Translater::action_F1_FLAG(Parser& parser)
     // come into for
     pop_all(parser);
     // record how many bool-false need tobe backfill
-    std::cout << "F1" << std::endl;
     bool_nums.push(0);
-    std::cout << "  F1" << std::endl;
     gen_to_tmp = true;
 }
 void Translater::action_F2_FLAG(Parser& parser)
@@ -579,7 +536,6 @@ void Translater::action_F2_FLAG(Parser& parser)
     gen_to_tmp = false;
     gen_1_addr(parser, GOTO);
 
-    std::cout << "F2" << std::endl;
     size_t next = code_manager.line_nums_now();
     line_to_jump.push(next);
 }

@@ -6,6 +6,7 @@ int main()
     int d = 3;
     b = b + c;
     c = c + d;
+    d = a - b;
     while (a < 10) {
         c = c + 1;
         a = a + 1;

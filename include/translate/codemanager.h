@@ -1,8 +1,7 @@
-#ifndef PLUGIN_ADDR_CODES_H
-#define PLUGIN_ADDR_CODES_H
+#ifndef CODE_MANAGER_H
+#define CODE_MANAGER_H
 
-#include "code.h"
-
+#include "symboltablemanager.h"
 #include <ostream>
 #include <string>
 #include <unordered_map>
@@ -17,7 +16,7 @@
 #define GOTO 201
 #define CMP_GOTO 202
 
-size_t timer_code_increase();
+class Code;
 
 class CodeManager {
 
@@ -43,6 +42,8 @@ public:
 
     addr_type get_tmp_addr(size_t id);
     void print_code(size_t id, SymbolTableManager& stmg);
+
+    std::vector<Code> get_codes() { return codes; }
 
 private:
     size_t timer = 0;

@@ -4,6 +4,7 @@
 #ifndef SRC_PARSER_PARSER_H
 #define SRC_PARSER_PARSER_H
 
+#include "code.h"
 #include "grammar.h"
 #include "parsing_table.h"
 #include "symboltable.h"
@@ -39,6 +40,9 @@ public:
     void init();
     // run parser
     void run();
+
+    std::vector<Code> get_codes() { return translater.get_codes(); }
+    SymbolTableManager get_stmg() { return smanager; }
 
     void hook_function(std::string& which, size_t& index, int linenu);
 

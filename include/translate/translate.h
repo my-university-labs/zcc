@@ -4,6 +4,7 @@
 #ifndef SRC_TRANSLATE_TRANSLATE_H
 #define SRC_TRANSLATE_TRANSLATE_H
 
+#include "code.h"
 #include "codemanager.h"
 #include "symboltable.h"
 #include "token.h"
@@ -21,6 +22,7 @@ public:
 
     void action_run(Parser& parser, std::string& action, std::string& which, size_t index);
     void gencode(SymbolTableManager& stmg) { code_manager.gen_all_code(stmg); }
+    std::vector<Code> get_codes() { return code_manager.get_codes(); }
 
 private:
     size_t timer;
