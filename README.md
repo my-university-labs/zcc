@@ -1,5 +1,6 @@
 #### 基本的c语言编译器
----
+
+[到csdb查看我的实验总结分析](http://blog.csdn.net/dongchangzhang/article/details/72717222)
 
 #### 怎样运行
 ``` shell
